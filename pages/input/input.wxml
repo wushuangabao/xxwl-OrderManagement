@@ -1,0 +1,63 @@
+<!--pages/input/input.wxml-->
+<view style='display:flex;flex-direction:row;height:100%'>
+
+  <view style='width:100rpx;height:100%;' />
+
+  <view class='container'>
+
+    <picker bindchange="bindPickerChange" value="{{index}}" range="{{receipt_type}}">
+      <view class="itemView1">
+        <view class="picker">
+          {{receipt_type[index]}}
+        </view>
+      </view>
+    </picker>
+
+    <view class="itemView2">
+      上传照片1-4张，默认第一张为封面图
+      <view class="imgs">
+        <image class="img" src="{{img_path[0]}}" mode='aspectFit' bindtap='onImage' data-index="{{0}}"/>
+        <image class="img" src="{{img_path[1]}}" mode='aspectFit' bindtap='onImage' data-index="{{1}}"/>
+        <image class="img" src="{{img_path[2]}}" mode='aspectFit' bindtap='onImage' data-index="{{2}}"/>
+        <image class="img" src="{{img_path[3]}}" mode='aspectFit' bindtap='onImage' data-index="{{3}}"/>
+      </view>
+    </view>
+
+    <!--订单备注-->
+    <view class="itemView1">
+      <textarea class='textarea' cursor-spacing='20' maxlength='100' bindblur="bindTextAreaBlur1" placeholder="可以在这里输入对订单的描述" />
+    </view>
+
+    <!--客户名称-->
+    <picker bindchange="bindPickerChange2" value="{{index_cif}}" range="{{cif_id_name}}">
+      <view class="itemView1">
+        <view class="picker">
+          {{cif_id_name[index_cif]}}
+        </view>
+      </view>
+    </picker>
+
+    <!-- <picker mode="region" bindchange="bindRegionChange" value="{{region}}" custom-item="{{customItem}}">
+    <view class="itemView1">
+      <text class="label">客户地址：</text>
+      <view class="picker">
+        {{region[0]}}--{{region[1]}}--{{region[2]}}
+      </view>
+    </view>
+  </picker>
+
+  <view class="itemView2">
+    <text class="label">详细地址：</text>
+    <textarea class='textarea' cursor-spacing='20' maxlength='100' bindblur="bindTextAreaBlur2"></textarea>
+  </view> -->
+
+    <button class="button" type="primary" bindtap='onConfirm'>提交</button>
+
+  </view>
+
+  <view style='width:100rpx;height:100%' />
+
+</view>
+
+<import src="../../utils/tabBar.wxml" />
+<template wx:if="{{isAdmin}}" is="tabBar" data="{{tabBar: tabBar}}" />

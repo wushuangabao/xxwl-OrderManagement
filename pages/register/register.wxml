@@ -1,0 +1,33 @@
+<!--pages/register/register.wxml-->
+<view style="height:200rpx;" />
+
+<picker bindchange="bindPickerChange" value="{{index}}" range="{{role_type}}">
+  <view class="itemView1">
+    <text class="label">{{label0}}：</text>
+    <view class="picker">
+      {{role_type[index]}}
+    </view>
+  </view>
+</picker>
+
+<view class="itemView1">
+  <text class="label">{{label1}}:</text>
+  <input class="input" placeholder='请输入{{label1}}' cursor-spacing='20' maxlength='16' bindinput="bindKeyInput1" />
+</view>
+
+<view class="itemView1">
+  <text class="label">{{label2}}:</text>
+  <input class="input" placeholder='请输入{{label2}}' cursor-spacing='20' maxlength='16' password='{{true}}' bindinput="bindKeyInput2" />
+</view>
+
+<view class="itemView1">
+  <text class="label">{{label3}}:</text>
+  <input class="input" placeholder='请输入{{label3}}' cursor-spacing='20' maxlength='16' password='{{true}}' bindinput="bindKeyInput3" />
+</view>
+
+<!-- <view class="itemView1">
+  <text class="label">{{label4}}:</text>
+  <input class="input" placeholder='请输入{{label4}}' cursor-spacing='20' type='number' maxlength='11' />
+</view> -->
+
+<button class="button" type="primary" bindtap='onConfirm'>确定</button>

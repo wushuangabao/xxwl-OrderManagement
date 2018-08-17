@@ -1,0 +1,29 @@
+<!--pages/friends/manage.wxml-->
+<view class="container">
+
+  <!--head-->
+  <view class="tit">
+    <block wx:for="{{titles}}" wx:key="id">
+      <view class="tit-item" style="background-color:{{item.color_b}};color:{{item.color_f}}" bindtap='changeTit' data-id="{{item.index}}">
+        {{item.name}}
+      </view>
+    </block>
+  </view>
+
+  <!--list-->
+  <view class="list">
+    <!--item-->
+    <block wx:for="{{friendsInfo}}" wx:key="key">
+      <view class="list-item">
+        <image src="{{avatarUrl}}" class="img" mode="aspectFit" />
+        <text class="text-mid">{{item.nickname}}</text>
+        <view class="selector">
+          <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}" data-id='{{item.index}}'>
+              {{item.role_type}}
+          </picker>
+        </view>
+      </view>
+    </block>
+  </view>
+
+</view>

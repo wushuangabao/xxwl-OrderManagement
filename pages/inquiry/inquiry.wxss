@@ -1,0 +1,102 @@
+/* pages/inquiry/inquiry.wxss */
+
+@import "/utils/tabBar.wxss";
+
+.container {
+  background: #f5f5f5;
+}
+
+.tit {
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  height: 30px;
+    position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+}
+
+.tit-item {
+  width: 375rpx;
+  height: 26px;
+  padding-top: 4px;
+  font-size: 14px;
+  color: #555;
+  line-height: 26px;
+  text-align: center;
+}
+
+.title_val {
+  background-color: #fff;
+  width: 380rpx;
+  height: 22px;
+  margin-left: 12px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: #555;
+  line-height: 22px;
+}
+
+.inquiry {
+  margin-left: 4px;
+  font-size: 12px;
+  line-height: 30px;
+  color: #999;
+  padding: 0 5px 0 0;
+}
+
+.list {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  margin-bottom: 120rpx;
+}
+
+.receipt {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #ddd;
+}
+
+.r-img {
+  padding: 5px;
+  width: 60px;
+  height: 60px;
+}
+
+.cont {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.up-cont {
+  display: flex;
+  flex-direction: row;
+}
+
+.up-cont-item {
+  margin-top:12px;
+  margin-left: 10px;
+  color: #555;
+  justify-content: center;
+}
+
+.down-cont {
+  margin-top:10px;
+  margin-left: 5px;
+  padding-top:3px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: #555;
+  font-size:12px;
+}
+
+.more {
+  padding-right: 12px;
+  color:#999
+}

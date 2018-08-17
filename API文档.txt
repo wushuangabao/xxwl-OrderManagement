@@ -1,0 +1,254 @@
+AppSecret:4b1176fdf52fa6bb86f0969bc2569dbb
+ROOT Xiangpa
+
+role_type
+01 管理员 anzai736311
+02 销售（录单员）wushuangBaOY_WHA
+03-99 101-... 工人
+xiangyangle666 101
+100 客户
+
+
+网上资料：
+同一个微信开放平台下的相同主体的App、公众号、小程序的unionid是相同的，这样就可以锁定是不是同一个用户。微信针对不同的用户在不同的应用下都有唯一的一个openId, 但是要想确定用户是不是同一个用户，就需要靠unionid来区分。一般自己的后台都会有自己的一个用户表，每个用户有不同的userid。也就是说同一个用户在同一个微信开放平台下的相同主体的应用对应着相同的unionid以及不同的openid。所以在用户登录进来的时候，我们只能靠微信返回给我们的unionid去判断是不是同一个用户，在去关联我们的用户表，拿到对应的user_id。
+
+获取用户user_id的方案：
+首先，小程序onLaunch时，通过向如下的URL发起request请求（其中js_code填写的是用户wx.login成功时返回的res.code），可以获取用户的session_key和openid：
+https://api.weixin.qq.com/sns/jscode2session?appid=wxc70057280c56f254&secret=4b1176fdf52fa6bb86f0969bc2569dbb&js_code=0117drQC06yHLd2N63QC03HrQC07drQB&grant_type=authorization_code
+实测返回值：
+{"session_key":"pqyFcISGoCoI6+bBxjaviA==","openid":"oA8Tb4r0UGK1emcdiF1S5WxyVKuo"}
+网上资料：
+通过解密算法，可以获取unionid。它可以作为区分用户身份的主键user_id使用。
+
+
+与服务器request交互API汇总：
+
+/pages/index/index.js-----------------------
+
+#触发时间：getUserInfo获取用户信息之后
+#上传数据：{user_id: char[]}
+#获取数据：{rolepla_ptytype: char} //角色（身份）类型
+
+
+/pages/input/input.js-----------------------
+
+#触发时间：onConfirm点击“提交”按钮之后，调用doInput提交订单时
+#上传数据：{
+      receipt_type: char[],   //单据类型
+      user_id: char[],        //录单员的user_id
+      remark: char[],         //备注
+      name: char[],           //订单名称
+      contact_name: char[],   //客户名称（现在还没有找到直接选择微信联系人的方法）
+      contact_number: char[], //客户电话
+    }
+除了request之外，这里可能还会用到wx.uploadFile(OBJECT)来上传图片附件。
+#获取数据：{result: bool}     //数据库business_biu表增加记录是否成功。
+
+
+/pages/inquiry/inquiry.js-----------------------
+
+#触发时间：调用setRecptData获取订单数组数据时
+#上传数据：{
+      string: "getRecptData",
+      user_id: char[]   //发起查询的用户的user_id
+    }
+#获取数据：{  //根据用户ID，返回用户希望查询的订单的数组
+      receipts: [
+      {
+         receipt_number: char[] //单据编号，如00001、00002
+         name: char[]           //单据名称
+         receipt_type: char[]   //单据类型
+         state: char[]          //状态。如果待分配，就是"待分配"；如果未完工，就是目前正在进行的工序的名称，如"裁料"、"做衣"；如果已完工，就是"已完成"。
+      },
+      ...   //同上的数组元素
+    }
+除了request之外，还会用到wx.downloadFile(OBJECT)来下载图片附件。
+
+
+/pages/progress/progress.js-----------------------
+
+#触发时间：页面显示onShow时
+#上传数据：{
+      string: "getProcessData"
+      receipt_number: char[]   //单据编号
+    }
+#获取数据：{  //根据单据编号找到对应的工单表，返回如下数组对象
+    job_table:[
+    {
+      job_type: char[],   //工单类型
+      job_number: char[], // 工单编号
+      name: char[],       //工序名，如'做衣',
+      status:  char[],    //'已处理'或'未处理'或'待分配',
+      user_name:  char[], //操作者（员工）的nickname
+      time:  char[],      //'2018/07/20 13:07:08',
+      note: char[],       //工单备注
+    },
+     ...       //同上的数组元素
+    ]
+  }
+
+
+/pages/operate/operate.js-------------------------
+
+#触发时间：页面加载onLoad时
+#上传数据：{
+      string: "getOperateData"
+      user_id: char[]     //用户（员工）的ID
+    }
+#获取数据：{
+    job_table:[  //根据员工的user_id返回的工单表，也就是调配给该员工的任务清单
+    {
+      job_type: char[],   //工单类型
+      job_number: char[], //工单编号
+      name: char[],       //工序名，如'做衣',
+    },
+     ...         //同上的数组元素
+    ]
+  }
+
+#触发时间：点击“领取”按钮时
+#上传数据：{  //根据以下数据，修改job_table表
+      string: "onTapButtonGet"
+      user_id: char[]     //用户（员工）的ID
+      job_number: char[]  //工单编号
+      user_name:  char[], //操作者（员工）的nickname
+      time:  char[],      //提交时间，如'2018/07/20 13:07:08',
+    }
+
+#触发时间：点击“完工”按钮时
+#上传数据：{  //根据以下数据，修改job_table表
+      string: "onTapButtonDone"
+      user_id: char[]     //用户（员工）的ID
+      job_number: char[]  //工单编号
+      user_name:  char[], //操作者（员工）的nickname
+      time:  char[],      //提交时间，如'2018/07/20 13:07:08',
+      note: char[]        //备注，可能为空字符串
+    }
+
+
+
+
+用户注册登记接口------------------------------------
+http://140.143.154.96/day07/regServlet
+上传变量：user_id，user_name，password，role_type，level_type，nickname
+数据库记录 wushuangBaOY_WHA密码888888
+
+订单录入接口----------------------------------------
+http://140.143.154.96/day07/BillCreateServlet
+上传数据：user_id（操作员的微信号），user_name（操作的微信呢称），role_type（操作员角色类型，登录或授权时从服务端获取），company_id（公司ID，直接赋值"12345"就行),
+receipt_type(订单类型），订单名称receipt_name， remark（订单备注），cif_user_id（订单中客户微信号），cif_user_name（订单中客户微信呢称）
+
+String User_id = request.getParameter("user_id");   //录单操作ID 
+		String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+String Company_id = request.getParameter("company_id");
+
+String Receipt_type=request.getParameter("receipt_type");
+
+String Receipt_name=request.getParameter("receipt_name");String Remark=request.getParameter("remark");
+String Cif_user_id = request.getParameter("cif_user_id");   //订单客户id
+String Cif_user_name = request.getParameter("cif_user_name");
+
+订单查询接口----------------------------------------
+http://140.143.154.96/day07/BillQueryServlet
+
+工单领取或完工接口----------------------------------
+http://140.143.154.96/day07/JobDealServlet
+工单领取完工输入：user_id（操作员的微信号），user_name（操作的微信呢称），role_type（操作员角色类型，登录或授权时从服务端获取），（公司ID，直接赋值"12345"就行），这几个信息是公用信息，后面的服务处理，都会传几个信息
+
+还需要：job_number（工单编号），job_event（事件：01表示领域，02表示完工）
+
+工单查询接口----------------------------------------
+http://140.143.154.96/day07/JobQueryServlet
+
+输入信息，就是通用信息user_id（操作员的微信号），user_name（操作的微信呢称），role_type（操作员角色类型，登录或授权时从服务端获取），company_id（公司ID，直接赋值"12345"就行），work_status（所查询工单的状态代码）
+
+订单进度查询----------------------------------------
+http://140.143.154.96/day07/BillProQueryServlet
+输入信息，就是通用信息user_id（操作员的微信号），user_name（操作的微信呢称），role_type（操作员角色类型，登录或授权时从服务端获取），company_id（公司ID，直接赋值"12345"就行）
+再输入receipt_type（订单类型），receipt_number（订单编号）
+
+
+企业注册信息----------------------------------------
+http://140.143.154.96/day07/CompanyRegisterServlet
+company_name（公司名称），company_type（行业），user_id（用户ID），user_name（用户名称），nickname（用户呢称）
+
+用户列表查询----------------------------------------
+http://140.143.154.96/day07/userQueryServlet
+通用信息user_id（操作员的微信号），user_name（操作的微信呢称），role_type（操作员角色类型，登录或授权时从服务端获取），company_id
+user_type（用户类型），1、客户，2、员工、3、伙伴、0、其他
+
+apply_receive_timek:"2018-08-09 11:42:45.0"
+code:0
+finish_time:"2018-08-09 11:42:45.0"
+job_name:"领料"
+job_number:"0220180809114245966"
+job_type:"201"
+remark:"xpa衣服制造"
+user_id:"xiangyangle666"
+user_name:"小叮当"
+work_status:"2"（0待领取 1未完成）
+
+
+button:""
+font_color:""
+icon:"/imgs/undo-circle.png"
+job_number:"0220180809114245966"
+job_type:"201"
+line_color:""
+name:"领料"
+note:"xpa衣服制造"
+status:"已处理"
+time:undefined
+time_date:""
+time_hour:""
+user_id:"xiangyangle666"
+user_name:"小叮当"
+
+
+company_id:"12345"
+gmt_create:"2018-08-09"
+gmt_modify:"2018-08-09 11:42:45.0"
+job_name:"未开工"
+job_no:"000"
+r_number:"***940"
+receipt_name:"null"
+receipt_number:"0320180809114244940"
+receipt_type:"301"
+remark:"定制1米*1米的书架2，一月完工"
+user_id:"wushuangBaOY_WHA"
+user_name:"王宏翱"
+work_status:"0"
+
+String User_id = request.getParameter("user_id");   //录单操作ID 
+String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+
+String Company_id = request.getParameter("company_id");
+String Cor_event = request.getParameter("cor_event");	
+1增加 2删除
+String Their_scene_code=request.getParameter("their_scene_code");
+	"03"
+String Their_scene_type=request.getParameter("their_scene_type");
+ recpt_type("301")
+String Their_scene_name=request.getParameter("their_scene_name");
+
+String Pre_associate_code=request.getParameter("pre_associate_code");
+
+String Pre_associate_type=request.getParameter("pre_associate_type");如果没有，赋值"000"
+String Per_associate_name=request.getParameter("per_associate_name");
+
+String Their_associate_code=request.getParameter("their_associate_code");
+
+String Their_associate_type=request.getParameter("their_associate_type");
+
+String Their_associate_name=request.getParameter("their_associate_name");
+
+String Next_associate_code=request.getParameter("next_associate_code");
+
+String Next_associate_type=request.getParameter("next_associate_type");
+如果没有，赋值"000"
+String Next_associate_name=request.getParameter("next_associate_name");
+

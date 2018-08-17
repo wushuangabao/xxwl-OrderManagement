@@ -1,0 +1,52 @@
+/* pages/register/register.wxss */
+
+.picker {
+  padding-left: 6rpx;
+  padding-right: 6rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  background-color: #fff;
+  color: #696969;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+}
+
+.itemView1 {
+  margin: 140rpx;
+  margin-top: 40rpx;
+  margin-bottom: 0rpx;
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  font-size: 32rpx;
+}
+
+.itemView2 {
+  margin: 140rpx;
+  margin-top: 40rpx;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  font-size: 32rpx;
+}
+
+.label {
+  font-weight: bold;
+  width: 160rpx;
+}
+
+.input {
+  width: 270rpx;
+  height: 50rpx;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  color: #696969;
+  background-color: #fff;
+}
+
+.button {
+  margin-top: 80rpx;
+  width: 300rpx;
+  align-items: center;
+  font-size: 28rpx;
+}

@@ -1,0 +1,105 @@
+/* pages/progress/progress.wxss */
+
+.inquiry {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 20rpx;
+  width:100%;
+  background-color: #F8F8F8;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.picker {
+  height: 18px;
+  background-color: #fff;
+  color: #696969;
+}
+
+.process {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 75rpx 20rpx 0rpx 20rpx;
+  background-color: #fff;
+}
+
+.process-wrap {
+  justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+}
+
+.time {
+  width: 120rpx;
+  height: 120rpx;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  margin-right: 30rpx;
+}
+
+.time-date {
+  margin-bottom: 2px;
+}
+
+.time-hour {
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.picture {
+  width: 50rpx;
+  height: auto;
+}
+
+.icon {
+  height: 50rpx;
+  width: 50rpx;
+  z-index: 50;
+}
+
+.line {
+  margin-top: -9rpx;
+  margin-left: 24rpx;
+  width: 2px;
+  flex: 1;
+  height: calc(100% - 46rpx);
+  position: relative;
+  top: 0px;
+  left: 0px;
+  z-index: 40;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  width:550rpx;
+}
+
+.text-up {
+  margin-left: 20rpx;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.state{
+  margin-left: 30rpx;
+  font-size:13px;
+}
+
+.text-down {
+  margin-left: 20rpx;
+  font-size: 12px;
+  line-height: 15px;
+  padding-bottom: 36px;
+}
+
+.detail-text {
+  margin-right: 30rpx;
+  font-size: 13px;
+}

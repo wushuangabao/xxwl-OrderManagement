@@ -1,0 +1,51 @@
+/* pages/friends/manage.wxss */
+
+.tit {
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  height: 30px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+}
+
+.tit-item {
+  width: 187.5rpx;
+  height: 26px;
+  padding-top: 4px;
+  font-size: 14px;
+  color: #555;
+  line-height: 26px;
+  text-align: center;
+}
+
+.list{
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  margin-top: 30px;
+}
+
+.list-item{
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid #ddd;
+}
+
+.img{
+  width: 64rpx;
+  height: 64rpx;
+  margin: 13rpx;
+  border-radius: 50%;
+}
+
+.text-mid{
+  line-height: 90rpx;
+  width: 300rpx;
+}
+.selector{
+  line-height: 90rpx;
+  width: 300rpx;
+}

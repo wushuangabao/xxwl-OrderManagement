@@ -1,0 +1,46 @@
+<!--pages/operate/create.wxml-->
+
+<!--head-->
+<view class="tit">
+  <view class="tit-item">
+    订单类型：{{receipt_name}}
+  </view>
+  <view class="tit-item">
+    <button class="button-confirm" type="primary" bindtap='onConfirm'>提交</button>
+  </view>
+</view>
+
+<!--list-->
+<view class="list">
+  <!--item-->
+  <block wx:for="{{operation}}" wx:key="id">
+    <view class="operation">
+
+      <!--左侧第N步-->
+      <view class="cont-left">第{{item.index}}步</view>
+
+      <!--右侧详细信息-->
+      <view class="cont-right">
+        <picker bindchange="bindPickerSelect" value="{{index}}" range="{{job_type_list}}" class="name" data-id='{{item.index}}'>{{item.job_name}}</picker>
+        <!-- <input class='note-input' bindinput="bindNoteInput" value='{{item.remark}}' placeholder="可以在这里输入备注" data-id='{{item.index}}' /> -->
+        <view class="button-list">
+          <view class="button" bindtap='onTapAdd' data-id='{{item.index}}' style="background-color:{{item.buttonColor}};">
+            +
+          </view>
+          <view class="button" bindtap='onTapMinus' data-id='{{item.index}}' style="background-color:#1aad19;">
+            -
+          </view>
+        </view>
+      </view>
+
+    </view>
+  </block>
+
+  <!-- 最后一行只有加号 -->
+  <view wx:if="{{canAddLast}}" class="operation-last">
+    <view class="button-last" bindtap='onTapAddLast'>
+      +
+    </view>
+  </view>
+
+</view>

@@ -1,0 +1,56 @@
+<!--pages/operate/operate.wxml-->
+
+<!-- <view class="touches"  bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE"/> -->
+
+<!--head-->
+<view class="tit">
+  <block wx:for="{{titles}}" wx:key="id">
+    <view class="tit-item" style="background-color:{{item.color_b}};color:{{item.color_f}}" bindtap='changeTit' data-name="{{item.name}}">
+      {{item.name}}
+    </view>
+  </block>
+</view>
+
+<!--list-->
+<view class="list">
+  <!--item-->
+  <block wx:for="{{operation}}" wx:key="id">
+
+    <!-- <view class="operation" hidden="{{item.hidden}}" animation="{{item.animaData}}"> -->
+    <view class="operation" animation="{{item.animaData}}">
+      <!--左侧img-->
+      <image src="/imgs/image.png" class="img" mode="aspectFit" />
+      <!--右侧详细信息-->
+      <view class="cont">
+        <!--上方文字-->
+        <view class="up-cont">
+          <view class="up-cont-item-left">
+            <text >{{item.j_number}}</text>
+            <view style='width:30rpx;' />
+            <text >{{item.job_name}}</text>
+          </view>
+          <view style='width:1px;' />
+          <view wx:if="{{isAdmin}}" class="up-cont-item-right">{{item.user_name}}</view>
+        </view>
+        <!--下方按钮-->
+        <view class="down-cont">
+          <view wx:if="{{item.work_status=='1'}}" class="note" hidden="{{item.hid_button}}">
+            备注：
+            <input class='note-input' bindinput="bindNoteInput" data-number="{{item.job_number}}"></input>
+          </view>
+          <view wx:if="{{item.work_status!='1'}}" class="note">{{item.note}}</view>
+          <view wx:if="{{item.work_status !='2'}}" class="button" bindtap='onTapButton' data-number="{{item.job_number}}"  hidden="{{item.hid_button}}">
+            {{item.button}}
+          </view>
+          <view wx:if="{{item.work_status=='2'}}" class="done">
+            已完成
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </block>
+</view>
+
+<import src="../../utils/tabBar.wxml" />
+<template wx:if="{{isAdmin}}" is="tabBar" data="{{tabBar: tabBar}}" />

@@ -1,0 +1,113 @@
+/* pages/operate/create.wxss */
+
+.tit {
+  display: flex;
+  justify-content: space-between;
+  height: 120rpx;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  padding-top: 30rpx;
+  background-color: #e6e6e6;
+  border-top: 1rpx solid gray;
+}
+
+.tit-item {
+  width: 375rpx;
+  height: 52rpx;
+  padding: 4rpx;
+  font-size: 32rpx;
+  color: #555;
+  line-height: 32px;
+  text-align: center;
+}
+
+.button-confirm {
+  width: 300rpx;
+  align-items: center;
+  font-size: 28rpx;
+}
+
+.list {
+  margin-bottom: 160rpx;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.operation {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 5rpx solid #f8f8f8;
+}
+
+.cont-left {
+  height: 120rpx;
+  width: 200rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  line-height: 120rpx;
+  text-align: center;
+  color: #1aad19;
+  border-right: 2rpx solid #f8f8f8;
+}
+
+.cont-right {
+  width: 550rpx;
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-size: 36rpx;
+}
+
+.name {
+  width: 300rpx;
+  text-align: center;
+}
+
+.note-input {
+  width: 300rpx;
+  border-radius: 4px;
+  border: 1px solid lightgray;
+  color: rgb(138, 138, 138);
+}
+
+.button-list {
+  width: 150rpx;
+  display: flex;
+  justify-content: space-between;
+  margin-left: 50rpx;
+}
+
+.button {
+  width: 50rpx;
+  height: 50rpx;
+  border: 1px solid;
+  border-radius: 4px;
+  font-weight: bolder;
+  color: #fff;
+  line-height: 40rpx;
+  text-align: center;
+}
+
+.operation-last {
+  background-color: #f8f8f8;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.button-last {
+  width: 50rpx;
+  height: 50rpx;
+  border: 1px solid;
+  border-radius: 4px;
+  font-weight: bolder;
+  color: #fff;
+  background-color: #1aad19;
+  line-height: 40rpx;
+  text-align: center;
+  margin-right: 148rpx;
+}

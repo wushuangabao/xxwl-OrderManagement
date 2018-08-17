@@ -1,0 +1,38 @@
+<!--pages/progress/progress.wxml-->
+
+<!--上方查询-->
+
+<view class="inquiry">
+  {{receipt_type}}
+  <view style="width:30rpx" /> {{receipt_number}}
+  <view style="width:20rpx" />
+</view>
+
+<view style="height:40rpx" />
+
+<!--进度列表-->
+<view class='process'>
+  <view class='process-wrap' wx:for="{{processData}}" wx:key="">
+    <!--左侧时间-->
+    <view class='time'>
+      <view class="time-date">{{item.time_date}}</view>
+      <view class='time-hour'>{{item.time_hour}}</view>
+    </view>
+    <!--中间图形-->
+    <view class='picture'>
+      <image class='icon' src="{{item.icon}}" />
+      <view class='line' style="background:{{item.line_color}}" />
+    </view>
+    <!--右侧文字-->
+    <view class='text' style="color:{{item.font_color}}">
+      <view class='text-up'>
+        <view style="display:flex;flex-direction:row;">
+          {{item.name}}
+          <view class="state">{{item.state}}</view>
+        </view>
+        <text class='detail-text'>{{item.user_name}}</text>
+      </view>
+      <view class='text-down'>{{item.note}}</view>
+    </view>
+  </view>
+</view>

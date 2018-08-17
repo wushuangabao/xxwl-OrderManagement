@@ -1,0 +1,47 @@
+<!--pages/inquiry/inquiry.wxml-->
+<view class="container">
+
+  <!--head-->
+  <view class="tit">
+    <block wx:for="{{titles}}" wx:key="id">
+      <view class="tit-item" style="background-color:{{item.color_b}};color:{{item.color_f}}" bindtap='changeTit' data-name="{{item.name}}">
+        {{item.name}}
+      </view>
+    </block>
+    <!-- 
+     <input class="title_val" />
+    <view class="inquiry" bindtap='inquiryNum'>订单号查询</view>
+    -->
+  </view>
+
+  <!--list-->
+  <view class="list">
+    <!--item-->
+    <block wx:for="{{receipt}}" wx:key="key">
+      <view class="receipt">
+        <!--左侧图片-->
+        <view>
+          <image src="{{item.r_img}}" class="r-img" mode="aspectFit" />
+        </view>
+        <!--右侧说明部分-->
+        <view class="cont">
+          <!--上方文字-->
+          <view class="up-cont">
+            <text class="up-cont-item">{{item.r_number}}</text>
+            <text class="up-cont-item">{{item.type}}</text>
+            <text class="up-cont-item">{{item.state}}</text>
+          </view>
+          <!--下方文字-->
+          <view class="down-cont">
+            <text class="remark">{{item.note}}</text>
+            <view id="{{item.id}}" class="more" mode="aspectFit" bindtap="inquiry" data-num="{{item.receipt_number}}" data-type="{{item.receipt_type}}" animation="{{item.animaData}}">查看进度</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <import src="../../utils/tabBar.wxml" />
+  <template wx:if="{{isAdmin}}" is="tabBar" data="{{tabBar: tabBar}}" />
+
+</view>

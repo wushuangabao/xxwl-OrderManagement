@@ -1,0 +1,90 @@
+/* pages/input/input.wxss */
+
+@import "/utils/tabBar.wxss";
+
+page{
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+} 
+
+.itemView1 {
+  width: 710rpx;
+  margin: 20rpx;
+  align-items: center;
+}
+
+.itemView2 {
+  width: 670rpx;
+  margin: 20rpx;
+  padding:20rpx;
+  padding-top:10rpx;
+  display: flex;
+  flex-direction: column;
+  color: #696969;
+  font-size: 14px;
+  line-height: 28px;
+  background-color: #fff;
+  border-bottom: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+}
+
+.imgs{
+  display: flex;
+  justify-content: space-between;
+  border-radius: 4px;
+}
+
+.input {
+  width: 710rpx;
+  height: 30px;
+  line-height: 30px;
+  border-bottom: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+  border-radius: 4px;
+  color: #696969;
+  background-color: #fff;
+}
+
+.textarea {
+  width: 710rpx;
+  height: 60px;
+  border-bottom: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+  border-radius: 4px;
+  color: #696969;
+  background-color: #fff;
+}
+
+.picker {
+  padding-left: 5rpx;
+  padding-right: 5rpx;
+  height: 30px;
+  width:700rpx;
+  line-height: 25px;
+  background-color: #fff;
+  color: #696969;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+}
+
+.img {
+  width: 152rpx;
+  height: 152rpx;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.button {
+  margin-top: 60rpx;
+  width: 360rpx;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 120rpx;
+}

@@ -1,0 +1,55 @@
+/**index.wxss**/
+
+@import "/utils/tabBar.wxss";
+
+.usermotto {
+  margin-top: 160rpx;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+} 
+
+.userinfo {
+  margin-top: 60rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  margin-bottom: 40rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #707070;
+}
+
+.industry {
+  margin: 20rpx;
+  margin-top: 40rpx;
+  margin-bottom: 0rpx;
+  justify-content: flex-start;
+  display: flex;
+}
+.picker {
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size:14px;
+  height: 20x;
+  line-height: 20px;
+  background-color: #fff;
+  color: #696969;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+}
