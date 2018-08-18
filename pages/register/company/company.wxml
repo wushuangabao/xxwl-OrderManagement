@@ -6,18 +6,18 @@
     <text class="userinfo-nickname">{{userInfo.nickName}}</text>
 
     <view style='display:flex;flex-direction:column;'>
-      <picker bindchange="bindPickerChange" value="{{index}}" range="{{industry_type}}" class="picker">
-        {{industry_type[index]}} 行业
+      <picker bindchange="bindPickerChange" value="{{index}}" range="{{industry_name}}" class="picker">
+        {{industry_name[index]}}
       </picker>
       <input class="input" placeholder='请输入注册企业名称' cursor-spacing='20' maxlength='16' bindinput="bindKeyInput" />
     </view>
 
     <view class="button-list">
       <button class="button" type="primary" bindtap='onReturn'>取消</button>
-      <view style='display:flex;flex-direction:column;align-items:center;margin-left:100rpx;'>
+      <!-- <view style='display:flex;flex-direction:column;align-items:center;margin-left:100rpx;'> -->
         <button class="button" type="primary" bindtap='onConfirm'>注册</button>
-        <view class="small-text">我是：管理员</view>
-      </view>
+        <!-- <view class="small-text">我是：管理员</view> -->
+      <!-- </view> -->
     </view>
 
   </view>

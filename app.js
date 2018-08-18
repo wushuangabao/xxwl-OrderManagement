@@ -18,7 +18,7 @@ App({
             url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wxc70057280c56f254&secret=4b1176fdf52fa6bb86f0969bc2569dbb&js_code=' + res.code + '&grant_type=authorization_code',
             method: "POST",
             success: function(res) {
-              wx.setStorageSync('user_id', res.data.openid)//"anzai736311"
+              wx.setStorageSync('user_id', res.data.openid) //"anzai736311"
             }
           })
         } else {
@@ -51,6 +51,7 @@ App({
 
   globalData: {
     userInfo: null,
+    industry: null,
     tabBar: {
       "color": "#9E9E9E",
       "selectedColor": "#f00",

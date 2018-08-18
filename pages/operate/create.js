@@ -10,13 +10,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    receipt_type: '',
-    receipt_name: '',
+    r_type_list: [],
+    r_name_list: ["请选择订单类型"],
+    r_index: 0,
     operation: [],
     new_operation: null,
     canAddLast: true,
     index: 0,
-    job_type_list: ["领料", "裁料", "补烫", "做衣", "钉扣", "质检", "送货", "签收", "收款"],
   },
 
   //* 输入备注（废弃）
@@ -29,19 +29,15 @@ Page({
     })
   },
 
-  // 将工序名称转化为工序类型代码（暂时）
-  convertType: function(job_name) {
-    var job_list = this.data.job_type_list,
-      len = job_list.length;
-    for (var i = 0; i < len; i++) {
-      if (job_list[i] == job_name) {
-        return (201 + i).toString()
-      }
-    }
-    return "000"
+  //* 选择订单类型********************************************
+  bindRcepTypeChange: function(e) {
+    this.setData({
+      r_index: e.detail.value
+    })
+    data.getCorparam(this.data.r_type_list[this.data.r_index - 1], this.setOperation); //设置工序模板
   },
 
-  // 判断工序的“+”按钮是否可用，设置按钮颜色
+  // 判断工序的“+”按钮是否可用，设置按钮颜色----------------------
   setButtonColor: function() {
     var operation = this.data.operation,
       len = operation.length,
@@ -68,9 +64,9 @@ Page({
     var id = e.currentTarget.dataset.id - 1,
       job_type = this.data.operation[id].job_type,
       select_id = e.detail.value;
-    if (job_type == "000") {
-      var job_name = this.data.job_type_list[select_id];
-      job_type = this.convertType(job_name);
+    if (job_type == "000") { //如果此工序还没有选择过工序类型
+      var job_name = this.data.job_name_list[select_id];
+      job_type = this.data.job_type_list[select_id];
       this.setData({
         ['operation[' + id + '].job_name']: job_name,
         ['operation[' + id + '].job_type']: job_type,
@@ -181,8 +177,7 @@ Page({
         })
         this.setButtonColor()
         //todo:让用户结束等待状态，可以接着操作
-      }
-      else { //没有成功，让用户结束等待状态，提示失败
+      } else { //没有成功，让用户结束等待状态，提示失败
 
       }
     }
@@ -233,28 +228,70 @@ Page({
     var recvList = res.data,
       myLen = recvList.length - 1,
       firstData = recvList[0]; //数组的第一个元素
-    //将数组从第2个元素开始的数据，全部前移1个位置，并增加index属性
-    for (var i = 0; i < myLen; i++) {
-      recvList[i] = {
-        job_name: recvList[i + 1].their_associate_name,
-        job_type: recvList[i + 1].their_associate_type,
-        job_code: recvList[i + 1].their_associate_code,
-        buttonColor: Color_Green,
-        index: i + 1,
+    if (myLen > 0) {
+      //将数组从第2个元素开始的数据，全部前移1个位置，并增加index属性
+      for (var i = 0; i < myLen; i++) {
+        recvList[i] = {
+          job_name: recvList[i + 1].their_associate_name,
+          job_type: recvList[i + 1].their_associate_type,
+          job_code: recvList[i + 1].their_associate_code,
+          buttonColor: Color_Green,
+          index: i + 1,
+        }
       }
+      recvList.splice(myLen, 1) //删除原数组的最后一个元素
+      this.setData({
+        operation: recvList,
+        receipt_type: firstData.their_associate_type,
+        receipt_name: firstData.their_associate_name,
+        receipt_code: firstData.their_associate_code,
+      })
+    } else if (myLen == 0) {
+      this.setData({
+        receipt_type: firstData.their_associate_type,
+        receipt_name: firstData.their_associate_name,
+        receipt_code: firstData.their_associate_code,
+      })
     }
-    recvList.splice(myLen, 1) //删除原数组的最后一个元素
+  },
+
+  // 初始化工序类型数组job_type_list和job_name_list
+  setJobParam: function(res) {
+    console.log("set job_list, res = ", res);
+    var len = res.data.length,
+      job_type_list = new Array(len),
+      job_name_list = new Array(len);
+    for (var i = 0; i < len; i++) {
+      job_name_list[i] = res.data[i].type_name;
+      job_type_list[i] = res.data[i].entity_type;
+    }
     this.setData({
-      operation: recvList,
-      receipt_type: firstData.their_associate_type,
-      receipt_name: firstData.their_associate_name,
-      receipt_code: firstData.their_associate_code,
+      job_type_list: job_type_list,
+      job_name_list: job_name_list,
+    })
+  },
+
+  // 初始化订单类型数组r_type_list和r_name_list
+  setRecptParam: function(res) {
+    console.log("set recpt_list, res = ", res);
+    var len = res.data.length,
+      r_type_list = new Array(len),
+      r_name_list = new Array(len + 1);
+    r_name_list[0] = "请选择订单类型";
+    for (var i = 0; i < len; i++) {
+      r_name_list[i + 1] = res.data[i].type_name;
+      r_type_list[i] = res.data[i].entity_type;
+    }
+    this.setData({
+      r_type_list: r_type_list,
+      r_name_list: r_name_list,
     })
   },
 
   //* 生命周期函数--监听页面加载
   onLoad: function(options) {
-    data.getCorparam("301", this.setOperation)
+    data.getParam("02", this.setJobParam); //设置工单类型
+    data.getParam("03", this.setRecptParam) // 设置订单类型
   },
 
   //* 生命周期函数--监听页面显示

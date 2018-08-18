@@ -2,16 +2,6 @@
 
 <import src="../../utils/tabBar.wxml" />
 
-<!--显示、选择行业-->
- <!-- <picker bindchange="bindPickerChange" value="{{index}}" range="{{industry}}">
-    <view class="industry">
-      <text >您的行业：</text>
-      <view class="picker">
-        {{industry[index]}}
-      </view>
-    </view>
-  </picker> -->
-
 <view class="container">
   <view class="usermotto">
     <text class="user-motto" bindlongtap='bindViewTap'>{{motto}}</text>

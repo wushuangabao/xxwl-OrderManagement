@@ -1,29 +1,37 @@
-//////////////////////////API//////////////////////////
+///////////////////////////////////////////////////////
+//request API
+///////////////////////////////////////////////////////
 
+// URL通用部分
+const URL_BASE = "http://140.143.154.96/day07/"
 // 用户授权接口
-const API_LOGON = "http://140.143.154.96/day07/logonAuthServlet"
+var API_LOGON = URL_BASE + "logonAuthServlet"
 // 用户注册登记接口
-const API_REG = "http://140.143.154.96/day07/regServlet"
+var API_REG = URL_BASE + "regServlet"
 // 订单录入接口
-const API_BILLCRT = 'http://140.143.154.96/day07/BillCreateServlet'
+var API_BILLCRT = URL_BASE + "BillCreateServlet"
 // 订单查询接口
-const API_BILLQRY = 'http://140.143.154.96/day07/BillQueryServlet'
+var API_BILLQRY = URL_BASE + "BillQueryServlet"
 // 工单领取或完工接口
-const API_JOBDEAL = "http://140.143.154.96/day07/JobDealServlet"
+var API_JOBDEAL = URL_BASE + "JobDealServlet"
 // 工单查询接口
-const API_JOBQRY = "http://140.143.154.96/day07/JobQueryServlet"
+var API_JOBQRY = URL_BASE + "JobQueryServlet"
 // 订单进度查询接口
-const API_BILLPRO = "http://140.143.154.96/day07/BillProQueryServlet"
+var API_BILLPRO = URL_BASE + "BillProQueryServlet"
 // 企业注册接口
-const API_CPNYREG = "http://140.143.154.96/day07/CompanyRegisterServlet"
+var API_CPNYREG = URL_BASE + "CompanyRegisterServlet"
 // 通讯录-用户列表查询接口
-const API_USERQRY = "http://140.143.154.96/day07/userQueryServlet"
+var API_USERQRY = URL_BASE + "userQueryServlet"
 // 通讯录-调整用户role接口
-const API_USERDEAL = "http://140.143.154.96/day07/UserDealServlet"
+var API_USERDEAL = URL_BASE + "UserDealServlet"
 // 工序设置-模板查询接口
-const API_CORPQRY = "http://140.143.154.96/day07/CorparamQueryServlet"
+var API_CORPQRY = URL_BASE + "CorparamQueryServlet"
 // 工序设置-增减工序接口
-const API_CORPDEAL = "http://140.143.154.96/day07/CorparamDealServlet"
+var API_CORPDEAL = URL_BASE + "CorparamDealServlet"
+// 角色、订单、工单类型的代码、名称查询接口
+var API_PARAQRY = URL_BASE + "ParamQueryServlet"
+// 行业的代码、名称查询接口
+var API_INDUSTRY = URL_BASE + "IndustryQueryServlet"
 
 const app = getApp()
 
@@ -42,15 +50,18 @@ function wxRequest(url, data, resolve) {
   })
 }
 
-// 获取role_type
+// 获取role_type**********************************************
 function getRoleType(setRoleType) {
-  wxRequest(API_LOGON, {
+  var data = {
     user_id: wx.getStorageSync('user_id'),
     nickname: app.globalData.userInfo.nickName,
-  }, setRoleType)
+    image_address: "https://wx.qlogo.cn/"//app.globalData.userInfo.avatarUrl,
+  };
+  wxRequest(API_LOGON, data, setRoleType)
+  console.log("upload my userInfo:", data)
 }
 
-// 上传录入订单数据
+// 上传录入订单数据**********************************************
 function upLoadRecpt(receipt_type, receipt_name, remark, cif_user_id, cif_user_name) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
@@ -68,7 +79,7 @@ function upLoadRecpt(receipt_type, receipt_name, remark, cif_user_id, cif_user_n
   wxRequest(API_BILLCRT, data, putOutInfo)
 }
 
-// 获取订单数组的数据
+// 获取订单数组的数据**********************************************
 function getRecptData(status, func) {
   wxRequest(API_BILLQRY, {
     user_id: wx.getStorageSync('user_id'),
@@ -79,7 +90,7 @@ function getRecptData(status, func) {
   }, func)
 }
 
-// 获取订单进度查询数据
+// 获取订单进度查询数据**********************************************
 function getProgrData(receipt_number, receipt_type, func) {
   wxRequest(API_BILLPRO, {
     receipt_number: receipt_number,
@@ -91,7 +102,7 @@ function getProgrData(receipt_number, receipt_type, func) {
   }, func)
 }
 
-// 获取工单表
+// 获取工单表**********************************************
 function getOpertData(status_n, func) {
   wxRequest(API_JOBQRY, {
     user_id: wx.getStorageSync('user_id'),
@@ -102,7 +113,7 @@ function getOpertData(status_n, func) {
   }, func)
 }
 
-// 工单操作-领取
+// 工单操作-领取**********************************************
 function upLoadOpertGet(job_number, time) {
   var data = {
     job_event: "01",
@@ -116,7 +127,7 @@ function upLoadOpertGet(job_number, time) {
   wxRequest(API_JOBDEAL, data, putOutInfo)
 }
 
-// 工单操作-完工
+// 工单操作-完工**********************************************
 function upLoadOpertDone(job_number, note) {
   var data = {
     job_event: "02",
@@ -131,12 +142,12 @@ function upLoadOpertDone(job_number, note) {
   wxRequest(API_JOBDEAL, data, putOutInfo)
 }
 
-// 公司注册
-function registerCompany(company_name) {
+// 企业注册**********************************************
+function registerCompany(company_name, company_type) {
   var nickname = app.globalData.userInfo.nickName,
     data = {
       company_name: company_name,
-      company_type: "001", //服装
+      company_type: company_type,
       user_id: wx.getStorageSync('user_id'),
       user_name: nickname,
       nickname: nickname,
@@ -145,7 +156,7 @@ function registerCompany(company_name) {
   wxRequest(API_CPNYREG, data, putOutInfo)
 }
 
-// 通讯录：用户列表查询
+// 通讯录：用户列表查询**********************************************
 function getFriendsList(user_type, func) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
@@ -158,7 +169,7 @@ function getFriendsList(user_type, func) {
   wxRequest(API_USERQRY, data, func)
 }
 
-// 通讯录：用户role调整
+// 通讯录：用户role调整**********************************************
 function changeFriendInfo(user_id1, user_type1, role_type1) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
@@ -173,7 +184,7 @@ function changeFriendInfo(user_id1, user_type1, role_type1) {
   wxRequest(API_USERDEAL, data, putOutInfo)
 }
 
-// 工序设置：查询模板
+// 工序设置：查询模板**********************************************
 function getCorparam(recpt_type, func) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
@@ -186,8 +197,9 @@ function getCorparam(recpt_type, func) {
   wxRequest(API_CORPQRY, data, func)
 }
 
-// 工序设置：增/减工序  event参数从add和minus中二选一,param是一个对象
-function changeCorparam(event,param,func) {
+// 工序设置：增/减工序**********************************************
+// event参数从"add"和"minus"中二选一,param是一个对象，具体设置看下面的代码
+function changeCorparam(event, param, func) {
   var cor_event;
   if (event == "add")
     cor_event = "1";
@@ -199,7 +211,7 @@ function changeCorparam(event,param,func) {
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),
     cor_event: cor_event,
-    their_scene_code:"03",
+    their_scene_code: "03",
     their_scene_type: param.recpt_type,
     their_scene_name: param.recpt_name,
     pre_associate_code: param.pre_code,
@@ -212,21 +224,68 @@ function changeCorparam(event,param,func) {
     next_associate_type: param.next_type,
     next_associate_name: param.next_name,
   };
-  console.log("my data:",data);
+  console.log("my data:", data);
   wxRequest(API_CORPDEAL, data, func);
 }
 
-//输出服务器返回的信息
+//输出服务器返回的信息------------------------------------------
 function putOutInfo(res) {
   console.log(res)
 }
 
-//////////////////////////data//////////////////////////
+// 角色类型、订单类型、工单类型的代码\名称查询********************
+function getParam(code, func) {
+  wxRequest(API_PARAQRY, {
+    industry_code: "10", //行业代码
+    industry_type: "101", //行业类型
+    entity_code: code, //实体代码 "01"角色类型 "02"工单类型 "03"订单类型
+  }, func)
+}
+
+// 行业类型 查询**********************************************
+function getIndustry() {
+  var user_name, role_type, company_id;
+  try {
+    user_name = app.globalData.userInfo.nickName
+  } catch (e) {
+    console.log("getIndustry...set user_name fail")
+    user_name = ""
+  }
+  try {
+    role_type = wx.getStorageSync('role_type')
+  } catch (e) {
+    console.log("getIndustry...set role_type fail")
+    role_type = ""
+  }
+  try {
+    company_id = wx.getStorageSync('company_id')
+  } catch (e) {
+    console.log("getIndustry...set company_id fail")
+    company_id = ""
+  }
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: user_name,
+    role_type: role_type,
+    company_id: company_id
+  }
+  wxRequest(API_INDUSTRY, data, setIndustry)
+}
+
+///////////////////////////////////////////////////////
+//data
+///////////////////////////////////////////////////////
+
+// 将行业类型的数组写入app.globalData
+function setIndustry(res) {
+  app.globalData.industry = res.data
+  console.log("setIndustry, industry = ", app.globalData.industry)
+}
 
 //订单类型列表
 const receipt_type = ['请选择订单类型', '连衣裙', '上衣', '西服']
 
-// 将订单号简化成“***123”的形式
+// 将订单号简化成“***123”的形式**********************************************
 function convertRecptNum(string) {
   var len = string.length
   if (len > 3) {
@@ -237,19 +296,7 @@ function convertRecptNum(string) {
   }
 }
 
-// 将“数字”字符串转换为“工序状态”字符串
-function convertState(string) {
-  switch (string) {
-    case "0":
-      return "待领取"
-    case "1":
-      return "未完成"
-    case "2":
-      return "已完成"
-  }
-}
-
-// 将“数字”字符串转换为“订单类型”字符串
+// 将“数字”字符串转换为“订单类型”字符串**************************************
 function convertType(string) {
   switch (string) {
     case "301":
@@ -261,7 +308,7 @@ function convertType(string) {
   }
 }
 
-///<summary>获得字符串实际长度，中文2，英文1</summary>
+// 获得字符串实际长度，中文2，英文1------------------------------------------
 function getLength(str) {
   var realLength = 0,
     len = str.length,
@@ -276,7 +323,7 @@ function getLength(str) {
   return realLength;
 }
 
-///<summary>根据实际长度n截取字符串的前n-1实际长度的字符，加上…符号</summary>
+//根据实际长度n截取字符串的前n-1实际长度的字符，加上…符号********************
 function simplfStr(remark, n) {
   if (getLength(remark) <= n)
     return remark;
@@ -297,6 +344,10 @@ function simplfStr(remark, n) {
   return remark.slice(0, len) + "…"
 }
 
+//////////////////////////////////////////////////////////
+//module API
+//////////////////////////////////////////////////////////
+
 module.exports = {
   wxRequest: wxRequest,
   getRoleType: getRoleType,
@@ -312,9 +363,10 @@ module.exports = {
   getCorparam: getCorparam,
   changeCorparam: changeCorparam,
 
+  getParam: getParam,
+  getIndustry: getIndustry,
+
   convertType: convertType,
   convertRecptNum: convertRecptNum,
   simplfStr: simplfStr,
-
-  receipt_type: receipt_type,
 }

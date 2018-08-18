@@ -37,8 +37,9 @@ Page({
     friendsInfo: [],
     multiArray: [
       ['客户', '员工', '伙伴'],
-      ['200', '201', '202']
+      ['']
     ],
+    worker: [],
     multiIndex: [0, 0],
   },
 
@@ -103,7 +104,7 @@ Page({
     var id = e.currentTarget.dataset.id,
       str1 = 'friendsInfo[' + id + '].role_type',
       str2 = 'friendsInfo[' + id + '].user_type',
-      user_type = (this.data.multiIndex[0]+1).toString(),
+      user_type = (this.data.multiIndex[0] + 1).toString(),
       role_type = this.data.multiArray[1][this.data.multiIndex[1]],
       friend = this.data.friendsInfo[id];
     console.log("user_type = ", user_type);
@@ -114,7 +115,7 @@ Page({
     data.changeFriendInfo(friend.user_id, user_type, role_type);
   },
 
-  //* 滚动MultiPicker：
+  //* 滚动MultiPicker*****************************************
   bindMultiPickerColumnChange: function(e) {
     console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
     var data_ = {
@@ -126,13 +127,13 @@ Page({
     if (e.detail.column == 0) {
       switch (data_.multiArray[0][data_.multiIndex[0]]) {
         case '客户':
-          data_.multiArray[1] = ['100', '101', '102', '103'];
+          data_.multiArray[1] = [''];
           break;
         case '员工':
-          data_.multiArray[1] = ['02', '03', '04', '05', '06'];
+          data_.multiArray[1] = this.data.worker;
           break;
         case '伙伴':
-          data_.multiArray[1] = ['200', '201', '202'];
+          data_.multiArray[1] = [''];
           break;
       }
       data_.multiIndex[1] = 0;
@@ -140,10 +141,24 @@ Page({
     this.setData(data_);
   },
 
-  //* 生命周期函数--监听页面加载
+  // 根据服务器拉取的数据，设置角色类型表-----------------------
+  setSelector: function(res) {
+    console.log(res)
+    var len = res.data.length,
+      worker = new Array(len);
+    for (var i = 0; i < len; i++) {
+      worker[i] = res.data[i].type_name;
+    }
+    this.setData({
+      worker: worker,
+    })
+  },
+
+  //* 生命周期函数--监听页面加载**********************************
   onLoad: function(options) {
     this.changeTitWXSS(3)
     data.getFriendsList("1", this.setFriendsInfo)
+    data.getParam("01", this.setSelector)
   },
 
   /**

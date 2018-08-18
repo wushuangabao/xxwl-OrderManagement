@@ -1,12 +1,14 @@
 // pages/login/company/company.js
 const data = require('../../../utils/data.js')
+const app = getApp()
 
 Page({
 
   data: {
     userInfo: {},
     inputValue: '',
-    industry_type: ["请选择", "服装"],
+    industry_name: ["请选择行业"],
+    industry_type: [],
     index: 0,
   },
 
@@ -32,6 +34,7 @@ Page({
   //* 点击注册按钮
   onConfirm: function() {
     var prompt = '',
+      that = this,
       company_name = this.data.inputValue
     if (company_name == '') {
       prompt = '企业名称不能为空！'
@@ -55,7 +58,7 @@ Page({
         success: function(res) {
           //用户点击确定，页面跳转
           if (res.confirm) {
-            data.registerCompany(company_name)
+            data.registerCompany(company_name, that.data.industry_type[that.data.index - 1])
             wx.redirectTo({
               url: '/pages/index/index',
             })
@@ -66,8 +69,19 @@ Page({
   },
 
   onLoad: function() {
+    var industry = app.globalData.industry,
+      len = industry.length,
+      industry_type = new Array(len),
+      industry_name = new Array(len + 1);
+    industry_name[0] = "请选择行业";
+    for (var i = 0; i < len; i++) {
+      industry_name[i + 1] = industry[i].type_name;
+      industry_type[i] = industry[i].industry_code + industry[i].industry_type;
+    }
     this.setData({
-      userInfo: getApp().globalData.userInfo,
+      userInfo: app.globalData.userInfo,
+      industry_name: industry_name,
+      industry_type: industry_type,
     })
   }
 })

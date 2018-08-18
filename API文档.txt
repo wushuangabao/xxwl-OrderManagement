@@ -130,7 +130,7 @@ https://api.weixin.qq.com/sns/jscode2session?appid=wxc70057280c56f254&secret=4b1
 
 用户注册登记接口------------------------------------
 http://140.143.154.96/day07/regServlet
-上传变量：user_id，user_name，password，role_type，level_type，nickname
+上传变量：user_id，user_name，password，role_type，level_type，nickname,
 数据库记录 wushuangBaOY_WHA密码888888
 
 订单录入接口----------------------------------------
@@ -179,47 +179,6 @@ http://140.143.154.96/day07/userQueryServlet
 通用信息user_id（操作员的微信号），user_name（操作的微信呢称），role_type（操作员角色类型，登录或授权时从服务端获取），company_id
 user_type（用户类型），1、客户，2、员工、3、伙伴、0、其他
 
-apply_receive_timek:"2018-08-09 11:42:45.0"
-code:0
-finish_time:"2018-08-09 11:42:45.0"
-job_name:"领料"
-job_number:"0220180809114245966"
-job_type:"201"
-remark:"xpa衣服制造"
-user_id:"xiangyangle666"
-user_name:"小叮当"
-work_status:"2"（0待领取 1未完成）
-
-
-button:""
-font_color:""
-icon:"/imgs/undo-circle.png"
-job_number:"0220180809114245966"
-job_type:"201"
-line_color:""
-name:"领料"
-note:"xpa衣服制造"
-status:"已处理"
-time:undefined
-time_date:""
-time_hour:""
-user_id:"xiangyangle666"
-user_name:"小叮当"
-
-
-company_id:"12345"
-gmt_create:"2018-08-09"
-gmt_modify:"2018-08-09 11:42:45.0"
-job_name:"未开工"
-job_no:"000"
-r_number:"***940"
-receipt_name:"null"
-receipt_number:"0320180809114244940"
-receipt_type:"301"
-remark:"定制1米*1米的书架2，一月完工"
-user_id:"wushuangBaOY_WHA"
-user_name:"王宏翱"
-work_status:"0"
 
 String User_id = request.getParameter("user_id");   //录单操作ID 
 String User_name = request.getParameter("user_name");
@@ -251,4 +210,14 @@ String Next_associate_code=request.getParameter("next_associate_code");
 String Next_associate_type=request.getParameter("next_associate_type");
 如果没有，赋值"000"
 String Next_associate_name=request.getParameter("next_associate_name");
+
+
+[{code_name: "服装", industry_code: "10", industry_type: "101", type_name: "服装代加工"}]
+
+[{code: 0, entity_type: "101", type_name: "采购员"}]
+
+分享的时候用户id和company_id一起传
+
+工序设置的禁止操作
+
 

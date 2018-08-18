@@ -2,12 +2,10 @@
 
 <!--head-->
 <view class="tit">
-  <view class="tit-item">
-    订单类型：{{receipt_name}}
-  </view>
-  <view class="tit-item">
+  <picker bindchange="bindRcepTypeChange" value="{{r_index}}" range="{{r_name_list}}" class="tit-item">
+        {{r_name_list[r_index]}}
+      </picker>
     <button class="button-confirm" type="primary" bindtap='onConfirm'>提交</button>
-  </view>
 </view>
 
 <!--list-->
@@ -21,7 +19,7 @@
 
       <!--右侧详细信息-->
       <view class="cont-right">
-        <picker bindchange="bindPickerSelect" value="{{index}}" range="{{job_type_list}}" class="name" data-id='{{item.index}}'>{{item.job_name}}</picker>
+        <picker bindchange="bindPickerSelect" value="{{index}}" range="{{job_name_list}}" class="name" data-id='{{item.index}}'>{{item.job_name}}</picker>
         <!-- <input class='note-input' bindinput="bindNoteInput" value='{{item.remark}}' placeholder="可以在这里输入备注" data-id='{{item.index}}' /> -->
         <view class="button-list">
           <view class="button" bindtap='onTapAdd' data-id='{{item.index}}' style="background-color:{{item.buttonColor}};">
