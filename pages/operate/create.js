@@ -15,7 +15,7 @@ Page({
     r_index: 0,
     operation: [],
     new_operation: null,
-    canAddLast: true,
+    canAdd: true,
     index: 0,
   },
 
@@ -34,32 +34,38 @@ Page({
     this.setData({
       r_index: e.detail.value
     })
-    data.getCorparam(this.data.r_type_list[this.data.r_index - 1], this.setOperation); //设置工序模板
+    if (this.data.operation.length == 0)
+      data.getCorparam(this.data.r_type_list[this.data.r_index - 1], this.setOperation); //设置工序模板
   },
 
   // 判断工序的“+”按钮是否可用，设置按钮颜色----------------------
   setButtonColor: function() {
     var operation = this.data.operation,
-      len = operation.length,
-      last_i = len - 1;
+      len = operation.length;
     for (var i = 0; i < len; i++) {
-      if (operation[i].job_type == "000" || (i > 0 && operation[i - 1].job_type == "000")) {
+      if (operation[i].job_type == "000") {
         this.setData({
-          ["operation[" + i + "].buttonColor"]: Color_Gray,
+          canAdd: false,
         })
-      } else {
-        this.setData({
-          ["operation[" + i + "].buttonColor"]: Color_Green,
-        })
-        if (i == last_i)
+        for (var j = 0; j < len; j++) {
           this.setData({
-            canAddLast: true,
+            ["operation[" + j + "].buttonColor"]: Color_Gray,
           })
+        }
+        return;
       }
+    }
+    this.setData({
+      canAdd: true,
+    })
+    for (var i = 0; i < len; i++) {
+      this.setData({
+        ["operation[" + i + "].buttonColor"]: Color_Green,
+      })
     }
   },
 
-  //* 选择工序类型
+  //* 选择工序类型***********************************************
   bindPickerSelect: function(e) {
     var id = e.currentTarget.dataset.id - 1,
       job_type = this.data.operation[id].job_type,
@@ -76,9 +82,10 @@ Page({
     }
   },
 
-  //* 最后一个按钮“+”按下，给operation最后面插入新数据
+  //* 最后一个按钮“+”按下*************************************
+  // 给operation最后面插入空数据
   onTapAddLast: function() {
-    if (this.data.canAddLast) {
+    if (this.data.canAdd) {
       var operation = this.data.operation,
         len = operation.length;
       operation.push({
@@ -89,13 +96,13 @@ Page({
       });
       this.setData({
         operation: operation,
-        canAddLast: false,
+        canAdd: false,
       })
       this.setButtonColor()
     }
   },
 
-  //* 按钮“+”
+  //* 按钮“+”***********************************************
   onTapAdd: function(e) {
     var old_id = e.currentTarget.dataset.id - 1,
       old_operation = this.data.operation;
@@ -124,7 +131,7 @@ Page({
     this.setButtonColor()
   },
 
-  //* 按钮“-”
+  //* 按钮“-”***********************************************
   onTapMinus: function(e) {
     var old_id = e.currentTarget.dataset.id - 1,
       old_operation = this.data.operation,
@@ -145,7 +152,7 @@ Page({
     if (notSet) {
       if (old_id == (old_len - 1))
         this.setData({
-          canAddLast: true,
+          canAdd: true,
           operation: new_operation,
         });
       else
@@ -159,16 +166,19 @@ Page({
       this.setData({
         new_operation: new_operation,
       })
-      //todo:让用户进入等待状态，不要操作
+      wx.showLoading({ //让用户进入等待状态，不要操作
+        title: '加载中',
+      })
       this.changeCorparam("minus", old_id)
     }
   },
 
-  // 在网络请求回调之后，用new_operation替换operation
+  // 在网络请求回调之后，-------------------------------------
+  // 用new_operation替换operation
   setNewData: function(res) {
     console.log("setNewData, res=", res)
     if (this.data.new_operation != null) {
-      if (rea.data.code == "1") { //code为"1"表示成功
+      if (res.data.code == "1") { //code为"1"表示成功
         this.setData({
           operation: this.data.new_operation,
         })
@@ -176,14 +186,14 @@ Page({
           new_operation: null,
         })
         this.setButtonColor()
-        //todo:让用户结束等待状态，可以接着操作
+        wx.hideLoading() //让用户结束等待状态，可以接着操作
       } else { //没有成功，让用户结束等待状态，提示失败
 
       }
     }
   },
 
-  // 增/减工序的网络请求
+  // 增/减工序的网络请求----------------------------------------
   changeCorparam: function(event, id) {
     var p_id = id - 1,
       n_id = id + 1,
@@ -222,7 +232,7 @@ Page({
     }, this.setNewData)
   },
 
-  // 根据模板初始化operation数组
+  // 根据模板初始化operation数组--------------------------------------
   setOperation: function(res) {
     console.log("setOperation, res = ", res);
     var recvList = res.data,
@@ -255,7 +265,7 @@ Page({
     }
   },
 
-  // 初始化工序类型数组job_type_list和job_name_list
+  // 初始化工序类型数组job_type_list和job_name_list-------------
   setJobParam: function(res) {
     console.log("set job_list, res = ", res);
     var len = res.data.length,
@@ -271,7 +281,7 @@ Page({
     })
   },
 
-  // 初始化订单类型数组r_type_list和r_name_list
+  // 初始化订单类型数组r_type_list和r_name_list-------------------
   setRecptParam: function(res) {
     console.log("set recpt_list, res = ", res);
     var len = res.data.length,
@@ -288,7 +298,7 @@ Page({
     })
   },
 
-  //* 生命周期函数--监听页面加载
+  //* 监听页面加载*****************************************
   onLoad: function(options) {
     data.getParam("02", this.setJobParam); //设置工单类型
     data.getParam("03", this.setRecptParam) // 设置订单类型

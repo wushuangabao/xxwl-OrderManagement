@@ -55,7 +55,7 @@ function getRoleType(setRoleType) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
     nickname: app.globalData.userInfo.nickName,
-    image_address: "https://wx.qlogo.cn/"//app.globalData.userInfo.avatarUrl,
+    image_address: app.globalData.userInfo.avatarUrl,
   };
   wxRequest(API_LOGON, data, setRoleType)
   console.log("upload my userInfo:", data)

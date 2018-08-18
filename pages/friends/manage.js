@@ -7,7 +7,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    avatarUrl: "/imgs/image.png", //无头像时顶替用
     titles: [{
         index: 0,
         name: '其他',
@@ -43,7 +42,9 @@ Page({
     multiIndex: [0, 0],
   },
 
-  //将Tit的index转换为user_type（“1”：客户 “2”：员工 “3”：伙伴 “0”：其他）
+  // 中文转化为数字---------------------------------------------------
+  // 将Tit的index转换为user_type
+  // “1”：客户 “2”：员工 “3”：伙伴 “0”：其他
   convertType: function(id) {
     switch (this.data.titles[id].name) {
       case '客户':
@@ -57,7 +58,7 @@ Page({
     }
   },
 
-  //* 点击Tit事件
+  //* 点击Tit事件*****************************************************
   changeTit: function(event) {
     var id = event.currentTarget.dataset.id,
       user_type = this.convertType(id);
@@ -65,20 +66,22 @@ Page({
     data.getFriendsList(user_type, this.setFriendsInfo)
   },
 
-  //设置FriendsInfo数组数据
+  // 设置FriendsInfo数组数据-----------------------------------------
   setFriendsInfo: function(res) {
     var friendsList = res.data,
       len = friendsList.length;
     console.log("setFriendsInfo:", friendsList)
     for (var i = 0; i < len; i++) {
       friendsList[i].index = i;
+      if (!friendsList[i].image_address)
+        friendsList[i].image_address = "/imgs/image.png"; //无头像时顶替用
     }
     this.setData({
       friendsInfo: friendsList
     })
   },
 
-  //改变titles数据的WXML标签样式
+  // 改变titles数据的WXML标签样式-----------------------------------
   changeTitWXSS: function(i) {
     var str1 = 'titles[' + i + '].color_b',
       str2 = 'titles[' + i + '].color_f',
@@ -99,7 +102,7 @@ Page({
     }
   },
 
-  //* 点击MultiPicker的确定按钮：
+  //* 点击MultiPicker的确定按钮****************************************
   bindMultiPickerChange: function(e) {
     var id = e.currentTarget.dataset.id,
       str1 = 'friendsInfo[' + id + '].role_type',
@@ -115,7 +118,7 @@ Page({
     data.changeFriendInfo(friend.user_id, user_type, role_type);
   },
 
-  //* 滚动MultiPicker*****************************************
+  //* 滚动MultiPicker********************************************
   bindMultiPickerColumnChange: function(e) {
     console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
     var data_ = {
@@ -141,7 +144,7 @@ Page({
     this.setData(data_);
   },
 
-  // 根据服务器拉取的数据，设置角色类型表-----------------------
+  // 根据服务器拉取的数据，设置员工的角色类型表-------------------------
   setSelector: function(res) {
     console.log(res)
     var len = res.data.length,
@@ -154,7 +157,7 @@ Page({
     })
   },
 
-  //* 生命周期函数--监听页面加载**********************************
+  //* 生命周期函数--监听页面加载*************************************
   onLoad: function(options) {
     this.changeTitWXSS(3)
     data.getFriendsList("1", this.setFriendsInfo)

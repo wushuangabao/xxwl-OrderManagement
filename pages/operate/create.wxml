@@ -35,7 +35,7 @@
   </block>
 
   <!-- 最后一行只有加号 -->
-  <view wx:if="{{canAddLast}}" class="operation-last">
+  <view wx:if="{{canAdd}}" class="operation-last">
     <view class="button-last" bindtap='onTapAddLast'>
       +
     </view>

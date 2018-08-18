@@ -218,6 +218,4 @@ String Next_associate_name=request.getParameter("next_associate_name");
 
 分享的时候用户id和company_id一起传
 
-工序设置的禁止操作
-
 

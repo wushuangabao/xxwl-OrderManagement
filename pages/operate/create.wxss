@@ -19,6 +19,7 @@
   font-size: 36rpx;
   color: #555;
   text-align: center;
+  line-height: 76rpx;
 }
 
 .button-confirm {
@@ -26,7 +27,7 @@
   height: 76rpx;
   display: flex;
   align-items: center;
-  justify-content: 
+  justify-content: center;
   font-size: 28rpx;
   line-height: 28rpx;
 }
