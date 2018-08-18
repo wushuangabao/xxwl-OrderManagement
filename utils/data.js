@@ -62,7 +62,7 @@ function getRoleType(setRoleType) {
 }
 
 // 上传录入订单数据**********************************************
-function upLoadRecpt(receipt_type, receipt_name, remark, cif_user_id, cif_user_name) {
+function upLoadRecpt(receipt_type, receipt_name, remark, cif_user_id, cif_user_name, func) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
@@ -76,7 +76,7 @@ function upLoadRecpt(receipt_type, receipt_name, remark, cif_user_id, cif_user_n
   }
   console.log("my data:")
   console.log(data)
-  wxRequest(API_BILLCRT, data, putOutInfo)
+  wxRequest(API_BILLCRT, data, func)
 }
 
 // 获取订单数组的数据**********************************************
@@ -152,8 +152,13 @@ function registerCompany(company_name, company_type) {
       user_name: nickname,
       nickname: nickname,
     };
-  console.log('registerCompany', data)
-  wxRequest(API_CPNYREG, data, putOutInfo)
+  console.log('registerCompany, my data = ', data)
+  wxRequest(API_CPNYREG, data, setCompanyID)
+}
+
+// 将company_id写入缓存----------------------------------
+function setCompanyID(res) {
+  wx.setStorageSync('company_id', res.data.company_id)
 }
 
 // 通讯录：用户列表查询**********************************************
@@ -369,4 +374,6 @@ module.exports = {
   convertType: convertType,
   convertRecptNum: convertRecptNum,
   simplfStr: simplfStr,
+
+  URL_BASE: URL_BASE,
 }

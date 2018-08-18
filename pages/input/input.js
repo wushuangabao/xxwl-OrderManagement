@@ -5,35 +5,34 @@ const data = require('../../utils/data.js')
 Page({
 
   data: {
-    receipt_type: data.receipt_type, //订单类型
+    r_type_list: [],
+    r_name_list: [],
     index: 0,
-    cif_id: ['', 'xiangpayangle666', 'xiangpayangle667', 'xiangpayangle668'],
-    cif_name: ['', '小叮当1', '小叮当2', '小叮当3'],
-    cif_id_name: ['请选择客户名称', 'xiangpayangle666 小叮当1', 'xiangpayangle667 小叮当2', 'xiangpayangle668 小叮当3'],
+    cif_id: [''],
+    cif_name: ['请选择客户名称'],
     index_cif: 0,
-    //customItem: '全部',
     textAreaValue1: '', //备注
     img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
     isAdmin: false,
   },
 
-  //* 点击图片
+  //* 点击图片*********************************************
   onImage: function(event) {
     var that = this,
-      index = event.currentTarget.dataset.index
+      index = event.currentTarget.dataset.index,
+      str = "img_path[" + index + "]";
     wx.chooseImage({
       count: 1,
+      sizeType: ['compressed'],
       success: function(res) {
-        var tempFilePath = res.tempFilePaths[0],
-          str = "img_path[" + index + "]"
         that.setData({
-          [str]: tempFilePath
+          [str]: res.tempFilePaths[0]
         })
       }
     })
   },
 
-  //* 点击“提交”按钮
+  //* 点击“提交”按钮****************************************
   onConfirm: function() {
     var that = this
     if (this.checkValue()) {
@@ -46,94 +45,131 @@ Page({
             var index = that.data.index,
               index_cif = that.data.index_cif;
             //提交订单(参数：订单类型编号，订单类型名称，备注，客户id，客户昵称)
-            data.upLoadRecpt((300 + parseInt(index)).toString(), that.data.receipt_type[index], that.data.textAreaValue1, that.data.cif_id[index_cif], that.data.cif_name[index_cif])
-            //上传图片
-            var receipt_number
-            wx.uploadFile({
-              url: 'http://140.143.154.96/root/'+receipt_number, //仅为示例，非真实的接口地址
-              filePath: this.img_path[0],
-              name: 'file',
-              formData: {
-                'index': '0'
-              },
-              success: function (res) {
-                var data = res.data
-                //do something
-              }
-            })
+            data.upLoadRecpt(that.data.r_type_list[index - 1], that.data.r_name_list[index], that.data.textAreaValue1, that.data.cif_id[index_cif], that.data.cif_name[index_cif], that.uploadImg)
           }
         }
       })
     }
   },
 
-  //检查提交的数据是否符合格式(todo)
-  checkValue: function() {
-    if (this.data.index != 0 && this.data.index_cif != 0)
-      return true
-    else
-      wx.showModal({
-        title: '提示',
-        content: '请选择订单类型和客户名称！',
-        showCancel: false
+  // 获取订单号之后，上传订单图片----------------------------------
+  uploadImg: function(res) {
+    var receipt_number = res.data.receipt_number,
+      img_path = (this.hasImg).toString();
+    if (img_path) //这里只上传第一张图片
+      wx.uploadFile({
+        url: data.URL_BASE + receipt_number,
+        filePath: img_path,
+        name: 'file',
+        formData: {
+          'index': '0' //HTTP 请求中其他额外的 form data
+        },
+        success: function(res) {
+          var data = res.data
+        }
       })
   },
 
-  //* 输入订单名称
-  bindKeyInput1: function(e) {
-    this.setData({
-      inputValue1: e.detail.value
-    })
+  // 检查提交的数据是否符合格式------------------------------------
+  checkValue: function() {
+    if (this.data.index != 0 && this.data.index_cif != 0)
+      return true
+    else {
+      wx.showModal({
+        title: '提示',
+        content: '请先选择订单类型和客户名称！',
+        showCancel: false
+      })
+      return false
+    }
   },
 
-  //* 输入客户名称
-  bindKeyInput2: function(e) {
-    this.setData({
-      inputValue2: e.detail.value
-    })
+  // 判断是否有上传图片----------------------------------------
+  // 有则返回首张图的地址，否则返回空字符串
+  hasImg: function() {
+    var img_path = this.data.img_path;
+    for (var i = 0; i < 4; i++)
+      if (img_path[i] != "/imgs/add.png")
+        return img_path[i];
+    return "";
   },
 
-  //* 输入客户电话
-  bindKeyInput2: function(e) {
-    this.setData({
-      inputValue2: e.detail.value
-    })
-  },
-
-  //* TextArea失去焦点
+  //* TextArea失去焦点***********************
   bindTextAreaBlur1: function(e) {
     this.setData({
       textAreaValue1: e.detail.value
     })
   },
+  //废弃：
   bindTextAreaBlur2: function(e) {
     this.setData({
       textAreaValue2: e.detail.value
     })
   },
 
-  //* 订单类型Picker
+  //* 订单类型Picker************************
   bindPickerChange: function(e) {
     this.setData({
       index: e.detail.value
     })
   },
 
-  //* 客户名称Picker
+  //* 客户名称Picker************************
   bindPickerChange2: function(e) {
     this.setData({
       index_cif: e.detail.value
     })
   },
 
-  //* 客户地址Picker
+  // 客户地址Picker（废弃）
   bindRegionChange: function(e) {
     this.setData({
       region: e.detail.value
     })
   },
 
-  //* 生命周期函数--监听页面显示
+  // 初始化订单类型数组r_type_list和r_name_list-------------------
+  setRecptParam: function(res) {
+    console.log("set recpt_list, res = ", res);
+    var len = res.data.length,
+      r_type_list = new Array(len),
+      r_name_list = new Array(len + 1);
+    r_name_list[0] = "请选择订单类型";
+    for (var i = 0; i < len; i++) {
+      r_name_list[i + 1] = res.data[i].type_name;
+      r_type_list[i] = res.data[i].entity_type;
+    }
+    this.setData({
+      r_type_list: r_type_list,
+      r_name_list: r_name_list,
+    })
+  },
+
+  // 初始化客户信息-----------------------------------
+  setCif: function(res) {
+    console.log("setCif, res = ", res)
+    var len = res.data.length + 1,
+      id_list = new Array(len),
+      name_list = new Array(len);
+    id_list[0] = '';
+    name_list[0] = '请选择客户名称';
+    for (var i = 1; i < len; i++) {
+      id_list[i] = res.data[i - 1].user_id;
+      name_list[i] = res.data[i - 1].nickname;
+    }
+    this.setData({
+      cif_id: id_list,
+      cif_name: name_list,
+    })
+  },
+
+  //* 监听页面加载**************************************
+  onLoad: function(options) {
+    data.getParam("03", this.setRecptParam) // 设置订单类型
+    data.getFriendsList("1", this.setCif) // 获取客户信息
+  },
+
+  //* 监听页面显示**************************************
   onShow: function() {
     //判断用户身份是否为管理员
     try {
@@ -155,7 +191,7 @@ Page({
     }
   },
 
-  //转发
+  //* 转发******************************************
   onShareAppMessage: function(res) {
 
   }

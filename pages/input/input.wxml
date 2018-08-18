@@ -5,10 +5,10 @@
 
   <view class='container'>
 
-    <picker bindchange="bindPickerChange" value="{{index}}" range="{{receipt_type}}">
+    <picker bindchange="bindPickerChange" value="{{index}}" range="{{r_name_list}}">
       <view class="itemView1">
         <view class="picker">
-          {{receipt_type[index]}}
+          {{r_name_list[index]}}
         </view>
       </view>
     </picker>
@@ -29,10 +29,10 @@
     </view>
 
     <!--客户名称-->
-    <picker bindchange="bindPickerChange2" value="{{index_cif}}" range="{{cif_id_name}}">
+    <picker bindchange="bindPickerChange2" value="{{index_cif}}" range="{{cif_name}}">
       <view class="itemView1">
         <view class="picker">
-          {{cif_id_name[index_cif]}}
+          {{cif_name[index_cif]}}
         </view>
       </view>
     </picker>

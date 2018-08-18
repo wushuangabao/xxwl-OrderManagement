@@ -73,12 +73,34 @@ Page({
     console.log("setFriendsInfo:", friendsList)
     for (var i = 0; i < len; i++) {
       friendsList[i].index = i;
+      friendsList[i].role_type_name = this.convertRole(friendsList[i].role_type);
       if (!friendsList[i].image_address)
         friendsList[i].image_address = "/imgs/image.png"; //无头像时顶替用
     }
     this.setData({
       friendsInfo: friendsList
     })
+  },
+
+  // 根据worker和worker_code两张表，转换角色类型的格式---------------------
+  convertRole: function(obj) {
+    if (obj == "1")
+      return "客户"
+    else if (obj == "3")
+      return "伙伴"
+    else if (obj == "0")
+      return "朋友"
+    //
+    var name_list = this.data.worker,
+      code_list = this.data.worker_code,
+      len = name_list.length;
+    for (var i = 0; i < len; i++) {
+      if (obj == name_list[i])
+        return code_list[i];
+      if (obj == code_list[i])
+        return name_list[i];
+    }
+    return obj;
   },
 
   // 改变titles数据的WXML标签样式-----------------------------------
@@ -105,15 +127,20 @@ Page({
   //* 点击MultiPicker的确定按钮****************************************
   bindMultiPickerChange: function(e) {
     var id = e.currentTarget.dataset.id,
-      str1 = 'friendsInfo[' + id + '].role_type',
+      str1 = 'friendsInfo[' + id + '].role_type_name',
       str2 = 'friendsInfo[' + id + '].user_type',
+      str3 = 'friendsInfo[' + id + '].role_type',
       user_type = (this.data.multiIndex[0] + 1).toString(),
-      role_type = this.data.multiArray[1][this.data.multiIndex[1]],
+      role_type_name = this.data.multiArray[1][this.data.multiIndex[1]],
+      role_type = user_type, //角色代码，默认和role_type一致（因为还没有数据）
       friend = this.data.friendsInfo[id];
-    console.log("user_type = ", user_type);
+    if (user_type == "2") //如果是员工，角色代码变更
+      role_type = this.data.worker_code[this.data.multiIndex[1]];
+    console.log("bindMultiPickerChange...user_type = ", user_type);
     this.setData({
-      [str1]: role_type,
+      [str1]: role_type_name,
       [str2]: user_type,
+      [str3]: role_type,
     });
     data.changeFriendInfo(friend.user_id, user_type, role_type);
   },
@@ -148,12 +175,15 @@ Page({
   setSelector: function(res) {
     console.log(res)
     var len = res.data.length,
+      worker_code = new Array(len),
       worker = new Array(len);
     for (var i = 0; i < len; i++) {
       worker[i] = res.data[i].type_name;
+      worker_code[i] = res.data[i].entity_type;
     }
     this.setData({
       worker: worker,
+      worker_code: worker_code,
     })
   },
 

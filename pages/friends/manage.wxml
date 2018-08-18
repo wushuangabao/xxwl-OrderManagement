@@ -19,7 +19,7 @@
         <text class="text-mid">{{item.nickname}}</text>
         <view class="selector">
           <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}" data-id='{{item.index}}'>
-              {{item.role_type}}
+              {{item.role_type_name}}
           </picker>
         </view>
       </view>

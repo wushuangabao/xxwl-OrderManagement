@@ -99,15 +99,9 @@ Page({
   //* 页面加载********************************************
   onLoad: function(e) {
     ///////////////////////////////////////////
-    // 尝试获取company_id
+    // 尝试获取yrl中的参数
     ///////////////////////////////////////////
     console.log("index onLoad, e = ", e);
-    var value;
-    try {
-      value = e.company_id
-    } catch (err) {}
-    if (value)
-      wx.setStorageSync('company_id', value);
     //////////////////////////////////////////
     // 获取userInfo
     //////////////////////////////////////////
@@ -198,12 +192,12 @@ Page({
   //* 转发********************************************
   onShareAppMessage: function(res) {
     if (res.from === 'button') {
-      // 来自页面内转发按钮
+      // 如果来自页面内转发按钮
       console.log(res.target)
     }
-    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id')
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
     return {
-      title: '自定义转发标题',
+      title: '生产管理小程序',
       path: path,
     }
   }
