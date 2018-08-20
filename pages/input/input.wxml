@@ -59,5 +59,7 @@
 
 </view>
 
+<!-- <canvas canvas-id="myCanvas"></canvas> -->
+
 <import src="../../utils/tabBar.wxml" />
 <template wx:if="{{isAdmin}}" is="tabBar" data="{{tabBar: tabBar}}" />

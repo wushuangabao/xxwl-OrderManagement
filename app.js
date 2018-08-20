@@ -19,6 +19,7 @@ App({
             method: "POST",
             success: function(res) {
               wx.setStorageSync('user_id', res.data.openid)
+              console.log("set user_id success!")
             }
           })
         } else {

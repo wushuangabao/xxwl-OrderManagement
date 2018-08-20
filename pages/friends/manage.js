@@ -134,6 +134,7 @@ Page({
       role_type_name = this.data.multiArray[1][this.data.multiIndex[1]],
       role_type = user_type, //角色代码，默认和role_type一致（因为还没有数据）
       friend = this.data.friendsInfo[id];
+    console.log("friend =", friend);
     if (user_type == "2") //如果是员工，角色代码变更
       role_type = this.data.worker_code[this.data.multiIndex[1]];
     console.log("bindMultiPickerChange...user_type = ", user_type);

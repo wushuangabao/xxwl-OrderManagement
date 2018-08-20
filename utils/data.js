@@ -50,12 +50,29 @@ function wxRequest(url, data, resolve) {
   })
 }
 
-// 获取role_type**********************************************
+// 获取role_type************************************************
 function getRoleType(setRoleType) {
+  var company_id, friend_id, user_id = wx.getStorageSync('user_id');
+  if (user_id == "") {
+    console.log("user_id is null")
+    return
+  }
+  try {
+    company_id = wx.getStorageSync('company_id')
+  } catch (e) {
+    company_id = ''
+  }
+  try {
+    friend_id = wx.getStorageSync('friend_id')
+  } catch (e) {
+    friend_id = ''
+  }
   var data = {
-    user_id: wx.getStorageSync('user_id'),
+    user_id: user_id,
     nickname: app.globalData.userInfo.nickName,
     image_address: app.globalData.userInfo.avatarUrl,
+    company_id: company_id,
+    friend_id: friend_id,
   };
   wxRequest(API_LOGON, data, setRoleType)
   console.log("upload my userInfo:", data)
@@ -176,8 +193,9 @@ function getFriendsList(user_type, func) {
 
 // 通讯录：用户role调整**********************************************
 function changeFriendInfo(user_id1, user_type1, role_type1) {
+  var user_id = wx.getStorageSync('user_id');
   var data = {
-    user_id: wx.getStorageSync('user_id'),
+    user_id: user_id,
     user_name: app.globalData.userInfo.nickName,
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),

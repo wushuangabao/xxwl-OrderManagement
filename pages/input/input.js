@@ -55,24 +55,26 @@ Page({
   // 获取订单号之后，上传订单图片----------------------------------
   uploadImg: function(res) {
     var receipt_number = res.data.receipt_number,
-      img_path = (this.hasImg).toString();
+      img_path = this.hasImg();
+    console.log("receipt_number = ", receipt_number);
+    console.log("img_path = ", img_path);
     if (img_path) //这里只上传第一张图片
       wx.uploadFile({
-        url: data.URL_BASE + receipt_number,
+        url: data.URL_BASE + "ImageUpServlet",
         filePath: img_path,
-        name: 'file',
+        name: 'image',
         formData: {
-          'index': '0' //HTTP 请求中其他额外的 form data
+          'receipt_number': receipt_number //HTTP 请求中其他额外的 form data
         },
         success: function(res) {
-          var data = res.data
+          console.log("uploadImg...res =",res)
         }
       })
   },
 
   // 检查提交的数据是否符合格式------------------------------------
   checkValue: function() {
-    if (this.data.index != 0 && this.data.index_cif != 0)
+    if (this.data.index != 0 )//&& this.data.index_cif != 0)
       return true
     else {
       wx.showModal({

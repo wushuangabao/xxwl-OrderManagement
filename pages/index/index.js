@@ -19,8 +19,6 @@ Page({
       wx.setStorageSync('sys_modify', res.data.sys_modify)
     } catch (e) {}
     if (res.data.login_flag == "1") { //用户是第一次使用小程序
-      wx.setStorageSync('role_type', "01")
-      //wx.setStorageSync('company_id', res.data.company_id)
       wx.redirectTo({
         url: '../register/company/company'
       })
@@ -84,6 +82,7 @@ Page({
 
   //* 页面显示********************************************
   onShow: function() {
+    data.getRoleType(this.setRoleType)
     var that = this
     //获取并修改role（角色）信息
     try {
@@ -96,12 +95,16 @@ Page({
     }
   },
 
-  //* 页面加载********************************************
+  //* 页面加载**************************************************
   onLoad: function(e) {
     ///////////////////////////////////////////
-    // 尝试获取yrl中的参数
+    // 尝试获取url中的参数
     ///////////////////////////////////////////
-    console.log("index onLoad, e = ", e);
+    console.log("index onLoad, e =", e);
+    try {
+      wx.setStorageSync('company_id', e.company_id)
+      wx.setStorageSync('friend_id', e.user_id)
+    } catch (e) {}
     //////////////////////////////////////////
     // 获取userInfo
     //////////////////////////////////////////
@@ -109,6 +112,8 @@ Page({
       this.setData({
         hasUserInfo: true
       })
+      //调用数据库查询来获取角色信息
+      data.getRoleType(this.setRoleType)
     } else if (this.data.canIUse) {
       // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
       // 所以此处加入 callback 以防止这种情况
@@ -191,11 +196,11 @@ Page({
 
   //* 转发********************************************
   onShareAppMessage: function(res) {
-    if (res.from === 'button') {
-      // 如果来自页面内转发按钮
+    if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }
     var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
+    console.log("onShareAppMessage, path =", path)
     return {
       title: '生产管理小程序',
       path: path,
