@@ -1,8 +1,16 @@
 /* pages/input/input.wxss */
-
 @import "/utils/tabBar.wxss";
 
-page{
+.float-right-up {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 99;
+  padding: 20rpx;
+  color: #696969;
+}
+
+page {
   height: 100%;
 }
 
@@ -11,7 +19,7 @@ page{
   display: flex;
   flex-direction: column;
   justify-content: center;
-} 
+}
 
 .itemView1 {
   width: 710rpx;
@@ -22,19 +30,17 @@ page{
 .itemView2 {
   width: 670rpx;
   margin: 20rpx;
-  padding:20rpx;
-  padding-top:10rpx;
+  padding: 20rpx;
+  padding-top: 10rpx;
   display: flex;
   flex-direction: column;
   color: #696969;
   font-size: 14px;
   line-height: 28px;
   background-color: #fff;
-  border-bottom: 1px solid lightgray;
-  border-right: 1px solid lightgray;
 }
 
-.imgs{
+.imgs {
   display: flex;
   justify-content: space-between;
   border-radius: 4px;
@@ -44,18 +50,17 @@ page{
   width: 710rpx;
   height: 30px;
   line-height: 30px;
-  border-bottom: 1px solid lightgray;
-  border-right: 1px solid lightgray;
   border-radius: 4px;
   color: #696969;
   background-color: #fff;
+  border: 1px solid lightgray;
 }
 
 .textarea {
-  width: 710rpx;
+  width: 690rpx;
   height: 60px;
-  border-bottom: 1px solid lightgray;
-  border-right: 1px solid lightgray;
+  padding:10rpx;
+  border: 1px solid lightgray;
   border-radius: 4px;
   color: #696969;
   background-color: #fff;
@@ -65,7 +70,7 @@ page{
   padding-left: 5rpx;
   padding-right: 5rpx;
   height: 30px;
-  width:700rpx;
+  width: 700rpx;
   line-height: 25px;
   background-color: #fff;
   color: #696969;

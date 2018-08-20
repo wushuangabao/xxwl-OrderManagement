@@ -1,4 +1,6 @@
 <!--pages/input/input.wxml-->
+<view class="float-right-up" bindtap='inquiry'>查看历史订单</view>
+
 <view style='display:flex;flex-direction:row;height:100%'>
 
   <view style='width:100rpx;height:100%;' />
@@ -14,12 +16,12 @@
     </picker>
 
     <view class="itemView2">
-      上传照片1-4张，默认第一张为封面图
+      上传照片，长按删除
       <view class="imgs">
-        <image class="img" src="{{img_path[0]}}" mode='aspectFit' bindtap='onImage' data-index="{{0}}"/>
-        <image class="img" src="{{img_path[1]}}" mode='aspectFit' bindtap='onImage' data-index="{{1}}"/>
-        <image class="img" src="{{img_path[2]}}" mode='aspectFit' bindtap='onImage' data-index="{{2}}"/>
-        <image class="img" src="{{img_path[3]}}" mode='aspectFit' bindtap='onImage' data-index="{{3}}"/>
+        <image class="img" src="{{img_path[0]}}" mode='aspectFit' bindtap='onImage' bindlongpress='deleteImage' data-index="{{0}}" />
+        <image class="img" src="{{img_path[1]}}" mode='aspectFit' bindtap='onImage' bindlongpress='deleteImage' data-index="{{1}}" />
+        <image class="img" src="{{img_path[2]}}" mode='aspectFit' bindtap='onImage' bindlongpress='deleteImage' data-index="{{2}}" />
+        <image class="img" src="{{img_path[3]}}" mode='aspectFit' bindtap='onImage' bindlongpress='deleteImage' data-index="{{3}}" />
       </view>
     </view>
 

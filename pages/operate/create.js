@@ -187,8 +187,14 @@ Page({
         })
         this.setButtonColor()
         wx.hideLoading() //让用户结束等待状态，可以接着操作
-      } else { //没有成功，让用户结束等待状态，提示失败
-
+      } else { //没有成功
+        //让用户结束等待状态，提示失败
+        wx.hideLoading()
+        wx.showToast({
+          title: '操作失败',
+          icon: 'none',
+          duration: 1000
+        })
       }
     }
   },

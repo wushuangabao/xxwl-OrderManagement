@@ -5,33 +5,37 @@
 // URL通用部分
 const URL_BASE = "http://140.143.154.96/day07/"
 // 用户授权接口
-var API_LOGON = URL_BASE + "logonAuthServlet"
-// 用户注册登记接口
-var API_REG = URL_BASE + "regServlet"
-// 订单录入接口
-var API_BILLCRT = URL_BASE + "BillCreateServlet"
-// 订单查询接口
-var API_BILLQRY = URL_BASE + "BillQueryServlet"
-// 工单领取或完工接口
-var API_JOBDEAL = URL_BASE + "JobDealServlet"
-// 工单查询接口
-var API_JOBQRY = URL_BASE + "JobQueryServlet"
-// 订单进度查询接口
-var API_BILLPRO = URL_BASE + "BillProQueryServlet"
-// 企业注册接口
-var API_CPNYREG = URL_BASE + "CompanyRegisterServlet"
-// 通讯录-用户列表查询接口
-var API_USERQRY = URL_BASE + "userQueryServlet"
-// 通讯录-调整用户role接口
-var API_USERDEAL = URL_BASE + "UserDealServlet"
-// 工序设置-模板查询接口
-var API_CORPQRY = URL_BASE + "CorparamQueryServlet"
-// 工序设置-增减工序接口
-var API_CORPDEAL = URL_BASE + "CorparamDealServlet"
-// 角色、订单、工单类型的代码、名称查询接口
-var API_PARAQRY = URL_BASE + "ParamQueryServlet"
-// 行业的代码、名称查询接口
-var API_INDUSTRY = URL_BASE + "IndustryQueryServlet"
+var API_LOGON = URL_BASE + "logonAuthServlet",
+  // 用户注册登记接口
+  API_REG = URL_BASE + "regServlet",
+  // 订单录入接口
+  API_BILLCRT = URL_BASE + "BillCreateServlet",
+  // 订单查询接口
+  API_BILLQRY = URL_BASE + "BillQueryServlet",
+  // 工单领取或完工接口
+  API_JOBDEAL = URL_BASE + "JobDealServlet",
+  // 工单查询接口
+  API_JOBQRY = URL_BASE + "JobQueryServlet",
+  // 订单进度查询接口
+  API_BILLPRO = URL_BASE + "BillProQueryServlet",
+  // 企业注册接口
+  API_CPNYREG = URL_BASE + "CompanyRegisterServlet",
+  // 通讯录-用户列表查询接口
+  API_USERQRY = URL_BASE + "userQueryServlet",
+  // 通讯录-调整用户role接口
+  API_USERDEAL = URL_BASE + "UserDealServlet",
+  // 工序设置-模板查询接口
+  API_CORPQRY = URL_BASE + "CorparamQueryServlet",
+  // 工序设置-增减工序接口
+  API_CORPDEAL = URL_BASE + "CorparamDealServlet",
+  // 角色、订单、工单类型的代码、名称查询接口
+  API_PARAQRY = URL_BASE + "ParamQueryServlet",
+  // 行业的代码、名称查询接口
+  API_INDUSTRY = URL_BASE + "IndustryQueryServlet",
+  // 图片上传接口
+  API_IMGUP = URL_BASE + "TestImageServlet",//"ImageUpServlet",//
+  // 图片下载接口
+  API_IMGDOWN = URL_BASE + "ImageDownServlet"
 
 const app = getApp()
 
@@ -401,5 +405,6 @@ module.exports = {
   convertRecptNum: convertRecptNum,
   simplfStr: simplfStr,
 
-  URL_BASE: URL_BASE,
+  API_IMGUP: API_IMGUP,
+  API_IMGDOWN: API_IMGDOWN,
 }

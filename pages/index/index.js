@@ -14,10 +14,10 @@ Page({
   // 根据服务器数据设置role_type-------------------------------------
   setRoleType: function(res) {
     console.log("setRoleType...res = ", res)
-    try {
+    if (res.data.sys_modify) {
       wx.setStorageSync('sys_modify', res.data.sys_modify)
-    } catch (e) {
-      console.log("setRoleType...sys_modify读取失败", e)
+    } else {
+      console.log("setRoleType...sys_modify读取失败")
     }
     if (res.data.login_flag == "1") { //用户是第一次使用小程序
       wx.redirectTo({
@@ -29,7 +29,7 @@ Page({
         wx.setStorageSync('company_id', res.data.company_id)
         wx.setStorageSync('company_type', res.data.company_type)
       } catch (e) {
-        console.log('setRoleType...设置缓存失败,catch e =', e)
+        console.log('setRoleType...设置缓存失败,catch err =', e)
       }
       this.changeRole(res.data.role_type)
     }
@@ -80,16 +80,30 @@ Page({
 
   //* 页面显示********************************************
   onShow: function() {
-    // var that = this
-    // //获取并修改role（角色）信息
-    // try {
-    //   var value = wx.getStorageSync('role_type')
-    //   if (value != "") {
-    //     that.changeRole(value)
-    //   }
-    // } catch (e) {
-    //   console.log('onShow...获取缓存中的role_type失败, catch e =', e)
-    // }
+    //////////////////////////////////////////
+    // 获取userInfo
+    //////////////////////////////////////////
+    if (app.globalData.userInfo) {
+      this.setData({
+        hasUserInfo: true,
+        userInfo: app.globalData.userInfo
+      })
+      setTimeout(function () { //延时1秒
+        data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
+        data.getIndustry() //从服务器拉取行业的信息
+      }.bind(this), 1000)
+    } else if (this.data.canIUse) {
+      app.userInfoReadyCallback = res => {
+        this.setData({
+          hasUserInfo: true,
+          userInfo: app.globalData.userInfo
+        })
+        setTimeout(function () { //延时1秒
+          data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
+          data.getIndustry() //从服务器拉取行业的信息
+        }.bind(this), 1000)
+      }
+    }
   },
 
   //* 页面加载**************************************************
@@ -104,30 +118,6 @@ Page({
       if (e.friend_id)
         wx.setStorageSync('friend_id', e.user_id)
     } catch (e) {}
-    //////////////////////////////////////////
-    // 获取userInfo
-    //////////////////////////////////////////
-    if (app.globalData.userInfo) {
-      this.setData({
-        hasUserInfo: true,
-        userInfo: app.globalData.userInfo
-      })
-      setTimeout(function () {
-        data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
-        data.getIndustry() //从服务器拉取行业的信息
-      }.bind(this), 1000)
-    } else if (this.data.canIUse) {
-      app.userInfoReadyCallback = res => {
-        this.setData({
-          hasUserInfo: true,
-          userInfo: app.globalData.userInfo
-        })
-        setTimeout(function () {
-          data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
-          data.getIndustry() //从服务器拉取行业的信息
-        }.bind(this), 1000)
-      }
-    }
   },
 
   // 获取用户信息-----------------------------------
@@ -184,7 +174,7 @@ Page({
       motto: str,
     })
     //延迟2秒后，进入与身份对应的页面
-    setTimeout(function () {
+    setTimeout(function() {
       this.goTo(s)
     }.bind(this), 2000)
   },

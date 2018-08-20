@@ -16,6 +16,13 @@ Page({
     isAdmin: false,
   },
 
+  //* 查看历史订单*****************************************
+  inquiry: function() {
+    wx.navigateTo({
+      url: '/pages/inquiry/inquiry'
+    })
+  },
+
   //* 点击图片*********************************************
   onImage: function(event) {
     var that = this,
@@ -32,6 +39,15 @@ Page({
     })
   },
 
+  //* 长按图片*********************************************
+  deleteImage: function(event) {
+    var index = event.currentTarget.dataset.index,
+      str = "img_path[" + index + "]";
+    this.setData({
+      [str]: "/imgs/add.png",
+    })
+  },
+
   //* 点击“提交”按钮****************************************
   onConfirm: function() {
     var that = this
@@ -44,6 +60,9 @@ Page({
           if (res.confirm) {
             var index = that.data.index,
               index_cif = that.data.index_cif;
+            wx.showLoading({ //让用户进入等待状态，不要操作
+              title: '提交中',
+            })
             //提交订单(参数：订单类型编号，订单类型名称，备注，客户id，客户昵称)
             data.upLoadRecpt(that.data.r_type_list[index - 1], that.data.r_name_list[index], that.data.textAreaValue1, that.data.cif_id[index_cif], that.data.cif_name[index_cif], that.uploadImg)
           }
@@ -52,29 +71,37 @@ Page({
     }
   },
 
-  // 获取订单号之后，上传订单图片----------------------------------
+  // 获取订单号之后，上传订单图片，清空表单----------------------------------
   uploadImg: function(res) {
     var receipt_number = res.data.receipt_number,
-      img_path = this.hasImg();
+      img_path = this.hasImg(),
+      that = this;
     console.log("receipt_number = ", receipt_number);
     console.log("img_path = ", img_path);
     if (img_path) //这里只上传第一张图片
       wx.uploadFile({
-        url: data.URL_BASE + "ImageUpServlet",
+        url: data.API_IMGUP,
         filePath: img_path,
         name: 'image',
         formData: {
           'receipt_number': receipt_number //HTTP 请求中其他额外的 form data
         },
         success: function(res) {
-          console.log("uploadImg...res =",res)
+          console.log("uploadImg...res =", res)
+          that.setData({
+            index: 0,
+            index_cif: 0,
+            textAreaValue1: '',
+            img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
+          })
+          wx.hideLoading() //让用户结束等待状态，可以接着操作
         }
       })
   },
 
   // 检查提交的数据是否符合格式------------------------------------
   checkValue: function() {
-    if (this.data.index != 0 )//&& this.data.index_cif != 0)
+    if (this.data.index != 0) //&& this.data.index_cif != 0)
       return true
     else {
       wx.showModal({
