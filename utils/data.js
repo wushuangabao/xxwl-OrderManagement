@@ -53,11 +53,11 @@ function wxRequest(url, data, resolve) {
 // 获取role_type************************************************
 function getRoleType(setRoleType) {
   var company_id, friend_id, user_id;
-  try {
-    user_id = wx.getStorageSync('user_id')
+  if (user_id = wx.getStorageSync('user_id'))
     console.log("getRoleType...成功读取缓存中的user_id =", user_id)
-  } catch (e) {
-    console.log("getRoleType...读取缓存中的user_id失败，", e)
+  else {
+    console.log("getRoleType...读取缓存中的user_id失败，退出API_LOGON");
+    return;
   }
   try {
     company_id = wx.getStorageSync('company_id')

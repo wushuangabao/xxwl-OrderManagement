@@ -80,16 +80,16 @@ Page({
 
   //* 页面显示********************************************
   onShow: function() {
-    var that = this
-    //获取并修改role（角色）信息
-    try {
-      var value = wx.getStorageSync('role_type')
-      if (value != "") {
-        that.changeRole(value)
-      }
-    } catch (e) {
-      console.log('onShow...获取缓存中的role_type失败, catch e =', e)
-    }
+    // var that = this
+    // //获取并修改role（角色）信息
+    // try {
+    //   var value = wx.getStorageSync('role_type')
+    //   if (value != "") {
+    //     that.changeRole(value)
+    //   }
+    // } catch (e) {
+    //   console.log('onShow...获取缓存中的role_type失败, catch e =', e)
+    // }
   },
 
   //* 页面加载**************************************************
@@ -112,16 +112,20 @@ Page({
         hasUserInfo: true,
         userInfo: app.globalData.userInfo
       })
-      data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
-      data.getIndustry() //从服务器拉取行业的信息
+      setTimeout(function () {
+        data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
+        data.getIndustry() //从服务器拉取行业的信息
+      }.bind(this), 1000)
     } else if (this.data.canIUse) {
       app.userInfoReadyCallback = res => {
         this.setData({
           hasUserInfo: true,
           userInfo: app.globalData.userInfo
         })
-        data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
-        data.getIndustry() //从服务器拉取行业的信息
+        setTimeout(function () {
+          data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
+          data.getIndustry() //从服务器拉取行业的信息
+        }.bind(this), 1000)
       }
     }
   },
@@ -179,8 +183,10 @@ Page({
     this.setData({
       motto: str,
     })
-    //进入与身份对应的页面
-    this.goTo(s)
+    //延迟2秒后，进入与身份对应的页面
+    setTimeout(function () {
+      this.goTo(s)
+    }.bind(this), 2000)
   },
 
   //* 转发********************************************

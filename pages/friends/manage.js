@@ -134,7 +134,7 @@ Page({
       role_type_name = this.data.multiArray[1][this.data.multiIndex[1]],
       role_type = user_type, //角色代码，默认和role_type一致（因为还没有数据）
       friend = this.data.friendsInfo[id];
-    console.log("friend =", friend);
+    console.log("bindMultiPickerChange...friend =", friend);
     if (user_type == "2") //如果是员工，角色代码变更
       role_type = this.data.worker_code[this.data.multiIndex[1]];
     console.log("bindMultiPickerChange...user_type = ", user_type);
@@ -148,7 +148,7 @@ Page({
 
   //* 滚动MultiPicker********************************************
   bindMultiPickerColumnChange: function(e) {
-    console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
+   // console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
     var data_ = {
         multiArray: this.data.multiArray,
         multiIndex: this.data.multiIndex
@@ -174,7 +174,7 @@ Page({
 
   // 根据服务器拉取的数据，设置员工的角色类型表-------------------------
   setSelector: function(res) {
-    console.log(res)
+    console.log("setSelector(初始化员工的类型表)...res =",res)
     var len = res.data.length,
       worker_code = new Array(len),
       worker = new Array(len);
@@ -194,14 +194,6 @@ Page({
     data.getFriendsList("1", this.setFriendsInfo)
     data.getParam("01", this.setSelector)
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {
-
-  },
-
 
    //* 生命周期函数--监听页面显示*************************************
 
@@ -245,10 +237,16 @@ Page({
 
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function() {
-
+  //* 转发********************************************
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') { //如果来自页面内转发按钮
+      console.log(res.target)
+    }
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
+    console.log("onShareAppMessage, path =", path)
+    return {
+      title: '生产管理小程序',
+      path: path,
+    }
   }
 })
