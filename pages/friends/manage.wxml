@@ -19,11 +19,14 @@
         <text class="text-mid">{{item.nickname}}</text>
         <view class="selector">
           <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}" data-id='{{item.index}}'>
-              {{item.role_type_name}}
+            {{item.role_type_name}}
           </picker>
         </view>
       </view>
     </block>
   </view>
+
+  <import src="../../utils/tabBar.wxml" />
+  <template is="tabBar" data="{{tabBar: tabBar}}" />
 
 </view>

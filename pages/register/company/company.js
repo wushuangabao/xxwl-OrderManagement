@@ -56,7 +56,7 @@ Page({
         title: '提示',
         content: '是否确认您的填写无误并立刻注册？',
         success: function(res) {
-          wx.setStorageSync('role_type', "01")
+          wx.setStorageSync('role_type', "01") //设置用户角色为管理员
           //用户点击确定，页面跳转
           if (res.confirm) {
             data.registerCompany(company_name, that.data.industry_type[that.data.index - 1])

@@ -9,7 +9,6 @@ Page({
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    isAdmin: false,
   },
 
   // 根据服务器数据设置role_type-------------------------------------
@@ -17,15 +16,21 @@ Page({
     console.log("setRoleType...res = ", res)
     try {
       wx.setStorageSync('sys_modify', res.data.sys_modify)
-    } catch (e) {}
+    } catch (e) {
+      console.log("setRoleType...sys_modify读取失败", e)
+    }
     if (res.data.login_flag == "1") { //用户是第一次使用小程序
       wx.redirectTo({
         url: '../register/company/company'
       })
-    } else if (res.data.role_type != null) {
-      wx.setStorageSync('role_type', res.data.role_type)
-      wx.setStorageSync('company_id', res.data.company_id)
-      wx.setStorageSync('company_type', res.data.company_type)
+    } else if (res.data.role_type != null) { //用户不是第一次使用
+      try {
+        wx.setStorageSync('role_type', res.data.role_type)
+        wx.setStorageSync('company_id', res.data.company_id)
+        wx.setStorageSync('company_type', res.data.company_type)
+      } catch (e) {
+        console.log('setRoleType...设置缓存失败,catch e =', e)
+      }
       this.changeRole(res.data.role_type)
     }
   },
@@ -56,16 +61,9 @@ Page({
         else if (i == 2) {
           that.setData({
             hasUserInfo: false,
-            isAdmin: false,
-            motto: '欢迎使用本程序',
+            motto: 'TEST:重新登录',
           })
-          // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-          // 所以此处加入 callback 以防止这种情况
-          app.userInfoReadyCallback = res => {
-            this.setData({
-              hasUserInfo: true,
-            })
-          }
+
         }
         //设置工序（测试用）
         else if (i == 3) {
@@ -82,7 +80,6 @@ Page({
 
   //* 页面显示********************************************
   onShow: function() {
-    data.getRoleType(this.setRoleType)
     var that = this
     //获取并修改role（角色）信息
     try {
@@ -91,7 +88,7 @@ Page({
         that.changeRole(value)
       }
     } catch (e) {
-      // Do something when catch error
+      console.log('onShow...获取缓存中的role_type失败, catch e =', e)
     }
   },
 
@@ -102,34 +99,34 @@ Page({
     ///////////////////////////////////////////
     console.log("index onLoad, e =", e);
     try {
-      wx.setStorageSync('company_id', e.company_id)
-      wx.setStorageSync('friend_id', e.user_id)
+      if (e.company_id)
+        wx.setStorageSync('company_id', e.company_id)
+      if (e.friend_id)
+        wx.setStorageSync('friend_id', e.user_id)
     } catch (e) {}
     //////////////////////////////////////////
     // 获取userInfo
     //////////////////////////////////////////
     if (app.globalData.userInfo) {
       this.setData({
-        hasUserInfo: true
+        hasUserInfo: true,
+        userInfo: app.globalData.userInfo
       })
-      //调用数据库查询来获取角色信息
-      data.getRoleType(this.setRoleType)
+      data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
+      data.getIndustry() //从服务器拉取行业的信息
     } else if (this.data.canIUse) {
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
       app.userInfoReadyCallback = res => {
         this.setData({
           hasUserInfo: true,
+          userInfo: app.globalData.userInfo
         })
+        data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
+        data.getIndustry() //从服务器拉取行业的信息
       }
     }
-    /////////////////////////////////////////
-    //从服务器拉取行业的信息
-    ////////////////////////////////////////
-    data.getIndustry()
   },
 
-  // 获取用户信息
+  // 获取用户信息-----------------------------------
   getUserInfo: function(e) {
     app.globalData.userInfo = e.detail.userInfo
     this.setData({
@@ -141,13 +138,17 @@ Page({
 
   //根据身份不同，跳转页面----------------------------
   goTo: function(s) {
-    if (s == "02") {
+    if (s == "02") { //销售
       wx.redirectTo({
         url: '/pages/input/input'
       })
-    } else if (s == "100") {
+    } else if (s == "100") { //客户
       wx.redirectTo({
         url: '/pages/inquiry/inquiry'
+      })
+    } else if (s == "01") { //管理员
+      wx.redirectTo({
+        url: '/pages/friends/manage'
       })
     } else if (s == "03") { //剩下的是不同工种的工人
       wx.redirectTo({
@@ -170,17 +171,7 @@ Page({
       role = '销售'
     } else if (s == "01") {
       role = '管理员'
-      //设置TabBar
-      var myTabBar = app.globalData.tabBar
-      myTabBar.list[0].active = true
-      myTabBar.list[1].active = false
-      myTabBar.list[2].active = false
-      myTabBar.list[3].active = false
-      this.setData({
-        isAdmin: true,
-        tabBar: myTabBar
-      })
-    } else if (s == "03") { //剩下的是不同工种的工人
+    } else { //剩下的是不同工种的工人
       role = '工人'
     }
     //设置motto的内容
@@ -188,10 +179,8 @@ Page({
     this.setData({
       motto: str,
     })
-    //如果身份非管理员，直接进入可操作的页面
-    if (s != "01") {
-      this.goTo(s)
-    }
+    //进入与身份对应的页面
+    this.goTo(s)
   },
 
   //* 转发********************************************

@@ -52,10 +52,12 @@ function wxRequest(url, data, resolve) {
 
 // 获取role_type************************************************
 function getRoleType(setRoleType) {
-  var company_id, friend_id, user_id = wx.getStorageSync('user_id');
-  if (user_id == "") {
-    console.log("user_id is null")
-    return
+  var company_id, friend_id, user_id;
+  try {
+    user_id = wx.getStorageSync('user_id')
+    console.log("getRoleType...成功读取缓存中的user_id =", user_id)
+  } catch (e) {
+    console.log("getRoleType...读取缓存中的user_id失败，", e)
   }
   try {
     company_id = wx.getStorageSync('company_id')
@@ -75,7 +77,7 @@ function getRoleType(setRoleType) {
     friend_id: friend_id,
   };
   wxRequest(API_LOGON, data, setRoleType)
-  console.log("upload my userInfo:", data)
+  console.log("API_LOGON...upload my userInfo:", data)
 }
 
 // 上传录入订单数据**********************************************
@@ -267,7 +269,7 @@ function getParam(code, func) {
 
 // 行业类型 查询**********************************************
 function getIndustry() {
-  var user_name, role_type, company_id;
+  var user_name, role_type, company_id, user_id;
   try {
     user_name = app.globalData.userInfo.nickName
   } catch (e) {
@@ -286,8 +288,14 @@ function getIndustry() {
     console.log("getIndustry...set company_id fail")
     company_id = ""
   }
+  try {
+    user_id = wx.getStorageSync('user_id')
+  } catch (e) {
+    console.log("getIndustry...set user_id fail")
+    user_id = ""
+  }
   var data = {
-    user_id: wx.getStorageSync('user_id'),
+    user_id: user_id,
     user_name: user_name,
     role_type: role_type,
     company_id: company_id

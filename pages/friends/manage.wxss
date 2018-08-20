@@ -1,5 +1,7 @@
 /* pages/friends/manage.wxss */
 
+@import "/utils/tabBar.wxss";
+
 .tit {
   display: flex;
   flex-direction: row;
@@ -26,6 +28,7 @@
   flex-direction: column;
   background: #fff;
   margin-top: 30px;
+  margin-bottom: 120rpx;
 }
 
 .list-item{

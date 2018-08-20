@@ -4,24 +4,29 @@ App({
   onLaunch: function() {
 
     // 展示本地存储能力
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
+    // var logs = wx.getStorageSync('logs') || []
+    // logs.unshift(Date.now())
+    // wx.setStorageSync('logs', logs)
 
     // 登录
     wx.login({
       success: function(res) {
-        var that = this
+        var that = this;
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
         if (res.code) {
-          wx.request({
-            url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wxc70057280c56f254&secret=4b1176fdf52fa6bb86f0969bc2569dbb&js_code=' + res.code + '&grant_type=authorization_code',
-            method: "POST",
-            success: function(res) {
-              wx.setStorageSync('user_id', res.data.openid)
-              console.log("set user_id success!")
-            }
-          })
+          try { //尝试读取缓存中的user_id
+            var user_id = wx.getStorageSync('user_id');
+            console.log("wx.login...缓存中的user_id =", user_id);
+          } catch (e) { //如果不能拿到缓存中的user_id，就向服务器获取
+            wx.request({
+              url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wxc70057280c56f254&secret=4b1176fdf52fa6bb86f0969bc2569dbb&js_code=' + res.code + '&grant_type=authorization_code',
+              method: "POST",
+              success: function(res) {
+                wx.setStorageSync('user_id', res.data.openid)
+                console.log("wx.login...成功向服务器获取user_id!")
+              }
+            })
+          }
         } else {
           console.log('获取用户登录态失败！' + res.errMsg)
         }
@@ -59,8 +64,8 @@ App({
       "backgroundColor": "#fff",
       "borderStyle": "#ccc",
       "list": [{
-          "pagePath": "/pages/index/index",
-          "text": "个人设置",
+          "pagePath": "/pages/friends/manage",
+          "text": "我的商群",
           "iconPath": "/imgs/mine.png",
           "selectedIconPath": "/imgs/mine_fill.png",
           "selectedColor": "#1aad19",

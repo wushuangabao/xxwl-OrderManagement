@@ -202,11 +202,19 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {
 
+   //* 生命周期函数--监听页面显示*************************************
+
+  onShow: function() {
+    //设置tabBar
+    var myTabBar = getApp().globalData.tabBar
+    myTabBar.list[0].active = true
+    myTabBar.list[1].active = false
+    myTabBar.list[2].active = false
+    myTabBar.list[3].active = false
+    this.setData({
+      tabBar: myTabBar,
+    })
   },
 
   /**
