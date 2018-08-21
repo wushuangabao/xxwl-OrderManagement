@@ -103,13 +103,15 @@ function upLoadRecpt(receipt_type, receipt_name, remark, cif_user_id, cif_user_n
 }
 
 // 获取订单数组的数据**********************************************
-function getRecptData(status, func) {
+// 或者查询某一张订单的信息。如果是数组，receipt_number="00000"
+function getRecptData(status, receipt_number, func) {
   wxRequest(API_BILLQRY, {
     user_id: wx.getStorageSync('user_id'),
     work_status: status,
     user_name: app.globalData.userInfo.nickName,
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),
+    receipt_number: receipt_number,
   }, func)
 }
 

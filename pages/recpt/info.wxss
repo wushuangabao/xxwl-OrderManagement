@@ -1,0 +1,51 @@
+/* pages/recpt/info.wxss */
+
+page {
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.itemView1 {
+  width: 710rpx;
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  background-color: #fff;
+  margin-bottom: 60rpx;
+}
+
+.itemView2 {
+  width: 710rpx;
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  background-color: #fff;
+  margin-top: 60rpx;
+}
+
+.swiper{
+  width: 750rpx;
+  height: 650rpx;
+  padding: 20rpx;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  background-color: #fff;
+    margin-bottom: 60rpx;
+}
+
+.slide-image {
+  width: 710rpx;
+  height: 610rpx;
+}

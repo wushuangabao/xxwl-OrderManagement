@@ -167,8 +167,12 @@ Page({
     }
   },
 
-  //* 输入备注
-  bindNoteInput: function(e) {
+  //* 点击备注输入框**********************************
+  catchNoteTap:function(e){
+  },
+  
+  //* 输入备注****************************************
+  catchNoteInput: function(e) {
     var index = e.currentTarget.dataset.number
     //根据number检索数据在operation数组中的位置
     var operations = this.data.operation
@@ -205,6 +209,15 @@ Page({
     }
     //设置按钮的属性
     this.setNewButton()
+  },
+
+  //* 点击某条工单-->查询订单详情********************************************
+  inquiryRecpt:function(event){
+    var r_number = event.currentTarget.dataset.num;
+    wx.setStorageSync('r_number', r_number);
+    wx.navigateTo({
+      url: '/pages/recpt/info'
+    })
   },
 
   //* 生命周期函数--监听页面加载

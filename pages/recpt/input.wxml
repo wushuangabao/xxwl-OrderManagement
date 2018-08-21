@@ -1,5 +1,5 @@
 <!--pages/input/input.wxml-->
-<view class="float-right-up" bindtap='inquiry'>查看历史订单</view>
+<view class="float-right-up" bindtap='inquiry'>历史订单</view>
 
 <view style='display:flex;flex-direction:row;height:100%'>
 
@@ -27,7 +27,7 @@
 
     <!--订单备注-->
     <view class="itemView1">
-      <textarea class='textarea' cursor-spacing='20' maxlength='100' bindblur="bindTextAreaBlur1" placeholder="可以在这里输入对订单的描述" />
+      <textarea class='textarea' cursor-spacing='20' maxlength='100' bindblur="bindTextAreaBlur1" value="{{textAreaValue1}}" placeholder="可以在这里输入对订单的描述" />
     </view>
 
     <!--客户名称-->

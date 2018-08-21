@@ -7,7 +7,8 @@
   right: 0;
   z-index: 99;
   padding: 20rpx;
-  color: #696969;
+  color: rgb(95, 95, 241);
+  font-size: 12px;
 }
 
 page {
@@ -74,15 +75,14 @@ page {
   line-height: 25px;
   background-color: #fff;
   color: #696969;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
+  border-radius: 4px;
+  border: 1px solid lightgray;
 }
 
 .img {
   width: 152rpx;
   height: 152rpx;
   border: 1px solid lightgray;
-  border-radius: 4px;
   background-color: #fff;
 }
 

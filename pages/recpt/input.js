@@ -1,5 +1,3 @@
-// pages/input/input.js
-
 const data = require('../../utils/data.js')
 
 Page({
@@ -88,15 +86,28 @@ Page({
         },
         success: function(res) {
           console.log("uploadImg...res =", res)
-          that.setData({
-            index: 0,
-            index_cif: 0,
-            textAreaValue1: '',
-            img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
-          })
-          wx.hideLoading() //让用户结束等待状态，可以接着操作
+          that.finishInput()
         }
       })
+    else {
+      this.finishInput()
+    }
+  },
+
+  // 订单数据上传完毕--------------------------------------------
+  finishInput:function(){
+    this.setData({
+      index: 0,
+      index_cif: 0,
+      textAreaValue1: '',
+      img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
+    })
+    wx.hideLoading() //结束等待状态
+    wx.showToast({
+      title: '提交成功',
+      icon: 'success',
+      duration: 1000
+    })
   },
 
   // 检查提交的数据是否符合格式------------------------------------

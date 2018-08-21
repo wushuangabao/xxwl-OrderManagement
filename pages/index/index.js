@@ -24,14 +24,13 @@ Page({
         url: '../register/company/company'
       })
     } else if (res.data.role_type != null) { //用户不是第一次使用
-      try {
-        wx.setStorageSync('role_type', res.data.role_type)
-        wx.setStorageSync('company_id', res.data.company_id)
-        wx.setStorageSync('company_type', res.data.company_type)
-      } catch (e) {
-        console.log('setRoleType...设置缓存失败,catch err =', e)
-      }
-      this.changeRole(res.data.role_type)
+      wx.setStorageSync('role_type', res.data.role_type);
+      wx.setStorageSync('company_id', res.data.company_id);
+      wx.setStorageSync('company_type', res.data.company_type);
+      //延迟2秒后，进入与身份对应的页面
+      setTimeout(function() {
+        this.goTo(res.data.role_type)
+      }.bind(this), 2000)
     }
   },
 
@@ -88,7 +87,7 @@ Page({
         hasUserInfo: true,
         userInfo: app.globalData.userInfo
       })
-      setTimeout(function () { //延时1秒
+      setTimeout(function() { //延时1秒
         data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
         data.getIndustry() //从服务器拉取行业的信息
       }.bind(this), 1000)
@@ -98,7 +97,7 @@ Page({
           hasUserInfo: true,
           userInfo: app.globalData.userInfo
         })
-        setTimeout(function () { //延时1秒
+        setTimeout(function() { //延时1秒
           data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
           data.getIndustry() //从服务器拉取行业的信息
         }.bind(this), 1000)
@@ -134,7 +133,7 @@ Page({
   goTo: function(s) {
     if (s == "02") { //销售
       wx.redirectTo({
-        url: '/pages/input/input'
+        url: '/pages/recpt/input'
       })
     } else if (s == "100") { //客户
       wx.redirectTo({
@@ -144,39 +143,11 @@ Page({
       wx.redirectTo({
         url: '/pages/friends/manage'
       })
-    } else if (s == "03") { //剩下的是不同工种的工人
+    } else { //剩下的是不同工种的工人
       wx.redirectTo({
         url: '/pages/operate/operate'
       })
     }
-  },
-
-  //改变使用者的role（角色）--------------------------
-  changeRole: function(s) {
-    //修改缓存
-    try {
-      wx.setStorageSync('role_type', s)
-    } catch (e) {}
-    //判断角色，设置TabBar
-    var role
-    if (s == "100") {
-      role = '客户'
-    } else if (s == "02") {
-      role = '销售'
-    } else if (s == "01") {
-      role = '管理员'
-    } else { //剩下的是不同工种的工人
-      role = '工人'
-    }
-    //设置motto的内容
-    var str = '我的身份：' + role
-    this.setData({
-      motto: str,
-    })
-    //延迟2秒后，进入与身份对应的页面
-    setTimeout(function() {
-      this.goTo(s)
-    }.bind(this), 2000)
   },
 
   //* 转发********************************************

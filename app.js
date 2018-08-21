@@ -82,7 +82,7 @@ App({
           active: false
         },
         {
-          "pagePath": "/pages/input/input",
+          "pagePath": "/pages/recpt/input",
           "text": "录入订单",
           "iconPath": "/imgs/barrage.png",
           "selectedIconPath": "/imgs/barrage_fill.png",

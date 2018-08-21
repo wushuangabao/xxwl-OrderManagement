@@ -2,14 +2,15 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
-    "pages/input/input",
+    "pages/recpt/input",
     "pages/inquiry/inquiry",
     "pages/progress/progress",
     "pages/operate/operate",
     "pages/register/register",
     "pages/register/company/company",
     "pages/friends/manage",
-    "pages/operate/create"
+    "pages/operate/create",
+    "pages/recpt/info"
   ],
   "window": {
     "backgroundTextStyle": "light",

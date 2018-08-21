@@ -17,19 +17,18 @@ Page({
     processData: [],
   },
 
-  //根据job_table，设置进度条数据
+  // 根据拉取的job_table，设置进度条数据--------------------------------------
   setProcessData: function(res) {
     var job_table = res.data,
       len = job_table.length,
-      processData = []
-    console.log("job_table:")
-    console.log(job_table)
-    //this.setData
+      processData = [],
+      real_i = 0;
+    console.log("setProcessData...job_table =", job_table);
     for (var i = 0; i < len; i++) {
       var job = job_table[i]
       //如果已处理
       if (job.work_status == "2") {
-        processData[i] = {
+        processData[real_i] = {
           name: job.job_name,
           user_name: job.user_name,
           time_date: this.getDate(job.finish_time),
@@ -40,10 +39,11 @@ Page({
           state: '已完成',
           note: job.remark,
         }
+        real_i++;
       }
       //如果正在处理
       else if (job.work_status == "1") {
-        processData[i] = {
+        processData[real_i] = {
           name: job.job_name,
           user_name: job.user_name,
           time_date: this.getDate(job.finish_time), //名为finish_time，其实是领取时间
@@ -54,25 +54,29 @@ Page({
           state: '处理中',
           note: job.remark
         }
+        real_i++;
       }
+      //如果是无效的数据
+      else if (job.job_type == "000") {}
       //如果还没处理
       else {
-        processData[i] = {
+        processData[real_i] = {
           name: job.job_name,
           line_color: Light_Line_Color,
           font_color: Light_Font_Color,
           icon: '/imgs/undo-circle.png',
           note: job.remark,
         }
+        real_i++;
       }
     }
-    processData[len - 1].line_color = "#ffffff"
+    processData[real_i - 1].line_color = "#ffffff";
     this.setData({
       processData: processData,
     })
   },
 
-  //* 生命周期函数--监听页面显示
+  //* 生命周期函数--监听页面显示***********************************************
   onShow: function() {
     var receipt_number = wx.getStorageSync('r_number'),
       r_number = data.convertRecptNum(receipt_number),
@@ -86,7 +90,7 @@ Page({
     data.getProgrData(receipt_number, receipt_type, this.setProcessData)
   },
 
-  //time字符串处理
+  // time字符串处理--------------------------
   simpTime: function(time) {
     return time.slice(5, 16)
   },
