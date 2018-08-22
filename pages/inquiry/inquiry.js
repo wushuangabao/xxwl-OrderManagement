@@ -24,68 +24,72 @@ Page({
 
   //* 点击“已完成”或“未完成”**********************************
   changeTit: function(event) {
-    var name = event.currentTarget.dataset.name
+    var name = event.currentTarget.dataset.name;
     if (name == "未完成") {
       this.changeTitWXSS(1)
-      data.getRecptData("0", "00000",this.setRecptData)
+      data.getRecptData("0", "00000", this.setRecptData)
     } else if (name == "已完成") {
       this.changeTitWXSS(0)
-      data.getRecptData("1", "00000",this.setRecptData)
+      data.getRecptData("1", "00000", this.setRecptData)
     }
   },
 
   // 改变titles数据的WXML标签样式，以及页面数据status------------
   changeTitWXSS: function(i) {
-    var str1 = 'titles[' + i + '].color_b'
-    var str2 = 'titles[' + i + '].color_f'
-    var that = this
+    var str1 = 'titles[' + i + '].color_b',
+      str2 = 'titles[' + i + '].color_f',
+      that = this;
     that.setData({
       [str1]: '#FFF',
       [str2]: '#000',
     })
-    var old_i = that.data.index
+    var old_i = that.data.index;
     if (i != old_i) {
-      str1 = 'titles[' + old_i + '].color_b'
-      str2 = 'titles[' + old_i + '].color_f'
-      var s
+      wx.setStorageSync('gmt_modify', '');
+      str1 = 'titles[' + old_i + '].color_b';
+      str2 = 'titles[' + old_i + '].color_f';
+      var s;
       if (i == 0)
-        s = "1"
+        s = "1";
       else
-        s = "0"
+        s = "0";
       that.setData({
         [str1]: '#F8F8F8',
         [str2]: '#9E9E9E',
         index: i,
         status: s,
+        receipt: [],
       })
     }
   },
 
   // 设置this.data中的receipt数组-----------------------------------
-  setRecptData: function(recpt_data) {
-    var data_ = recpt_data.data
-    console.log("setRecptData")
-    console.log(data_)
-    var len = data_.length
+  setRecptData: function(res) {
+    var _data_ = res.data,
+      len = _data_.length,
+      old_data = this.data.receipt,
+      real_i = old_data.length,
+      state; //=this.data.status;
+    if (len > 0 && _data_[0].work_status == "0")
+      state = "未完成";
+    else
+      state = "已完成";
+    console.log("setRecptData...res.data =", _data_);
     for (var i = 0; i < len; i++) {
-      data_[i].r_number = data.convertRecptNum(data_[i].receipt_number)
-      // remark长度控制
-      var note = data.simplfStr(data_[i].remark, 28)
-      // receipt_type对应转换
-      var r_type = data.convertType(data_[i].receipt_type)
-      // 状态对应转换
-      var state
-      if (data_[i].work_status == "0")
-        state = "未完成"
-      else
-        state = "已完成"
-      data_[i].note = note
-      data_[i].state = state
-      data_[i].type = r_type
-      data_[i].r_img = "/imgs/image.png"
+      old_data[real_i] = _data_[i];
+      old_data[real_i].r_number = data.convertRecptNum(_data_[i].receipt_number);
+      var note = data.simplfStr(_data_[i].remark, 28), // remark长度控制
+        r_type = data.convertType(_data_[i].receipt_type);
+      old_data[real_i].note = note;
+      old_data[real_i].state = state;
+      old_data[real_i].type = r_type;
+      old_data[real_i].r_img = "/imgs/image.png";
+      real_i++;
     }
+    if (real_i > 0)
+      wx.setStorageSync('gmt_modify', old_data[real_i - 1].gmt_modify);
     this.setData({
-      receipt: data_
+      receipt: old_data
     })
   },
 
@@ -155,13 +159,18 @@ Page({
       // Do something when catch error
     }
     //数据库操作：查询用户所关心的订单列表
-    data.getRecptData(this.data.status, "00000",this.setRecptData)
+    data.getRecptData(this.data.status, "00000", this.setRecptData)
   },
 
   //* 生命周期函数--监听页面加载************************************
   onLoad: function(options) {
     //切换到"未完成"页
     this.changeTitWXSS(1)
+  },
+
+  //* 页面上拉触底事件的处理函数***************************************
+  onReachBottom: function() {
+    data.getRecptData(this.data.status, "00000", this.setRecptData)
   },
 
   /**
@@ -192,17 +201,16 @@ Page({
 
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function() {
-
+  //* 转发********************************************
+  onShareAppMessage: function(res) {
+    if (res.from === 'button') { //如果来自页面内转发按钮
+      console.log(res.target)
+    }
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
+    console.log("onShareAppMessage, path =", path)
+    return {
+      title: '生产管理小程序',
+      path: path,
+    }
   }
 })

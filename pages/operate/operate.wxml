@@ -16,7 +16,6 @@
   <!--item-->
   <block wx:for="{{operation}}" wx:key="id">
 
-    <!-- <view class="operation" hidden="{{item.hidden}}" animation="{{item.animaData}}"> -->
     <view class="operation" animation="{{item.animaData}}" bindtap='inquiryRecpt' data-num="{{item.receipt_number}}">
       <!--左侧img-->
       <image src="/imgs/image.png" class="img" mode="aspectFit" />
@@ -34,12 +33,12 @@
         </view>
         <!--下方按钮-->
         <view class="down-cont">
-          <view wx:if="{{item.work_status=='1'}}" class="note" hidden="{{item.hid_button}}">
+          <view wx:if="{{item.work_status=='1'}}" class="note">
             备注：
-            <input class='note-input' catchinput="catchNoteInput" catchtap='catchNoteTap' data-number="{{item.job_number}}"></input>
+            <input class='note-input' bindinput="bindNoteInput" catchtap='catchNoteTap' data-id="{{item.index}}"></input>
           </view>
           <view wx:if="{{item.work_status!='1'}}" class="note">{{item.note}}</view>
-          <view wx:if="{{item.work_status !='2'}}" class="button" catchtap='onTapButton' data-number="{{item.job_number}}"  hidden="{{item.hid_button}}">
+          <view wx:if="{{item.work_status !='2'}}" class="button" catchtap='onTapButton' data-id="{{item.index}}">
             {{item.button}}
           </view>
           <view wx:if="{{item.work_status=='2'}}" class="done">

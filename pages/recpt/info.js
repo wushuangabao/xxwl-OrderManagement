@@ -55,4 +55,17 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function() {},
+
+  //* 转发********************************************
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') { //如果来自页面内转发按钮
+      console.log(res.target)
+    }
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
+    console.log("onShareAppMessage, path =", path)
+    return {
+      title: '生产管理小程序',
+      path: path,
+    }
+  }
 })

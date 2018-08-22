@@ -27,10 +27,10 @@ Page({
       wx.setStorageSync('role_type', res.data.role_type);
       wx.setStorageSync('company_id', res.data.company_id);
       wx.setStorageSync('company_type', res.data.company_type);
-      //延迟2秒后，进入与身份对应的页面
+      //延迟1.5秒后，进入与身份对应的页面
       setTimeout(function() {
         this.goTo(res.data.role_type)
-      }.bind(this), 2000)
+      }.bind(this), 1500)
     }
   },
 

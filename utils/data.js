@@ -33,7 +33,7 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   // 行业的代码、名称查询接口
   API_INDUSTRY = URL_BASE + "IndustryQueryServlet",
   // 图片上传接口
-  API_IMGUP = URL_BASE + "TestImageServlet",//"ImageUpServlet",//
+  API_IMGUP = URL_BASE + "TestUpServlet", //"TestImageServlet",//"ImageUpServlet",//
   // 图片下载接口
   API_IMGDOWN = URL_BASE + "ImageDownServlet"
 
@@ -105,6 +105,10 @@ function upLoadRecpt(receipt_type, receipt_name, remark, cif_user_id, cif_user_n
 // 获取订单数组的数据**********************************************
 // 或者查询某一张订单的信息。如果是数组，receipt_number="00000"
 function getRecptData(status, receipt_number, func) {
+  var gmt_modify = wx.getStorageSync('gmt_modify');
+  if (gmt_modify == '')
+    gmt_modify = '9999-12-31.0';
+  console.log('getRecptData...gmt_modify =', gmt_modify);
   wxRequest(API_BILLQRY, {
     user_id: wx.getStorageSync('user_id'),
     work_status: status,
@@ -112,6 +116,7 @@ function getRecptData(status, receipt_number, func) {
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),
     receipt_number: receipt_number,
+    gmt_modify: gmt_modify,
   }, func)
 }
 
@@ -129,12 +134,17 @@ function getProgrData(receipt_number, receipt_type, func) {
 
 // 获取工单表**********************************************
 function getOpertData(status_n, func) {
+  var apply_receive_time = wx.getStorageSync('apply_receive_time');
+  if (apply_receive_time == '')
+    apply_receive_time = '9999-12-31.0';
+  console.log('getOpertData...apply_receive_time =', apply_receive_time);
   wxRequest(API_JOBQRY, {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),
     work_status: status_n,
+    apply_receive_time: apply_receive_time,
   }, func)
 }
 

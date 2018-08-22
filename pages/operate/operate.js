@@ -34,56 +34,35 @@ Page({
     isMoving: false,
   },
 
-  //* 点击“领取”或“完工”按钮
+  //* 点击“领取”或“完工”按钮***********************************
   onTapButton: function(event) {
-    var job_number = event.currentTarget.dataset.number,
-      operations = this.data.operation,
-      len = operations.length
-    //根据job_number检索数据在operation数组中的位置
-    for (var i = 0; i < len; i++) {
-      var operation = operations[i]
-      if (operation.job_number == job_number) {
-        if (operation.button == '领取') {
-          //this.setButton(i, false)
-          //this.playAnima(i)
-          this.setData({
-            operation: [],
-          })
-          setTimeout(function() {
-            this.changeTitWXSS(1)
-            data.getOpertData("1", this.setJobTable)
-          }.bind(this), 300)
-          data.upLoadOpertGet(job_number)
-        } else if (operation.button == '完工') {
-          //this.setButton(i, true)
-          //this.playAnima(i)
-          this.setData({
-            operation: [],
-          })
-          setTimeout(function() {
-            this.changeTitWXSS(0)
-            data.getOpertData("2", this.setJobTable)
-          }.bind(this), 300)
-          data.upLoadOpertDone(job_number, operation.remark)
-        }
-        break
-      }
-    }
-  },
-
-  //设置第i条工序的备注
-  setNote: function(i, note) {
-    if (note != '') {
-      var str1 = 'operation[' + i + '].remark' //完整的备注
-      var str2 = 'operation[' + i + '].note' //缩略的备注
+    var id = event.currentTarget.dataset.id,
+      operation = this.data.operation[id],
+      job_number = operation.job_number;
+    if (operation.button == '领取') {
+      //this.playAnima(i)
       this.setData({
-        [str1]: note,
-        [str2]: data.simplfStr(note, MAX_NUM_NOTE)
+        operation: [],
       })
+      setTimeout(function() {
+        this.changeTitWXSS(1)
+        data.getOpertData("1", this.setJobTable)
+      }.bind(this), 300)
+      data.upLoadOpertGet(job_number);
+    } else if (operation.button == '完工') {
+      //this.playAnima(i)
+      this.setData({
+        operation: [],
+      })
+      setTimeout(function() {
+        this.changeTitWXSS(0)
+        data.getOpertData("2", this.setJobTable)
+      }.bind(this), 300)
+      data.upLoadOpertDone(job_number, operation.remark);
     }
   },
 
-  //播放动画
+  //播放动画-------------------------------------
   playAnima: function(i) {
     var str = 'operation[' + i + '].animaData'
     var animation = wx.createAnimation({
@@ -106,7 +85,7 @@ Page({
     }.bind(this), 500) //恢复原来大小的动画
   },
 
-  //* 点击“已完成”、“待领取”或“未完成”
+  //* 点击“已完成”、“待领取”或“未完成”**************************
   changeTit: function(event) {
     var name = event.currentTarget.dataset.name
     if (name == "待领取") {
@@ -121,7 +100,7 @@ Page({
     }
   },
 
-  //改变titles数据的WXML标签样式，重新设置index
+  //改变titles数据的WXML标签样式，重新设置index----------------------
   changeTitWXSS: function(i) {
     var str1 = 'titles[' + i + '].color_b',
       str2 = 'titles[' + i + '].color_f',
@@ -132,87 +111,66 @@ Page({
     })
     var old_i = that.data.index
     if (i != old_i) {
-      str1 = 'titles[' + old_i + '].color_b'
-      str2 = 'titles[' + old_i + '].color_f'
+      wx.setStorageSync('apply_receive_time', '');
+      str1 = 'titles[' + old_i + '].color_b';
+      str2 = 'titles[' + old_i + '].color_f';
       that.setData({
         [str1]: '#F8F8F8',
         [str2]: '#9E9E9E',
         index: i,
+        operation: [],
       })
     }
   },
 
-  //给operation数组数据赋新的属性hid_button和button
-  setNewButton: function() {
-    var operations = this.data.operation,
-      len = operations.length,
-      str1;
-    for (var i = 0; i < len; i++) {
-      str1 = 'operation[' + i + '].hid_button'
-      this.setData({
-        [str1]: false,
-      })
-      var the_operation = operations[i]
-      if (the_operation.work_status == '0') {
-        str1 = 'operation[' + i + '].button'
-        this.setData({
-          [str1]: '领取'
-        })
-      } else if (the_operation.work_status == '1') {
-        str1 = 'operation[' + i + '].button'
-        this.setData({
-          [str1]: '完工'
-        })
-      }
-    }
-  },
+  //* 点击备注输入框*****************
+  catchNoteTap: function(e) {},
 
-  //* 点击备注输入框**********************************
-  catchNoteTap:function(e){
-  },
-  
   //* 输入备注****************************************
-  catchNoteInput: function(e) {
-    var index = e.currentTarget.dataset.number
-    //根据number检索数据在operation数组中的位置
-    var operations = this.data.operation
-    var len = operations.length
-    for (var i = 0; i < len; i++) {
-      var operation = operations[i]
-      if (operation.job_number == index) {
-        index = i
-        break
-      }
-    }
-    //设置备注
-    this.setNote(i, e.detail.value)
-  },
-
-  // 设置operation数据
-  setJobTable: function(res) {
-    var operation = res.data
-    console.log("setJobTable")
-    console.log(operation)
-    this.setData({
-      operation: operation
-    })
-    var len = operation.length,
-      str1 = '',
-      str2 = '';
-    for (var i = 0; i < len; i++) {
-      str1 = 'operation[' + i + '].j_number'
-      str2 = 'operation[' + i + '].note'
+  bindNoteInput: function(e) {
+    var i = e.currentTarget.dataset.id,
+      note = e.detail.value;
+    if (note != '') {
+      var str1 = 'operation[' + i + '].remark', //完整的备注
+        str2 = 'operation[' + i + '].note'; //缩略的备注
       this.setData({
-        [str1]: data.convertRecptNum(operation[i].job_number),
-        [str2]: data.simplfStr(operation[i].remark, MAX_NUM_NOTE)
+        [str1]: note,
+        [str2]: data.simplfStr(note, MAX_NUM_NOTE)
       })
     }
-    //设置按钮的属性
-    this.setNewButton()
+  },
+
+  // 设置operation数据------------------------------------------------------------
+  setJobTable: function(res) {
+    wx.showLoading({ //让用户进入等待状态，不要操作
+      title: '加载中',
+    });
+    var operation = res.data,
+      len = operation.length,
+      my_operation = this.data.operation,
+      real_i = my_operation.length,
+      button = '领取';
+    console.log("setJobTable...res.data =", operation);
+    if (this.data.index == 1)
+      button = '完工';
+    for (var i = 0; i < len; i++) {
+      my_operation[real_i] = operation[i];
+      my_operation[real_i].j_number = data.convertRecptNum(operation[i].job_number);
+      my_operation[real_i].note = data.simplfStr(operation[i].remark, MAX_NUM_NOTE);
+      my_operation[real_i].index = real_i;
+      my_operation[real_i].button = button;
+      real_i++;
+    }
+    if (real_i > 0)
+      wx.setStorageSync('apply_receive_time', my_operation[real_i - 1].apply_receive_time);
+    this.setData({
+      operation: my_operation
+    });
+    wx.hideLoading(); //结束等待状态
   },
 
   //* 点击某条工单-->查询订单详情********************************************
-  inquiryRecpt:function(event){
+  inquiryRecpt: function(event) {
     var r_number = event.currentTarget.dataset.num;
     wx.setStorageSync('r_number', r_number);
     wx.navigateTo({
@@ -220,35 +178,31 @@ Page({
     })
   },
 
-  //* 生命周期函数--监听页面加载
+  //* 生命周期函数--监听页面加载***********************************************
   onLoad: function(options) {
-    data.getOpertData("0", this.setJobTable) //"0"待领取 "1"未完成 "2"已完成
-    //切换到"待领取"页
-    this.changeTitWXSS(2)
+    wx.setStorageSync('apply_receive_time', '');
+    data.getOpertData("0", this.setJobTable); //"0"待领取 "1"未完成 "2"已完成
+    this.changeTitWXSS(2); //切换到"待领取"页
   },
 
   //* 生命周期函数--监听页面初次渲染完成
   onReady: function() {},
 
-  //* 生命周期函数--监听页面显示
+  //* 生命周期函数--监听页面显示******************************************
   onShow: function() {
     //判断用户身份是否为管理员
-    try {
-      var value = wx.getStorageSync('role_type')
-      if (value == "01") { //是管理员
-        //设置tabBar
-        var myTabBar = app.globalData.tabBar
-        myTabBar.list[0].active = false
-        myTabBar.list[1].active = false
-        myTabBar.list[2].active = false
-        myTabBar.list[3].active = true
-        this.setData({
-          tabBar: myTabBar,
-          isAdmin: true
-        })
-      }
-    } catch (e) {
-      // Do something when catch error
+    var value = wx.getStorageSync('role_type')
+    if (value == "01") { //是管理员
+      //设置tabBar
+      var myTabBar = app.globalData.tabBar
+      myTabBar.list[0].active = false
+      myTabBar.list[1].active = false
+      myTabBar.list[2].active = false
+      myTabBar.list[3].active = true
+      this.setData({
+        tabBar: myTabBar,
+        isAdmin: true
+      })
     }
   },
 
@@ -273,58 +227,36 @@ Page({
 
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
+  //* 页面上拉触底事件的处理函数
   onReachBottom: function() {
-
+    data.getOpertData(this.getStatus(this.data.index), this.setJobTable)
   },
 
-  //* 用户点击右上角分享
-  onShareAppMessage: function() {
-
+  // 根据Tit的index获取status------------------------
+  // "0"待领取 "1"未完成 "2"已完成
+  getStatus: function(i) {
+    switch (i) {
+      case 0:
+        return "2";
+      case 1:
+        return "1";
+      case 2:
+        return "0";
+    }
   },
 
-  //根据按下的button，设置operation的状态数据，增加对应的user、time数据。
-  // setButton: function(i, bool) {
-  //   var that = this
-  //   var time = util.formatTime(new Date())
-  //   //bool为false表示该操作未领取。
-  //   if (bool == false) {
-  //     var str1 = 'operation[' + i + '].button',
-  //       str2 = 'operation[' + i + '].hid_button', //隐藏button，防止误点第二下
-  //       str3 = 'operation[' + i + '].user_name',
-  //       str4 = 'operation[' + i + '].time',
-  //       str5 = 'operation[' + i + '].status',
-  //       str6 = 'operation[' + i + '].work_status',
-  //       user_name = app.globalData.userInfo.nickName
-  //     that.setData({
-  //       [str1]: '完工',
-  //       [str2]: true,
-  //       [str3]: user_name,
-  //       [str4]: util.formatTime(new Date()),
-  //       [str5]: '未完成',
-  //       [str6]: '1',
-  //     })
-  //     //等待600ms后动画播放完毕，再显示button
-  //     setTimeout(function() {
-  //       that.setData({
-  //         [str2]: false,
-  //       })
-  //     }.bind(this), 600)
-  //   }
-  //   //bool为true表示该操作已领取。
-  //   else {
-  //     var str1 = 'operation[' + i + '].status',
-  //       str2 = 'operation[' + i + '].time', //完工时，修改time，由领取时的时间，变为完工时的时间
-  //       str3 = 'operation[' + i + '].work_status'
-  //     that.setData({
-  //       [str1]: '已完成',
-  //       [str2]: time,
-  //       [str3]: '2',
-  //     })
-  //   }
-  // },
+  //* 转发***********************************************
+  onShareAppMessage: function(res) {
+    if (res.from === 'button') { //如果来自页面内转发按钮
+      console.log(res.target)
+    }
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
+    console.log("onShareAppMessage, path =", path)
+    return {
+      title: '生产管理小程序',
+      path: path,
+    }
+  },
 
   // //手指刚放到屏幕触发
   // touchS: function(e) {

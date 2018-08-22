@@ -60,9 +60,9 @@ Page({
               index_cif = that.data.index_cif;
             wx.showLoading({ //让用户进入等待状态，不要操作
               title: '提交中',
-            })
+            });
             //提交订单(参数：订单类型编号，订单类型名称，备注，客户id，客户昵称)
-            data.upLoadRecpt(that.data.r_type_list[index - 1], that.data.r_name_list[index], that.data.textAreaValue1, that.data.cif_id[index_cif], that.data.cif_name[index_cif], that.uploadImg)
+            data.upLoadRecpt(that.data.r_type_list[index - 1], that.data.r_name_list[index], that.data.textAreaValue1, that.data.cif_id[index_cif], that.data.cif_name[index_cif], that.uploadImg);
           }
         }
       })
@@ -102,7 +102,7 @@ Page({
       textAreaValue1: '',
       img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
     })
-    wx.hideLoading() //结束等待状态
+    wx.hideLoading(); //结束等待状态
     wx.showToast({
       title: '提交成功',
       icon: 'success',
@@ -231,9 +231,17 @@ Page({
     }
   },
 
-  //* 转发******************************************
-  onShareAppMessage: function(res) {
-
+  //* 转发********************************************
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') { //如果来自页面内转发按钮
+      console.log(res.target)
+    }
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
+    console.log("onShareAppMessage, path =", path)
+    return {
+      title: '生产管理小程序',
+      path: path,
+    }
   }
 
 })

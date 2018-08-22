@@ -216,41 +216,6 @@ String Next_associate_name=request.getParameter("next_associate_name");
 
 [{code: 0, entity_type: "101", type_name: "采购员"}]
 
-分享的时候用户id和company_id一起传
-
-company_id
-:
-"24274"
-gmt_create
-:
-"2018-08-20"
 gmt_modify
-:
-"2018-08-20 15:19:54.0"
-job_name
-:
-"未开工"
-job_no
-:
-"000"
-receipt_name
-:
-"连衣裙"
-receipt_number
-:
-"0320180820151954968"
-receipt_type
-:
-"301"
-remark
-:
-""
-user_id
-:
-""
-user_name
-:
-"请选择客户名称"
-work_status
-:
-"0"
+9999-12-31.0
+
