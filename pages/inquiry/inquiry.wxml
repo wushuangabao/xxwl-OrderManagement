@@ -8,17 +8,15 @@
         {{item.name}}
       </view>
     </block>
-    <!-- 
-     <input class="title_val" />
-    <view class="inquiry" bindtap='inquiryNum'>订单号查询</view>
-    -->
   </view>
 
   <!--list-->
   <view class="list">
     <!--item-->
     <block wx:for="{{receipt}}" wx:key="key">
-      <view class="receipt">
+      <view class="receipt" bindtap='inquiryRecpt' data-num='{{item.receipt_number}}' data-id='{{item.index}}'>
+        <!--虚拟按钮-->
+        <view class="more-button" catchtap="inquiry" data-num="{{item.receipt_number}}" data-type="{{item.receipt_type}}"/>
         <!--左侧图片-->
         <view>
           <image src="{{item.r_img}}" class="r-img" mode="aspectFit" />
@@ -34,7 +32,7 @@
           <!--下方文字-->
           <view class="down-cont">
             <text class="remark">{{item.note}}</text>
-            <view id="{{item.id}}" class="more" mode="aspectFit" bindtap="inquiry" data-num="{{item.receipt_number}}" data-type="{{item.receipt_type}}" animation="{{item.animaData}}">查看进度</view>
+            <view id="{{item.id}}" class="more" animation="{{item.animaData}}">查看进度</view>
           </view>
         </view>
       </view>

@@ -16,17 +16,17 @@
   <!--item-->
   <block wx:for="{{operation}}" wx:key="id">
 
-    <view class="operation" animation="{{item.animaData}}" bindtap='inquiryRecpt' data-num="{{item.receipt_number}}">
+    <view class="operation" animation="{{item.animaData}}" bindtap='inquiryRecpt' data-num="{{item.receipt_number}}" data-id="{{item.index}}">
       <!--左侧img-->
-      <image src="/imgs/image.png" class="img" mode="aspectFit" />
+      <image src="{{imgs[item.index]}}" class="img" mode="aspectFit" data-id="{{item.index}}" />
       <!--右侧详细信息-->
       <view class="cont">
         <!--上方文字-->
         <view class="up-cont">
           <view class="up-cont-item-left">
-            <text >{{item.j_number}}</text>
+            <text>{{item.j_number}}</text>
             <view style='width:30rpx;' />
-            <text >{{item.job_name}}</text>
+            <text>{{item.job_name}}</text>
           </view>
           <view style='width:1px;' />
           <view wx:if="{{isAdmin}}" class="up-cont-item-right">{{item.user_name}}</view>

@@ -35,9 +35,9 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   // 图片上传接口
   API_IMGUP = URL_BASE + "TestUpServlet", //"TestImageServlet",//"ImageUpServlet",//
   // 图片下载接口
-  API_IMGDOWN = URL_BASE + "ImageDownServlet"
+  API_IMGDOWN = URL_BASE + "ImageDownServlet";
 
-const app = getApp()
+const app = getApp();
 
 // wx.request 封装
 function wxRequest(url, data, resolve) {

@@ -1,9 +1,10 @@
 <!--index.wxml-->
 
 <view class="container">
-  <view class="usermotto">
+  <!-- <view class="usermotto">
     <text class="user-motto" bindlongtap='bindViewTap'>{{motto}}</text>
-  </view>
+  </view> -->
+  <image src='/imgs/app-icon.png' mode='aspectFit' style='border-radius:50%;width:580rpx;height:580rpx;'></image>
   <view class="userinfo">
     <button wx:if="{{!hasUserInfo && canIUse}}" size="mini" open-type="getUserInfo" bindgetuserinfo="getUserInfo" style='color:#696969'> 微信公开信息授权 </button>
     

@@ -1,9 +1,12 @@
 // pages/operate/operate.js
 
-const util = require('../../utils/util.js')
-const data = require('../../utils/data.js')
-const app = getApp()
-const MAX_NUM_NOTE = 24
+const util = require('../../utils/util.js'),
+  data = require('../../utils/data.js'),
+  app = getApp(),
+  MAX_NUM_NOTE = 24; //note最大长度（按照窄字符计算）
+var isLoading = false,
+  numOfJobs = 0,
+  numOfImgs = 0;
 
 Page({
 
@@ -29,6 +32,7 @@ Page({
     ],
     index: 0,
     operation: [],
+    imgs: [],
     isAdmin: false,
     note: '',
     isMoving: false,
@@ -36,27 +40,32 @@ Page({
 
   //* 点击“领取”或“完工”按钮***********************************
   onTapButton: function(event) {
+    if (isLoading)
+      return;
     var id = event.currentTarget.dataset.id,
       operation = this.data.operation[id],
       job_number = operation.job_number;
+    numOfImgs = 0;
+    numOfJobs = 0;
+    //this.playAnima(i)
+    this.setData({
+      operation: [],
+      imgs: [],
+    })
+    wx.showLoading({ //让用户进入等待状态，不要操作
+      title: '加载中',
+    });
+    isLoading = true;
     if (operation.button == '领取') {
-      //this.playAnima(i)
-      this.setData({
-        operation: [],
-      })
       setTimeout(function() {
-        this.changeTitWXSS(1)
-        data.getOpertData("1", this.setJobTable)
+        this.changeTitWXSS(1);
+        data.getOpertData("1", this.setJobTable);
       }.bind(this), 300)
       data.upLoadOpertGet(job_number);
     } else if (operation.button == '完工') {
-      //this.playAnima(i)
-      this.setData({
-        operation: [],
-      })
       setTimeout(function() {
-        this.changeTitWXSS(0)
-        data.getOpertData("2", this.setJobTable)
+        this.changeTitWXSS(0);
+        data.getOpertData("2", this.setJobTable);
       }.bind(this), 300)
       data.upLoadOpertDone(job_number, operation.remark);
     }
@@ -87,7 +96,15 @@ Page({
 
   //* 点击“已完成”、“待领取”或“未完成”**************************
   changeTit: function(event) {
-    var name = event.currentTarget.dataset.name
+    if (isLoading)
+      return;
+    var name = event.currentTarget.dataset.name;
+    wx.showLoading({ //让用户进入等待状态，不要操作
+      title: '加载中',
+    });
+    isLoading = true;
+    numOfImgs = 0;
+    numOfJobs = 0;
     if (name == "待领取") {
       this.changeTitWXSS(2)
       data.getOpertData("0", this.setJobTable)
@@ -100,7 +117,7 @@ Page({
     }
   },
 
-  //改变titles数据的WXML标签样式，重新设置index----------------------
+  //改变titles数据的WXML标签样式，重新设置index等数据----------------------
   changeTitWXSS: function(i) {
     var str1 = 'titles[' + i + '].color_b',
       str2 = 'titles[' + i + '].color_f',
@@ -119,6 +136,7 @@ Page({
         [str2]: '#9E9E9E',
         index: i,
         operation: [],
+        imgs: [],
       })
     }
   },
@@ -140,15 +158,54 @@ Page({
     }
   },
 
+  //（废弃）点击图片，放大预览
+  catchTapImg: function(e) {
+    var id = e.currentTarget.dataset.id,
+      that = this;
+    wx.getImageInfo({
+      src: that.data.imgs[id],
+      success: function(res) {
+        var width = res.width,
+          height = res.height;
+        console.log("catchTapImg...", width, "X", height);
+        wx.navigateTo({
+          url: "/pages/others/image?width=" + width + "&height=" + height + "&path=" + that.data.imgs[id]
+        })
+      }
+    });
+  },
+
+  // 下载图片-----------------------------------------------------------
+  setImgPath: function(i) {
+    var that = this;
+    wx.downloadFile({
+      url: data.API_IMGDOWN,
+      header: {
+        "receipt_number": that.data.operation[i].receipt_number
+      },
+      success: function(res) {
+        if (res.statusCode === 200) {
+          console.log('setImgPath...res =', res);
+          that.setData({
+            ['imgs[' + i + ']']: res.tempFilePath
+          });
+          numOfImgs++;
+          if (numOfImgs == numOfJobs) {
+            wx.hideLoading(); //结束等待状态
+            isLoading = false;
+          }
+        }
+      }
+    })
+  },
+
   // 设置operation数据------------------------------------------------------------
   setJobTable: function(res) {
-    wx.showLoading({ //让用户进入等待状态，不要操作
-      title: '加载中',
-    });
     var operation = res.data,
       len = operation.length,
       my_operation = this.data.operation,
       real_i = my_operation.length,
+      old_len = real_i,
       button = '领取';
     console.log("setJobTable...res.data =", operation);
     if (this.data.index == 1)
@@ -159,19 +216,33 @@ Page({
       my_operation[real_i].note = data.simplfStr(operation[i].remark, MAX_NUM_NOTE);
       my_operation[real_i].index = real_i;
       my_operation[real_i].button = button;
+      this.setImgPath(real_i);
       real_i++;
     }
-    if (real_i > 0)
+    if (real_i > old_len) {
       wx.setStorageSync('apply_receive_time', my_operation[real_i - 1].apply_receive_time);
+      console.log('numOfRecpts =', real_i);
+      numOfJobs = real_i;
+    } else {
+      wx.hideLoading(); //结束等待状态
+      isLoading = false;
+      wx.showToast({
+        title: '没有更多的了',
+        icon: 'none',
+        duration: 900
+      });
+    }
     this.setData({
       operation: my_operation
     });
-    wx.hideLoading(); //结束等待状态
   },
 
   //* 点击某条工单-->查询订单详情********************************************
   inquiryRecpt: function(event) {
-    var r_number = event.currentTarget.dataset.num;
+    var r_number = event.currentTarget.dataset.num,
+      id = event.currentTarget.dataset.id,
+      path1 = this.data.imgs[id];
+    wx.setStorageSync('imgUrl_1', path1);
     wx.setStorageSync('r_number', r_number);
     wx.navigateTo({
       url: '/pages/recpt/info'
@@ -181,6 +252,10 @@ Page({
   //* 生命周期函数--监听页面加载***********************************************
   onLoad: function(options) {
     wx.setStorageSync('apply_receive_time', '');
+    wx.showLoading({ //让用户进入等待状态，不要操作
+      title: '加载中',
+    });
+    isLoading = true;
     data.getOpertData("0", this.setJobTable); //"0"待领取 "1"未完成 "2"已完成
     this.changeTitWXSS(2); //切换到"待领取"页
   },
@@ -190,6 +265,8 @@ Page({
 
   //* 生命周期函数--监听页面显示******************************************
   onShow: function() {
+    numOfJobs = this.data.operation.length;
+    numOfImgs = this.data.imgs.length;
     //判断用户身份是否为管理员
     var value = wx.getStorageSync('role_type')
     if (value == "01") { //是管理员
@@ -229,6 +306,12 @@ Page({
 
   //* 页面上拉触底事件的处理函数
   onReachBottom: function() {
+    if (isLoading)
+      return;
+    wx.showLoading({ //让用户进入等待状态，不要操作
+      title: '加载中',
+    });
+    isLoading = true;
     data.getOpertData(this.getStatus(this.data.index), this.setJobTable)
   },
 

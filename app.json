@@ -10,7 +10,8 @@
     "pages/register/company/company",
     "pages/friends/manage",
     "pages/operate/create",
-    "pages/recpt/info"
+    "pages/recpt/info",
+    "pages/others/image"
   ],
   "window": {
     "backgroundTextStyle": "light",

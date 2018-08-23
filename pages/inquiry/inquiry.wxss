@@ -1,5 +1,4 @@
 /* pages/inquiry/inquiry.wxss */
-
 @import "/utils/tabBar.wxss";
 
 .container {
@@ -9,9 +8,9 @@
 .tit {
   display: flex;
   flex-direction: row;
-  justify-content:space-between;
+  justify-content: space-between;
   height: 30px;
-    position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 99;
@@ -79,24 +78,32 @@
 }
 
 .up-cont-item {
-  margin-top:12px;
+  margin-top: 12px;
   margin-left: 10px;
   color: #555;
   justify-content: center;
 }
 
 .down-cont {
-  margin-top:10px;
+  margin-top: 10px;
   margin-left: 5px;
-  padding-top:3px;
+  padding-top: 3px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   color: #555;
-  font-size:12px;
+  font-size: 12px;
 }
 
 .more {
   padding-right: 12px;
-  color:#999
+  color: #999;
+}
+
+.more-button {
+  width: 180rpx;
+  height:70px;
+  position: fixed;
+  right: 0;
+  z-index: 98;
 }
