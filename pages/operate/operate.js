@@ -45,33 +45,30 @@ Page({
     var id = event.currentTarget.dataset.id,
       operation = this.data.operation[id],
       job_number = operation.job_number;
-    numOfImgs = 0;
-    numOfJobs = 0;
-    //this.playAnima(i)
-    this.setData({
-      operation: [],
-      imgs: [],
-    })
-    wx.showLoading({ //让用户进入等待状态，不要操作
-      title: '加载中',
-    });
-    isLoading = true;
+    numOfImgs--;
+    numOfJobs--;
     if (operation.button == '领取') {
-      setTimeout(function() {
-        this.changeTitWXSS(1);
-        data.getOpertData("1", this.setJobTable);
-      }.bind(this), 300)
       data.upLoadOpertGet(job_number);
     } else if (operation.button == '完工') {
-      setTimeout(function() {
-        this.changeTitWXSS(0);
-        data.getOpertData("2", this.setJobTable);
-      }.bind(this), 300)
       data.upLoadOpertDone(job_number, operation.remark);
     }
+    //从operation和imgs数组中移除数据
+    operation = this.data.operation;
+    var imgs = this.data.imgs,
+      len = operation.length - 1;
+    for (var i = id; i < len; i++) {
+      operation[i] = operation[i + 1];
+      imgs[i] = imgs[i + 1];
+    }
+    operation.pop();
+    imgs.pop();
+    this.setData({
+      operation: operation,
+      imgs: imgs
+    })
   },
 
-  //播放动画-------------------------------------
+  //（弃用）播放动画
   playAnima: function(i) {
     var str = 'operation[' + i + '].animaData'
     var animation = wx.createAnimation({
@@ -99,6 +96,8 @@ Page({
     if (isLoading)
       return;
     var name = event.currentTarget.dataset.name;
+    if (name == this.data.titles[this.data.index].name)
+      return;
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
@@ -185,7 +184,6 @@ Page({
       },
       success: function(res) {
         if (res.statusCode === 200) {
-          console.log('setImgPath...res =', res);
           that.setData({
             ['imgs[' + i + ']']: res.tempFilePath
           });

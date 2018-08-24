@@ -30,12 +30,19 @@ Page({
   changeTit: function(event) {
     if (isLoading)
       return;
+    var name = event.currentTarget.dataset.name;
+    if (this.data.titles[this.data.index].name == name)
+      return;
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
     isLoading = true;
     numOfImgs = 0;
-    var name = event.currentTarget.dataset.name;
+    numOfRecpts = 0;
+    this.setData({
+      imgs: [],
+      receipt: [],
+    })
     if (name == "未完成") {
       this.changeTitWXSS(1)
       data.getRecptData("0", "00000", this.setRecptData)
@@ -202,6 +209,8 @@ Page({
 
   //* 生命周期函数--监听页面显示***********************************
   onShow: function() {
+    numOfImgs = this.data.imgs.length;
+    numOfRecpts = this.data.receipt.length;
     //判断用户身份是否为管理员
     var value = wx.getStorageSync('role_type')
     if (value == "01") { //是管理员
@@ -216,19 +225,17 @@ Page({
         isAdmin: true
       })
     }
-    numOfImgs = this.data.receipt.length;
-    numOfRecpts = numOfImgs;
-    wx.showLoading({ //让用户进入等待状态，不要操作
-      title: '加载中',
-    });
-    isLoading = true;
-    data.getRecptData(this.data.status, "00000", this.setRecptData)
   },
 
   //* 生命周期函数--监听页面加载************************************
   onLoad: function(options) {
-    //切换到"未完成"页
-    this.changeTitWXSS(1)
+    wx.showLoading({ //让用户进入等待状态，不要操作
+      title: '加载中',
+    });
+    isLoading = true;
+    wx.setStorageSync('gmt_modify', '');
+    data.getRecptData(this.data.status, "00000", this.setRecptData);
+    this.changeTitWXSS(1) //切换到"未完成"页
   },
 
   //* 页面上拉触底事件的处理函数***************************************

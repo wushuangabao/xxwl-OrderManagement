@@ -103,7 +103,7 @@
 .more-button {
   width: 180rpx;
   height:70px;
-  position: fixed;
+  position: absolute;
   right: 0;
   z-index: 98;
 }
