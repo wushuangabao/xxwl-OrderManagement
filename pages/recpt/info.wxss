@@ -12,27 +12,15 @@ page {
 }
 
 .itemView1 {
-  width: 710rpx;
-  padding: 20rpx;
+  width: 670rpx;
+  padding: 40rpx;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
   background-color: #fff;
   margin-bottom: 60rpx;
-}
-
-.itemView2 {
-  width: 710rpx;
-  padding: 20rpx;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
-  background-color: #fff;
-  margin-top: 60rpx;
 }
 
 .swiper{

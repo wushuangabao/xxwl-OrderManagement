@@ -48,66 +48,94 @@ Page({
 
   //* 点击“提交”按钮****************************************
   onConfirm: function() {
-    var that = this
+    var that = this;
     if (this.checkValue()) {
       wx.showModal({
         title: '提示',
         content: '是否确认您的填写无误并立刻提交？',
         success: function(res) {
-          //用户点击确定
-          if (res.confirm) {
+          if (res.confirm) { //用户点击确定
             var index = that.data.index,
-              index_cif = that.data.index_cif;
-            wx.showLoading({ //让用户进入等待状态，不要操作
+              index_cif = that.data.index_cif,
+              img_format = that.getImgFormat(),
+              param = {
+                receipt_type: that.data.r_type_list[index - 1],
+                receipt_name: that.data.r_name_list[index],
+                remark: that.data.textAreaValue1,
+                cif_user_id: that.data.cif_id[index_cif],
+                cif_user_name: that.data.cif_name[index_cif],
+                image_1: img_format[0],
+                image_2: img_format[1],
+                image_3: img_format[2],
+                image_4: img_format[3],
+              };
+            wx.showLoading({
               title: '提交中',
             });
-            //提交订单(参数：订单类型编号，订单类型名称，备注，客户id，客户昵称)
-            data.upLoadRecpt(that.data.r_type_list[index - 1], that.data.r_name_list[index], that.data.textAreaValue1, that.data.cif_id[index_cif], that.data.cif_name[index_cif], that.uploadImg);
+            data.upLoadRecpt(param, that.uploadImg);
           }
         }
       })
     }
   },
 
+  // 获取图片的格式----------------------------------------
+  getImgFormat() {
+    var img_path = this.data.img_path,
+      format = [],
+      id;
+    for (var i = 0; i < 4; i++)
+      if (img_path[i] != "/imgs/add.png") {
+        id = img_path[i].lastIndexOf('.');
+        format.push(img_path[i].slice(id));
+      }
+    var len = format.length;
+      if (len < 4)
+        for (var i = len; i < 4; i++) {
+          format[i] = '';
+        }
+    console.log('getImgFormat...format =', format);
+    return format;
+  },
+
   // 获取订单号之后，上传订单图片，清空表单----------------------------------
   uploadImg: function(res) {
     var receipt_number = res.data.receipt_number,
       img_path = this.hasImg(),
+      len = img_path.length,
       that = this;
-    console.log("receipt_number = ", receipt_number);
-    console.log("img_path = ", img_path);
-    if (img_path) //这里只上传第一张图片
-      wx.uploadFile({
-        url: 'http://121.42.193.223:8088/home/upload/upload',
-        filePath: img_path,
-        name: 'file',
-        formData: {
-          'image_id': '12345' //HTTP 请求中其他额外的 form data
-        },
-        success: function(res) {
-          console.log("uploadImg...res =", res)
-          that.finishInput()
-        }
-      })
-    else {
-      this.finishInput()
-    }
+    console.log("uploadImg...receipt_number = ", receipt_number);
+    console.log('img_path =', img_path);
+    if (len > 0)
+      for (var i = 0; i < len; i++)
+        wx.uploadFile({
+          url: 'http://121.42.193.223:8088/home/upload/upload',
+          filePath: img_path[i],
+          name: 'file',
+          formData: {
+            'image_id': receipt_number + '_' + i
+          },
+          success: function(res) {
+            console.log("res.data =", res.data);
+          }
+        });
+    this.finishInput();
   },
 
   // 订单数据上传完毕--------------------------------------------
-  finishInput:function(){
+  finishInput: function() {
     this.setData({
       index: 0,
       index_cif: 0,
       textAreaValue1: '',
       img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
     })
-    wx.hideLoading(); //结束等待状态
-    wx.showToast({
-      title: '提交成功',
-      icon: 'success',
-      duration: 1000
-    })
+    wx.hideLoading();
+    // wx.showToast({ //注释掉是因为并没有把握一定提交成功了
+    //   title: '提交成功',
+    //   icon: 'success',
+    //   duration: 1000
+    // })
   },
 
   // 检查提交的数据是否符合格式------------------------------------
@@ -124,14 +152,14 @@ Page({
     }
   },
 
-  // 判断是否有上传图片----------------------------------------
-  // 有则返回首张图的地址，否则返回空字符串
+  // 返回存在图片的路径所组成的的数组----------------------
   hasImg: function() {
-    var img_path = this.data.img_path;
+    var img_path = this.data.img_path,
+      imgArray = [];
     for (var i = 0; i < 4; i++)
       if (img_path[i] != "/imgs/add.png")
-        return img_path[i];
-    return "";
+        imgArray.push(img_path[i]);
+    return imgArray;
   },
 
   //* TextArea失去焦点***********************
@@ -232,7 +260,7 @@ Page({
   },
 
   //* 转发********************************************
-  onShareAppMessage: function (res) {
+  onShareAppMessage: function(res) {
     if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }

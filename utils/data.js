@@ -3,7 +3,9 @@
 ///////////////////////////////////////////////////////
 
 // URL通用部分
-const URL_BASE = "http://140.143.154.96/day07/"
+const URL_BASE = "http://140.143.154.96/day07/",
+  Img_Url = 'http://121.42.193.223:8088/uploads/picture/';
+
 // 用户授权接口
 var API_LOGON = URL_BASE + "logonAuthServlet",
   // 用户注册登记接口
@@ -85,20 +87,23 @@ function getRoleType(setRoleType) {
 }
 
 // 上传录入订单数据**********************************************
-function upLoadRecpt(receipt_type, receipt_name, remark, cif_user_id, cif_user_name, func) {
+function upLoadRecpt(param, func) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),
-    receipt_type: receipt_type,
-    receipt_name: receipt_name,
-    remark: remark,
-    cif_user_id: cif_user_id,
-    cif_user_name: cif_user_name
+    receipt_type: param.receipt_type,
+    receipt_name: param.receipt_name,
+    remark: param.remark,
+    cif_user_id: param.cif_user_id,
+    cif_user_name: param.cif_user_name,
+    image_1: param.image_1,
+    image_2: param.image_2,
+    image_3: param.image_3,
+    image_4: param.image_4,
   }
-  console.log("my data:")
-  console.log(data)
+  console.log("upLoadRecpt...my data =", data)
   wxRequest(API_BILLCRT, data, func)
 }
 
@@ -372,7 +377,7 @@ function getLength(str) {
 
 //根据实际长度n截取字符串的前n-1实际长度的字符，加上…符号********************
 function simplfStr(remark, n) {
-  if (remark=='null')
+  if (remark == 'null')
     return '';
   if (getLength(remark) <= n)
     return remark;
@@ -419,6 +424,7 @@ module.exports = {
   convertRecptNum: convertRecptNum,
   simplfStr: simplfStr,
 
+  Img_Url: Img_Url,
   API_IMGUP: API_IMGUP,
   API_IMGDOWN: API_IMGDOWN,
 }

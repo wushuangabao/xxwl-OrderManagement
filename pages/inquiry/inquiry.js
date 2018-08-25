@@ -1,12 +1,8 @@
 // pages/inquiry/inquiry.js
 
 const data = require('../../utils/data.js');
-var numOfImgs = 0,
-  numOfRecpts = 0,
-  isLoading = false;
 
 Page({
-
   data: {
     titles: [{
         name: '已完成',
@@ -27,17 +23,12 @@ Page({
 
   //* 点击“已完成”或“未完成”**********************************
   changeTit: function(event) {
-    if (isLoading)
-      return;
     var name = event.currentTarget.dataset.name;
     if (this.data.titles[this.data.index].name == name)
       return;
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
-    isLoading = true;
-    numOfImgs = 0;
-    numOfRecpts = 0;
     this.setData({
       receipt: [],
     })
@@ -50,41 +41,25 @@ Page({
     }
   },
 
-  // 下载图片-----------------------------------------------------------
-  setImgPath: function(i) {
-    var that = this;
-    wx.downloadFile({
-      url: data.API_IMGDOWN,
-      header: {
-        "receipt_number": that.data.receipt[i].receipt_number
-      },
-      success: function(res) {
-        if (res.statusCode === 200) {
-          that.setData({
-            ['receipt[' + i + '].r_img']: res.tempFilePath
-          });
-        }
-      },
-      complete: function() {
-        numOfImgs++;
-        if (numOfImgs == numOfRecpts) {
-          wx.hideLoading(); //结束等待状态
-          isLoading = false;
-        }
-      }
-    })
-  },
-
   //* 点击某条订单-->查询订单详情*************************************
   inquiryRecpt: function(event) {
     var r_number = event.currentTarget.dataset.num,
       index = event.currentTarget.dataset.id,
       path1 = this.data.receipt[index].r_img;
     wx.setStorageSync('imgUrl_1', path1);
+    wx.setStorageSync('imgUrl_2', this.data.receipt[index].image_2);
+    wx.setStorageSync('imgUrl_3', this.data.receipt[index].image_3);
+    wx.setStorageSync('imgUrl_4', this.data.receipt[index].image_4);
     wx.setStorageSync('r_number', r_number);
-    wx.navigateTo({
-      url: '/pages/recpt/info'
-    })
+    if (this.data.index == 1) {
+      wx.navigateTo({
+        url: '/pages/recpt/info?done=' + '0'
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/recpt/info?done=' + '2'
+      })
+    }
   },
 
   // 改变titles数据的WXML标签样式，以及页面数据status------------
@@ -138,7 +113,7 @@ Page({
       old_data[real_i].state = state;
       old_data[real_i].type = r_type;
       old_data[real_i].index = real_i;
-      old_data[real_i].r_img = "/imgs/image.png";
+      old_data[real_i].r_img = data.Img_Url + _data_[i].receipt_number + '_0' + _data_[i].image_1;
       real_i++;
     }
     this.setData({
@@ -146,19 +121,14 @@ Page({
     })
     if (real_i > old_len) {
       wx.setStorageSync('gmt_modify', old_data[real_i - 1].gmt_modify);
-      console.log('numOfRecpts =', real_i);
-      numOfRecpts = real_i;
-      for (var i = old_len; i < real_i; i++)
-        this.setImgPath(i);
     } else {
-      wx.hideLoading(); //结束等待状态
-      isLoading = false;
       wx.showToast({
         title: '没有更多的了',
         icon: 'none',
         duration: 900
       })
     }
+    wx.hideLoading();
   },
 
   //* 点击“查看进度”************************************************
@@ -183,7 +153,7 @@ Page({
     //}.bind(this), 300)
   },
 
-  // 播放动画------------------------------------------
+  // （废弃）播放动画
   playAnima: function(i) {
     var str = 'receipt[' + i + '].animaData'
     var animation = wx.createAnimation({
@@ -229,7 +199,6 @@ Page({
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
-    isLoading = true;
     wx.setStorageSync('gmt_modify', '');
     data.getRecptData(this.data.status, "00000", this.setRecptData);
     this.changeTitWXSS(1) //切换到"未完成"页
@@ -237,12 +206,9 @@ Page({
 
   //* 页面上拉触底事件的处理函数***************************************
   onReachBottom: function() {
-    if (isLoading)
-      return;
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
-    isLoading = true;
     data.getRecptData(this.data.status, "00000", this.setRecptData)
   },
 

@@ -4,9 +4,6 @@ const util = require('../../utils/util.js'),
   data = require('../../utils/data.js'),
   app = getApp(),
   MAX_NUM_NOTE = 24; //note最大长度（按照窄字符计算）
-var isLoading = false,
-  numOfJobs = 0,
-  numOfImgs = 0;
 
 Page({
 
@@ -32,21 +29,17 @@ Page({
     ],
     index: 0,
     operation: [],
-    imgs: [],
     isAdmin: false,
     note: '',
-    isMoving: false,
+    //isMoving: false,
+    recptArray: [],
   },
 
   //* 点击“领取”或“完工”按钮***********************************
   onTapButton: function(event) {
-    if (isLoading)
-      return;
     var id = event.currentTarget.dataset.id,
       operation = this.data.operation[id],
       job_number = operation.job_number;
-    numOfImgs--;
-    numOfJobs--;
     if (operation.button == '领取') {
       data.upLoadOpertGet(job_number);
     } else if (operation.button == '完工') {
@@ -93,17 +86,12 @@ Page({
 
   //* 点击“已完成”、“待领取”或“未完成”**************************
   changeTit: function(event) {
-    if (isLoading)
-      return;
     var name = event.currentTarget.dataset.name;
     if (name == this.data.titles[this.data.index].name)
       return;
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
-    isLoading = true;
-    numOfImgs = 0;
-    numOfJobs = 0;
     if (name == "待领取") {
       this.changeTitWXSS(2)
       data.getOpertData("0", this.setJobTable)
@@ -174,31 +162,6 @@ Page({
     });
   },
 
-  // 下载图片-----------------------------------------------------------
-  setImgPath: function(i) {
-    var that = this;
-    wx.downloadFile({
-      url: data.API_IMGDOWN,
-      header: {
-        "receipt_number": that.data.operation[i].receipt_number
-      },
-      success: function(res) {
-        if (res.statusCode === 200) {
-          that.setData({
-            ['imgs[' + i + ']']: res.tempFilePath
-          });
-        }
-      },
-      complete: function() {
-        numOfImgs++;
-        if (numOfImgs == numOfJobs) {
-          wx.hideLoading(); //结束等待状态
-          isLoading = false;
-        }
-      }
-    })
-  },
-
   // 设置operation数据------------------------------------------------------------
   setJobTable: function(res) {
     var operation = res.data,
@@ -213,43 +176,117 @@ Page({
     for (var i = 0; i < len; i++) {
       my_operation[real_i] = operation[i];
       my_operation[real_i].j_number = data.convertRecptNum(operation[i].job_number);
-      if (operation[i].remark == 'null'){
+      if (operation[i].remark == 'null') {
         my_operation[real_i].note = '';
         my_operation[real_i].remark = '';
-      }
-      else{
+      } else {
         my_operation[real_i].note = data.simplfStr(operation[i].remark, MAX_NUM_NOTE);
       }
       my_operation[real_i].index = real_i;
       my_operation[real_i].button = button;
-      this.setImgPath(real_i);
       real_i++;
     }
     if (real_i > old_len) {
       wx.setStorageSync('apply_receive_time', my_operation[real_i - 1].apply_receive_time);
-      console.log('numOfRecpts =', real_i);
-      numOfJobs = real_i;
+      this.setData({
+        operation: my_operation
+      });
+      this.setImgPath(old_len, real_i);
     } else {
-      wx.hideLoading(); //结束等待状态
-      isLoading = false;
+      wx.hideLoading();
       wx.showToast({
         title: '没有更多的了',
         icon: 'none',
         duration: 900
       });
     }
-    this.setData({
-      operation: my_operation
-    });
+  },
+
+  // 根据订单号设置old_len,real_i之间的工单的recptArrayId----------------------------------
+  setImgPath: function(old_len, real_i) {
+    var recpt_num, hasRecptId = -1,
+      recptArray = this.data.recptArray,
+      len = recptArray.length;
+    for (var i = old_len; i < real_i; i++) {
+      recpt_num = this.data.operation[i].receipt_number;
+      for (var j = 0; j < len; j++)
+        if (recpt_num == recptArray[j].num) {
+          hasRecptId = j;
+          break;
+        }
+      if (hasRecptId > -1) { //如果订单号已经存在
+        this.setData({
+          ['operation[' + i + '].recptArrayId']: hasRecptId,
+        });
+      } else { //如果订单号不存在
+        var id = recptArray.length;
+        recptArray.push({
+          num: recpt_num
+        });
+        this.setData({
+          recptArray: recptArray,
+          ['operation[' + i + '].recptArrayId']: id,
+        })
+        //todo：确定status是否填"0"（表示未完成）
+        this.getRecptImg("0", recpt_num, id, this.setRecptImg);
+      }
+      hasRecptId = -1;
+    }
+    wx.hideLoading();
+  },
+
+  // 查询订单图片-------------------------------------------------
+  getRecptImg: function(status, receipt_number, id, func) {
+    var gmt_modify = wx.getStorageSync('gmt_modify'),
+      that = this;
+    if (gmt_modify == '')
+      gmt_modify = '9999-12-31.0';
+    var myData = {
+      user_id: wx.getStorageSync('user_id'),
+      work_status: status,
+      user_name: app.globalData.userInfo.nickName,
+      role_type: wx.getStorageSync('role_type'),
+      company_id: wx.getStorageSync('company_id'),
+      receipt_number: receipt_number,
+      gmt_modify: gmt_modify,
+    };
+    wx.request({
+      url: "http://140.143.154.96/day07/BillQueryServlet",
+      data: myData,
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      },
+      success: function(res) { //将查询到的image写入recptArray[id]
+        console.log("setRecptImg..........id =")
+        console.log(id)
+        var num = that.data.recptArray[id].num,
+          str1 = 'recptArray[' + id + '].image_1',
+          str2 = 'recptArray[' + id + '].image_2',
+          str3 = 'recptArray[' + id + '].image_3',
+          str4 = 'recptArray[' + id + '].image_4';
+        that.setData({
+          [str1]: data.Img_Url + num + '_0' + res.data[0].image_1,
+          [str2]: res.data[0].image_2,
+          [str3]: res.data[0].image_3,
+          [str4]: res.data[0].image_4,
+        });
+      },
+      fail: (err) => console.log(err)
+    })
   },
 
   //* 点击某条工单-->查询订单详情********************************************
   inquiryRecpt: function(event) {
     var r_number = event.currentTarget.dataset.num,
-      id = event.currentTarget.dataset.id,
-      path1 = this.data.imgs[id];
+      index = event.currentTarget.dataset.id,
+      recpt = this.data.recptArray[this.data.operation[index].recptArrayId],
+      path1 = recpt.image_1;
     wx.setStorageSync('imgUrl_1', path1);
     wx.setStorageSync('r_number', r_number);
+    wx.setStorageSync('imgUrl_2', recpt.image_2);
+    wx.setStorageSync('imgUrl_3', recpt.image_3);
+    wx.setStorageSync('imgUrl_4', recpt.image_4);
     wx.navigateTo({
       url: '/pages/recpt/info'
     })
@@ -261,7 +298,6 @@ Page({
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
-    isLoading = true;
     data.getOpertData("0", this.setJobTable); //"0"待领取 "1"未完成 "2"已完成
     this.changeTitWXSS(2); //切换到"待领取"页
   },
@@ -271,8 +307,6 @@ Page({
 
   //* 生命周期函数--监听页面显示******************************************
   onShow: function() {
-    numOfJobs = this.data.operation.length;
-    numOfImgs = this.data.imgs.length;
     //判断用户身份是否为管理员
     var value = wx.getStorageSync('role_type')
     if (value == "01") { //是管理员
@@ -312,12 +346,9 @@ Page({
 
   //* 页面上拉触底事件的处理函数
   onReachBottom: function() {
-    if (isLoading)
-      return;
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
-    isLoading = true;
     data.getOpertData(this.getStatus(this.data.index), this.setJobTable)
   },
 

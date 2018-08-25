@@ -6,14 +6,14 @@ Page({
 
   data: {
     recpt_info: {},
-    imgUrls: ["/imgs/image.png", "/imgs/image.png", "/imgs/image.png", "/imgs/image.png"],
+    imgUrls: [],
     indicatorDots: true,
     autoplay: true,
     interval: 5000,
     duration: 1000,
   },
 
-  //* 点击图片***************************************
+  //* （弃用，因为手机上有bug）点击图片
   bindTapImg: function(e) {
     var urls = this.data.imgUrls,
       len = urls.length,
@@ -48,15 +48,18 @@ Page({
   // 设置图片数组-------------------------------------
   setImgPath: function(r_number) {
     var path1 = wx.getStorageSync('imgUrl_1'),
+      format = [wx.getStorageSync('imgUrl_2'),wx.getStorageSync('imgUrl_3'), wx.getStorageSync('imgUrl_4')],
       path = [path1];
+    for (var i = 1; i < 4; i++) {
+     if(format[i-1])
+       path.push(data.Img_Url + r_number + '_' + i + format[i-1]);
+    }
     this.setData({
       imgUrls: path
-    })
-    for (var i = 2; i <= 4; i++)
-      this.getImgPath(i, r_number);
+    });
   },
 
-  // 下载图片-----------------------------------------
+  // （废弃）下载图片
   getImgPath: function(i, r_number) {
     var that = this;
     wx.downloadFile({
@@ -76,14 +79,14 @@ Page({
   },
 
   //* 生命周期函数--监听页面加载********************
-  onLoad: function(options) {},
-
-  //* 生命周期函数--监听页面显示********************
-  onShow: function() {
+  onLoad: function(options) {
     var r_number = wx.getStorageSync('r_number');
     this.setImgPath(r_number);
-    data.getRecptData("0", r_number, this.setRecptInfo)
+    data.getRecptData(options.done, r_number, this.setRecptInfo)
   },
+
+  //* 生命周期函数--监听页面显示********************
+  onShow: function() {},
 
   /**
    * 生命周期函数--监听页面隐藏

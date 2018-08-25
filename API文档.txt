@@ -219,3 +219,4 @@ String Next_associate_name=request.getParameter("next_associate_name");
 gmt_modify
 9999-12-31.0
 
+http://121.42.193.223:8088/uploads/picture
