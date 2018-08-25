@@ -35,7 +35,7 @@
         <view class="down-cont">
           <view wx:if="{{item.work_status=='1'}}" class="note">
             备注：
-            <input class='note-input' bindinput="bindNoteInput" catchtap='catchNoteTap' data-id="{{item.index}}"></input>
+            <input class='note-input' value="{{item.remark}}" bindinput="bindNoteInput" catchtap='catchNoteTap' data-id="{{item.index}}"></input>
           </view>
           <view wx:if="{{item.work_status!='1'}}" class="note">{{item.note}}</view>
           <view wx:if="{{item.work_status !='2'}}" class="button" catchtap='onTapButton' data-id="{{item.index}}">

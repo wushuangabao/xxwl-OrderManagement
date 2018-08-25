@@ -23,7 +23,6 @@ Page({
     receipt: [],
     isAdmin: false,
     status: "0", //0表示未完成，1表示已完成
-    imgs: [],
   },
 
   //* 点击“已完成”或“未完成”**********************************
@@ -40,7 +39,6 @@ Page({
     numOfImgs = 0;
     numOfRecpts = 0;
     this.setData({
-      imgs: [],
       receipt: [],
     })
     if (name == "未完成") {
@@ -65,11 +63,13 @@ Page({
           that.setData({
             ['receipt[' + i + '].r_img']: res.tempFilePath
           });
-          numOfImgs++;
-          if (numOfImgs == numOfRecpts) {
-            wx.hideLoading(); //结束等待状态
-            isLoading = false;
-          }
+        }
+      },
+      complete: function() {
+        numOfImgs++;
+        if (numOfImgs == numOfRecpts) {
+          wx.hideLoading(); //结束等待状态
+          isLoading = false;
         }
       }
     })
@@ -112,7 +112,6 @@ Page({
         index: i,
         status: s,
         receipt: [],
-        imgs: [],
       })
     }
   },
@@ -209,8 +208,6 @@ Page({
 
   //* 生命周期函数--监听页面显示***********************************
   onShow: function() {
-    numOfImgs = this.data.imgs.length;
-    numOfRecpts = this.data.receipt.length;
     //判断用户身份是否为管理员
     var value = wx.getStorageSync('role_type')
     if (value == "01") { //是管理员

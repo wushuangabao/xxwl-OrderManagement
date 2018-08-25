@@ -13,6 +13,10 @@
     "pages/recpt/info",
     "pages/others/image"
   ],
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 3000
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#e6e6e6",

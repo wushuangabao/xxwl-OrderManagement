@@ -78,11 +78,11 @@ Page({
     console.log("img_path = ", img_path);
     if (img_path) //这里只上传第一张图片
       wx.uploadFile({
-        url: data.API_IMGUP,
+        url: 'http://121.42.193.223:8088/home/upload/upload',
         filePath: img_path,
-        name: 'image',
+        name: 'file',
         formData: {
-          'receipt_number': receipt_number //HTTP 请求中其他额外的 form data
+          'image_id': '12345' //HTTP 请求中其他额外的 form data
         },
         success: function(res) {
           console.log("uploadImg...res =", res)

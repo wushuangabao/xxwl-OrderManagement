@@ -187,11 +187,13 @@ Page({
           that.setData({
             ['imgs[' + i + ']']: res.tempFilePath
           });
-          numOfImgs++;
-          if (numOfImgs == numOfJobs) {
-            wx.hideLoading(); //结束等待状态
-            isLoading = false;
-          }
+        }
+      },
+      complete: function() {
+        numOfImgs++;
+        if (numOfImgs == numOfJobs) {
+          wx.hideLoading(); //结束等待状态
+          isLoading = false;
         }
       }
     })
@@ -211,7 +213,13 @@ Page({
     for (var i = 0; i < len; i++) {
       my_operation[real_i] = operation[i];
       my_operation[real_i].j_number = data.convertRecptNum(operation[i].job_number);
-      my_operation[real_i].note = data.simplfStr(operation[i].remark, MAX_NUM_NOTE);
+      if (operation[i].remark == 'null'){
+        my_operation[real_i].note = '';
+        my_operation[real_i].remark = '';
+      }
+      else{
+        my_operation[real_i].note = data.simplfStr(operation[i].remark, MAX_NUM_NOTE);
+      }
       my_operation[real_i].index = real_i;
       my_operation[real_i].button = button;
       this.setImgPath(real_i);

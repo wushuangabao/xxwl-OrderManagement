@@ -372,6 +372,8 @@ function getLength(str) {
 
 //根据实际长度n截取字符串的前n-1实际长度的字符，加上…符号********************
 function simplfStr(remark, n) {
+  if (remark=='null')
+    return '';
   if (getLength(remark) <= n)
     return remark;
   var i = 0,
@@ -385,7 +387,7 @@ function simplfStr(remark, n) {
       len++
     } else {
       i += 2;
-      len++
+      len++;
     }
   }
   return remark.slice(0, len) + "…"
