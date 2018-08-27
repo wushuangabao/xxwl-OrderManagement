@@ -5,8 +5,6 @@ const data = require('../../utils/data.js')
 
 Page({
   data: {
-    motto: '欢迎使用本程序',
-    userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
   },
@@ -27,18 +25,12 @@ Page({
       wx.setStorageSync('role_type', res.data.role_type);
       wx.setStorageSync('company_id', res.data.company_id);
       wx.setStorageSync('company_type', res.data.company_type);
-      //延迟1秒后，进入与身份对应的页面
-      setTimeout(function() {
-        this.goTo(res.data.role_type)
-      }.bind(this), 1000)
+      this.goTo(res.data.role_type); //进入与身份对应的页面
     }
   },
 
-  //* 长按motto，用于测试********************************************
+  //（废弃）长按motto，用于测试
   bindViewTap: function() {
-    if (this.data.hasUserInfo == false) {
-      return
-    }
     var that = this
     wx.showActionSheet({
       itemList: ['企业注册', '管理通讯录', '重新登录', '创建工序'],
@@ -60,9 +52,8 @@ Page({
         else if (i == 2) {
           that.setData({
             hasUserInfo: false,
-            motto: 'TEST:重新登录',
           })
-
+          app.globalData.userInfo = null;
         }
         //设置工序（测试用）
         else if (i == 3) {
@@ -78,38 +69,11 @@ Page({
   },
 
   //* 页面显示********************************************
-  onShow: function() {
-    //////////////////////////////////////////
-    // 获取userInfo
-    //////////////////////////////////////////
-    if (app.globalData.userInfo) {
-      this.setData({
-        hasUserInfo: true,
-        userInfo: app.globalData.userInfo
-      })
-      setTimeout(function() { //延时1秒
-        data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
-        data.getIndustry() //从服务器拉取行业的信息
-      }.bind(this), 1000)
-    } else if (this.data.canIUse) {
-      app.userInfoReadyCallback = res => {
-        this.setData({
-          hasUserInfo: true,
-          userInfo: app.globalData.userInfo
-        })
-        setTimeout(function() { //延时1秒
-          data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
-          data.getIndustry() //从服务器拉取行业的信息
-        }.bind(this), 1000)
-      }
-    }
-  },
+  onShow: function() {},
 
   //* 页面加载**************************************************
   onLoad: function(e) {
-    ///////////////////////////////////////////
     // 尝试获取url中的参数
-    ///////////////////////////////////////////
     console.log("index onLoad, e =", e);
     try {
       if (e.company_id)
@@ -117,6 +81,34 @@ Page({
       if (e.friend_id)
         wx.setStorageSync('friend_id', e.user_id)
     } catch (e) {}
+    // 获取用户信息
+    var that = this;
+    if (app.globalData.userInfo) {
+      this.setData({
+        hasUserInfo: true,
+        userInfo: app.globalData.userInfo
+      })
+      setTimeout(function() { //延时1.5秒
+        that.initializeAppData();
+      }.bind(this), 1500)
+    } else if (this.data.canIUse) {
+      app.userInfoReadyCallback = res => {
+        this.setData({
+          hasUserInfo: true,
+          userInfo: app.globalData.userInfo
+        })
+        setTimeout(function() { //延时1.5秒
+          that.initializeAppData();
+        }.bind(this), 1500)
+      }
+    }
+  },
+
+  // 初始化数据---------------------------------
+  initializeAppData(){
+    data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
+    data.getIndustry() //从服务器拉取行业的信息
+    data.getRecptType() //拉取订单类型的信息
   },
 
   // 获取用户信息-----------------------------------
@@ -125,8 +117,7 @@ Page({
     this.setData({
       hasUserInfo: true
     })
-    //调用数据库查询来获取角色信息
-    data.getRoleType(this.setRoleType)
+    this.initializeAppData();
   },
 
   //根据身份不同，跳转页面----------------------------

@@ -291,30 +291,10 @@ function getParam(code, func) {
 // 行业类型 查询**********************************************
 function getIndustry() {
   var user_name, role_type, company_id, user_id;
-  try {
-    user_name = app.globalData.userInfo.nickName
-  } catch (e) {
-    console.log("getIndustry...set user_name fail")
-    user_name = ""
-  }
-  try {
-    role_type = wx.getStorageSync('role_type')
-  } catch (e) {
-    console.log("getIndustry...set role_type fail")
-    role_type = ""
-  }
-  try {
-    company_id = wx.getStorageSync('company_id')
-  } catch (e) {
-    console.log("getIndustry...set company_id fail")
-    company_id = ""
-  }
-  try {
-    user_id = wx.getStorageSync('user_id')
-  } catch (e) {
-    console.log("getIndustry...set user_id fail")
-    user_id = ""
-  }
+  user_name = app.globalData.userInfo.nickName;
+  role_type = wx.getStorageSync('role_type');
+  company_id = wx.getStorageSync('company_id');
+  user_id = wx.getStorageSync('user_id');
   var data = {
     user_id: user_id,
     user_name: user_name,
@@ -324,14 +304,25 @@ function getIndustry() {
   wxRequest(API_INDUSTRY, data, setIndustry)
 }
 
+// 订单类型 查询**************************************************
+function getRecptType() {
+  getParam("03", setRecptType)
+}
+
 ///////////////////////////////////////////////////////
 //data
 ///////////////////////////////////////////////////////
 
-// 将行业类型的数组写入app.globalData
+// 将行业类型的数组写入app.globalData----------------------------
 function setIndustry(res) {
   app.globalData.industry = res.data
   console.log("setIndustry, industry = ", app.globalData.industry)
+}
+
+// 将订单类型的数据写入app.globalData------------------------------
+function setRecptType(res) {
+  app.globalData.receiptType = res.data
+  console.log("setRecptType, receiptType = ", app.globalData.receiptType)
 }
 
 //订单类型列表
@@ -349,14 +340,13 @@ function convertRecptNum(string) {
 }
 
 // 将“数字”字符串转换为“订单类型”字符串**************************************
-function convertType(string) {
-  switch (string) {
-    case "301":
-      return "连衣裙"
-    case "302":
-      return "上衣"
-    case "303":
-      return "西服"
+function convertType(str) {
+  var recptType = app.globalData.receiptType,
+    len = recptType.length;
+  for (var i = 0; i < len; i++) {
+    if (recptType[i].entity_type == str) {
+      return recptType[i].type_name;
+    }
   }
 }
 
@@ -419,6 +409,7 @@ module.exports = {
 
   getParam: getParam,
   getIndustry: getIndustry,
+  getRecptType: getRecptType,
 
   convertType: convertType,
   convertRecptNum: convertRecptNum,

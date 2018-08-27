@@ -90,20 +90,31 @@ Page({
         format.push(img_path[i].slice(id));
       }
     var len = format.length;
-      if (len < 4)
-        for (var i = len; i < 4; i++) {
-          format[i] = '';
-        }
+    if (len < 4)
+      for (var i = len; i < 4; i++) {
+        format[i] = '';
+      }
     console.log('getImgFormat...format =', format);
     return format;
   },
 
   // 获取订单号之后，上传订单图片，清空表单----------------------------------
   uploadImg: function(res) {
-    var receipt_number = res.data.receipt_number,
+    console.log('upLoadRecpt,res =', res);
+    var receipt_number = null,
       img_path = this.hasImg(),
       len = img_path.length,
       that = this;
+    try {
+      receipt_number = res.data.receipt_number;
+    } catch (e) {
+      wx.showToast({
+        title: '提交失败!',
+        icon: 'none',
+        duration: 1800
+      });
+      return;
+    }
     console.log("uploadImg...receipt_number = ", receipt_number);
     console.log('img_path =', img_path);
     if (len > 0)
@@ -131,11 +142,11 @@ Page({
       img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
     })
     wx.hideLoading();
-    // wx.showToast({ //注释掉是因为并没有把握一定提交成功了
-    //   title: '提交成功',
-    //   icon: 'success',
-    //   duration: 1000
-    // })
+    wx.showToast({ //bug:并没有把握一定提交成功了
+      title: '提交成功',
+      icon: 'success',
+      duration: 1000
+    })
   },
 
   // 检查提交的数据是否符合格式------------------------------------
@@ -197,15 +208,15 @@ Page({
   },
 
   // 初始化订单类型数组r_type_list和r_name_list-------------------
-  setRecptParam: function(res) {
-    console.log("set recpt_list, res = ", res);
-    var len = res.data.length,
+  setRecptParam: function() {
+    var recptType = getApp().globalData.receiptType,
+      len = recptType.length,
       r_type_list = new Array(len),
       r_name_list = new Array(len + 1);
     r_name_list[0] = "请选择订单类型";
     for (var i = 0; i < len; i++) {
-      r_name_list[i + 1] = res.data[i].type_name;
-      r_type_list[i] = res.data[i].entity_type;
+      r_name_list[i + 1] = recptType[i].type_name;
+      r_type_list[i] = recptType[i].entity_type;
     }
     this.setData({
       r_type_list: r_type_list,
@@ -233,7 +244,7 @@ Page({
 
   //* 监听页面加载**************************************
   onLoad: function(options) {
-    data.getParam("03", this.setRecptParam) // 设置订单类型
+    this.setRecptParam() // 设置订单类型
     data.getFriendsList("1", this.setCif) // 获取客户信息
   },
 

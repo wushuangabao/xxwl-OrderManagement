@@ -31,10 +31,10 @@ Page({
 
   // 设置this.data中的receipt数组-----------------------------------
   setRecptInfo: function(res) {
+    console.log("setRecptInfo...res.data =", info);
     var info = res.data,
       r_number = data.convertRecptNum(res.data[0].receipt_number),
       str = 'recpt_info.r_number';
-    console.log("setRecptInfo...res.data =", info);
     if (info[0].remark == '')
       info[0].remark = '无备注';
     this.setData({

@@ -15,7 +15,8 @@
   ],
   "networkTimeout": {
     "request": 10000,
-    "downloadFile": 3000
+    "downloadFile": 5000,
+    "upLoadFile":5000
   },
   "window": {
     "backgroundTextStyle": "light",
