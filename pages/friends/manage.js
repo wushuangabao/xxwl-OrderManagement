@@ -9,7 +9,7 @@ Page({
   data: {
     titles: [{
         index: 0,
-        name: '其他',
+        name: '朋友',
         color_b: '#F8F8F8',
         color_f: '#9E9E9E'
       },
@@ -53,7 +53,7 @@ Page({
         return "2";
       case '伙伴':
         return "3";
-      case '其他':
+      case '朋友':
         return "0";
     }
   },
@@ -132,23 +132,37 @@ Page({
       str3 = 'friendsInfo[' + id + '].role_type',
       user_type = (this.data.multiIndex[0] + 1).toString(),
       role_type_name = this.data.multiArray[1][this.data.multiIndex[1]],
-      role_type = user_type, //角色代码，默认和role_type一致（因为还没有数据）
+      role_type = user_type, //角色代码，默认和user_type一致（因为还没有数据）
       friend = this.data.friendsInfo[id];
     console.log("bindMultiPickerChange...friend =", friend);
     if (user_type == "2") //如果是员工，角色代码变更
       role_type = this.data.worker_code[this.data.multiIndex[1]];
-    console.log("bindMultiPickerChange...user_type = ", user_type);
+    data.changeFriendInfo(friend.user_id, user_type, role_type, friend.user_type, friend.role_type);
     this.setData({
       [str1]: role_type_name,
       [str2]: user_type,
       [str3]: role_type,
     });
-    data.changeFriendInfo(friend.user_id, user_type, role_type);
+    if (user_type != this.convertType(this.data.index))
+      this.removeFriend(id);
+  },
+
+  // 从friend数组中移除一条数据
+  removeFriend: function(id) {
+    var friends = this.data.friendsInfo,
+      newLen = friends.length - 1;
+    for (var i = id; i < newLen; i++) {
+      friends[i] = friends[i + 1];
+    }
+    friends.pop();
+    this.setData({
+      friendsInfo: friends,
+    });
   },
 
   //* 滚动MultiPicker********************************************
   bindMultiPickerColumnChange: function(e) {
-   // console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
+    // console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
     var data_ = {
         multiArray: this.data.multiArray,
         multiIndex: this.data.multiIndex
@@ -174,7 +188,7 @@ Page({
 
   // 根据服务器拉取的数据，设置员工的角色类型表-------------------------
   setSelector: function(res) {
-    console.log("setSelector(初始化员工的类型表)...res =",res)
+    console.log("setSelector(初始化员工的类型表)...res =", res)
     var len = res.data.length,
       worker_code = new Array(len),
       worker = new Array(len);
@@ -195,7 +209,7 @@ Page({
     data.getParam("01", this.setSelector)
   },
 
-   //* 生命周期函数--监听页面显示*************************************
+  //* 生命周期函数--监听页面显示*************************************
 
   onShow: function() {
     //设置tabBar
@@ -238,7 +252,7 @@ Page({
   },
 
   //* 转发********************************************
-  onShareAppMessage: function (res) {
+  onShareAppMessage: function(res) {
     if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }

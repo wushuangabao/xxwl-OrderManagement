@@ -215,7 +215,7 @@ function getFriendsList(user_type, func) {
 }
 
 // 通讯录：用户role调整**********************************************
-function changeFriendInfo(user_id1, user_type1, role_type1) {
+function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_type0) {
   var user_id = wx.getStorageSync('user_id');
   var data = {
     user_id: user_id,
@@ -226,6 +226,8 @@ function changeFriendInfo(user_id1, user_type1, role_type1) {
     user_event: "01",
     user_type1: user_type1, //0-3：其他、客户、员工、伙伴
     role_type1: role_type1,
+    user_type0: user_type0, //调整前的用户类型
+    role_type0: role_type0, //调整前的角色类型
   }
   wxRequest(API_USERDEAL, data, putOutInfo)
 }
@@ -276,7 +278,14 @@ function changeCorparam(event, param, func) {
 
 //输出服务器返回的信息------------------------------------------
 function putOutInfo(res) {
-  console.log(res)
+  console.log(res);
+  try{
+    wx.showToast({
+      title: res.data.error,
+      icon: 'none',
+      duration: 1200
+    });
+  }catch(e){}
 }
 
 // 角色类型、订单类型、工单类型的代码\名称查询********************
