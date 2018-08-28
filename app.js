@@ -66,6 +66,7 @@ App({
   },
 
   globalData: {
+    wantRegisterCompany: true,
     userInfo: null,
     industry: null, //行业类型数据，从服务器拉取
     tabBar: {

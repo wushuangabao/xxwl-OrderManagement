@@ -35,7 +35,7 @@ Page({
     index: 3,
     friendsInfo: [],
     multiArray: [
-      ['客户', '员工', '伙伴'],
+      ['客户', '员工', '伙伴', '朋友'],
       ['']
     ],
     worker: [],
@@ -43,10 +43,12 @@ Page({
   },
 
   // 中文转化为数字---------------------------------------------------
-  // 将Tit的index转换为user_type
   // “1”：客户 “2”：员工 “3”：伙伴 “0”：其他
-  convertType: function(id) {
-    switch (this.data.titles[id].name) {
+  convertTitType: function(id) { //id是Tit的index
+    return this.convertType(this.data.titles[id].name);
+  },
+  convertType: function(str) { // 将user_type中文转化为代码
+    switch (str) {
       case '客户':
         return "1";
       case '员工':
@@ -61,7 +63,7 @@ Page({
   //* 点击Tit事件*****************************************************
   changeTit: function(event) {
     var id = event.currentTarget.dataset.id,
-      user_type = this.convertType(id);
+      user_type = this.convertTitType(id);
     this.changeTitWXSS(id)
     data.getFriendsList(user_type, this.setFriendsInfo)
   },
@@ -82,20 +84,25 @@ Page({
     })
   },
 
-  // 根据worker和worker_code两张表，转换角色类型的格式---------------------
+  // 转换role_type的格式---------------------
   convertRole: function(obj) {
-    if (obj == "1")
+    if (obj === "100")
       return "客户"
-    else if (obj == "3")
+    else if (obj === "300")
       return "伙伴"
-    else if (obj == "0")
-      return "朋友"
-    //
+    else if (obj == "000")
+      return "朋友";
+    if (obj === "客户")
+      return "100"
+    else if (obj === "伙伴")
+      return "300"
+    else if (obj === "朋友")
+      return "000";
     var name_list = this.data.worker,
       code_list = this.data.worker_code,
       len = name_list.length;
     for (var i = 0; i < len; i++) {
-      if (obj == name_list[i])
+      if (obj === name_list[i])
         return code_list[i];
       if (obj == code_list[i])
         return name_list[i];
@@ -127,27 +134,34 @@ Page({
   //* 点击MultiPicker的确定按钮****************************************
   bindMultiPickerChange: function(e) {
     var id = e.currentTarget.dataset.id,
+      role_type_name = null,
+      role_type = null,
+      user_type_name = this.data.multiArray[0][this.data.multiIndex[0]],
       str1 = 'friendsInfo[' + id + '].role_type_name',
       str2 = 'friendsInfo[' + id + '].user_type',
       str3 = 'friendsInfo[' + id + '].role_type',
-      user_type = (this.data.multiIndex[0] + 1).toString(),
-      role_type_name = this.data.multiArray[1][this.data.multiIndex[1]],
-      role_type = user_type, //角色代码，默认和user_type一致（因为还没有数据）
+      user_type = this.convertType(user_type_name),
       friend = this.data.friendsInfo[id];
-    console.log("bindMultiPickerChange...friend =", friend);
-    if (user_type == "2") //如果是员工，角色代码变更
+    if (user_type != '2') {
+      role_type_name = user_type_name;
+      role_type = this.convertRole(role_type_name);
+    } else { //是员工
+      role_type_name = this.data.multiArray[1][this.data.multiIndex[1]];
       role_type = this.data.worker_code[this.data.multiIndex[1]];
+    }
+    console.log("bindMultiPickerChange...friend =", friend);
+    console.log("changeFriendInfo(", friend.user_id, user_type, role_type, friend.user_type, friend.role_type, ")");
     data.changeFriendInfo(friend.user_id, user_type, role_type, friend.user_type, friend.role_type);
     this.setData({
       [str1]: role_type_name,
       [str2]: user_type,
       [str3]: role_type,
     });
-    if (user_type != this.convertType(this.data.index))
+    if (user_type != this.convertTitType(this.data.index))
       this.removeFriend(id);
   },
 
-  // 从friend数组中移除一条数据
+  // 从friend数组中移除一条数据---------------------------------
   removeFriend: function(id) {
     var friends = this.data.friendsInfo,
       newLen = friends.length - 1;
@@ -178,6 +192,9 @@ Page({
           data_.multiArray[1] = this.data.worker;
           break;
         case '伙伴':
+          data_.multiArray[1] = [''];
+          break;
+        case '朋友':
           data_.multiArray[1] = [''];
           break;
       }

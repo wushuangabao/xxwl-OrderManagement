@@ -2,11 +2,12 @@ AppSecret:4b1176fdf52fa6bb86f0969bc2569dbb
 ROOT Xiangpa
 
 role_type
+000朋友
 01 管理员 anzai736311
 02 销售（录单员）wushuangBaOY_WHA
 03-99 101-... 工人
-xiangyangle666 101
 100 客户
+300 伙伴
 
 
 网上资料：

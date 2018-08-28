@@ -6,8 +6,8 @@
     <text class="userinfo-nickname">{{userInfo.nickName}}</text>
 
     <view style='display:flex;flex-direction:column;'>
-      <picker bindchange="bindPickerChange" value="{{index}}" range="{{industry_name}}" class="picker">
-        {{industry_name[index]}}
+      <picker mode="multiSelector" bindcolumnchange="bindPickerColumnChange" bindchange="bindPickerChange" value="{{index}}" range="{{industry_name}}" class="picker">
+        {{industry_name[1][index[1]]}}
       </picker>
       <input class="input" placeholder='请输入注册企业名称' cursor-spacing='20' maxlength='16' bindinput="bindKeyInput" />
     </view>

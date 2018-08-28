@@ -17,7 +17,7 @@ Page({
     } else {
       console.log("setRoleType...sys_modify读取失败")
     }
-    if (res.data.login_flag == "1") { //用户是第一次使用小程序
+    if (res.data.login_flag == "1" || (res.data.company_id == "00000" && app.globalData.wantRegisterCompany)) { //用户是第一次使用小程序，或者用户没有公司
       wx.redirectTo({
         url: '../register/company/company'
       })
