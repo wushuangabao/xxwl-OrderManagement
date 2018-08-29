@@ -78,7 +78,7 @@ Page({
     try {
       if (e.company_id)
         wx.setStorageSync('company_id', e.company_id)
-      if (e.friend_id)
+      if (e.user_id)
         wx.setStorageSync('friend_id', e.user_id)
     } catch (e) {}
     // 获取用户信息
