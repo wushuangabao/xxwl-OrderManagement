@@ -105,7 +105,7 @@ Page({
   },
 
   // 初始化数据---------------------------------
-  initializeAppData(){
+  initializeAppData() {
     data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
     data.getIndustry() //从服务器拉取行业的信息
     data.getRecptType() //拉取订单类型的信息
@@ -126,17 +126,17 @@ Page({
       wx.redirectTo({
         url: '/pages/recpt/input'
       })
-    } else if (s == "100") { //客户
-      wx.redirectTo({
-        url: '/pages/inquiry/inquiry'
-      })
     } else if (s == "01") { //管理员
       wx.redirectTo({
         url: '/pages/friends/manage'
       })
-    } else { //剩下的是不同工种的工人
+    } else if (parseInt(s) > 100 && parseInt(s) < 200) { //不同工种的工人
       wx.redirectTo({
         url: '/pages/operate/operate'
+      })
+    } else {
+      wx.redirectTo({
+        url: '/pages/inquiry/inquiry'
       })
     }
   },
