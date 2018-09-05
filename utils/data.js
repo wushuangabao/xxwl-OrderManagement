@@ -58,7 +58,7 @@ function wxRequest(url, data, resolve) {
 
 // 获取role_type************************************************
 function getRoleType(setRoleType) {
-  var company_id, friend_id, user_id;
+  var friend_company_id, friend_id, user_id;
   if (user_id = wx.getStorageSync('user_id'))
     console.log("getRoleType...成功读取缓存中的user_id =", user_id)
   else {
@@ -66,9 +66,9 @@ function getRoleType(setRoleType) {
     return;
   }
   try {
-    company_id = wx.getStorageSync('company_id')
+    friend_company_id = wx.getStorageSync('friend_company_id')
   } catch (e) {
-    company_id = ''
+    friend_company_id = ''
   }
   try {
     friend_id = wx.getStorageSync('friend_id')
@@ -79,7 +79,7 @@ function getRoleType(setRoleType) {
     user_id: user_id,
     nickname: app.globalData.userInfo.nickName,
     image_address: app.globalData.userInfo.avatarUrl,
-    company_id: company_id,
+    company_id: friend_company_id,
     friend_id: friend_id,
   };
   wxRequest(API_LOGON, data, setRoleType)
@@ -290,9 +290,10 @@ function putOutInfo(res) {
 
 // 角色类型、订单类型、工单类型的代码\名称查询********************
 function getParam(code, func) {
+  var company_type=wx.getStorageSync('company_type');
   wxRequest(API_PARAQRY, {
-    industry_code: "10", //行业代码
-    industry_type: "101", //行业类型
+    industry_code: company_type.slice(0,2), //行业代码
+    industry_type: company_type.slice(2), //行业类型
     entity_code: code, //实体代码 "01"角色类型 "02"工单类型 "03"订单类型
   }, func)
 }

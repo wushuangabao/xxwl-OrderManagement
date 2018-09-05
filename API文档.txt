@@ -4,8 +4,8 @@ ROOT Xiangpa
 role_type
 000朋友
 01 管理员 anzai736311
-02 销售（录单员）wushuangBaOY_WHA
-03-99 101-... 工人
+02 销售（录单员）
+101-199 工人
 100 客户
 300 伙伴
 

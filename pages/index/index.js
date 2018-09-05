@@ -17,15 +17,25 @@ Page({
     } else {
       console.log("setRoleType...sys_modify读取失败")
     }
-    if (res.data.login_flag == "1" || (res.data.company_id == "00000" && app.globalData.wantRegisterCompany)) { //用户是第一次使用小程序，或者用户没有公司
+    wx.setStorageSync('company_type', res.data.company_type);
+    data.getRecptType(); //拉取订单类型的信息
+    if (res.data.login_flag == "1") { //用户是第一次使用小程序
+      try {
+        wx.setStorageSync('company_id', res.data.company_id);
+      } catch (e) {}
       wx.redirectTo({
         url: '../register/company/company'
-      })
+      });
+    } else if (res.data.company_id == "00000" && app.globalData.wantRegisterCompany) { //用户是“朋友”
+      wx.setStorageSync('company_id', "00000");
+      wx.redirectTo({
+        url: '../register/company/company'
+      });
     } else if (res.data.role_type != null) { //用户不是第一次使用
       wx.setStorageSync('role_type', res.data.role_type);
       wx.setStorageSync('company_id', res.data.company_id);
       wx.setStorageSync('company_type', res.data.company_type);
-      this.goTo(res.data.role_type); //进入与身份对应的页面
+      this.goTo(res.data.role_type);
     }
   },
 
@@ -77,7 +87,7 @@ Page({
     console.log("index onLoad, e =", e);
     try {
       if (e.company_id)
-        wx.setStorageSync('company_id', e.company_id)
+        wx.setStorageSync('friend_company_id', e.company_id)
       if (e.user_id)
         wx.setStorageSync('friend_id', e.user_id)
     } catch (e) {}
@@ -108,7 +118,6 @@ Page({
   initializeAppData() {
     data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
     data.getIndustry() //从服务器拉取行业的信息
-    data.getRecptType() //拉取订单类型的信息
   },
 
   // 获取用户信息-----------------------------------
