@@ -127,7 +127,7 @@ Page({
             'image_id': receipt_number + '_' + i
           },
           success: function(res) {
-            console.log("res.data =", res.data);
+            console.log("uploadFile...res.data =", res.data);
           }
         });
     this.finishInput();

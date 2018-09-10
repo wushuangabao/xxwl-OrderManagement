@@ -238,6 +238,7 @@ Page({
   // 查询订单图片-------------------------------------------------
   getRecptImg: function(status, receipt_number, id, func) {
     var gmt_modify = wx.getStorageSync('gmt_modify'),
+      BillQueryUrl = data.URL_BASE + "BillQueryServlet",
       that = this;
     if (gmt_modify == '')
       gmt_modify = '9999-12-31.0';
@@ -251,7 +252,7 @@ Page({
       gmt_modify: gmt_modify,
     };
     wx.request({
-      url: "http://140.143.154.96/day07/BillQueryServlet",
+      url: BillQueryUrl,
       data: myData,
       method: 'POST',
       header: {

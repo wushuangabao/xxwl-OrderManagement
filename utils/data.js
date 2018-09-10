@@ -4,7 +4,7 @@
 
 // URL通用部分
 const URL_BASE = "https://www.xiangxun1.com/day07/", // http://140.143.154.96
-  Img_Url = 'http://121.42.193.223:8088/uploads/picture/';
+  Img_Url = 'https://www.gongnang.com/uploads/files/';
 
 // 用户授权接口
 var API_LOGON = URL_BASE + "logonAuthServlet",
@@ -428,4 +428,5 @@ module.exports = {
   Img_Url: Img_Url,
   API_IMGUP: API_IMGUP,
   API_IMGDOWN: API_IMGDOWN,
+  URL_BASE: URL_BASE,
 }
