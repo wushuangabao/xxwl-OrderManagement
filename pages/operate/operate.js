@@ -32,7 +32,6 @@ Page({
     isAdmin: false,
     note: '',
     //isMoving: false,
-    recptArray: [],
   },
 
   //* 点击“领取”或“完工”按钮***********************************
@@ -43,9 +42,12 @@ Page({
     if (operation.button == '领取') {
       data.upLoadOpertGet(job_number);
     } else if (operation.button == '完工') {
-      data.upLoadOpertDone(job_number, operation.remark);
+      //跳转到more/input页面----------
+      wx.navigateTo({
+        url: "/pages/operate/more/input?job_number=" + job_number + "&receipt_number=" + operation.receipt_number + "&job_name=" + operation.job_name
+      })
     }
-    //从operation和imgs数组中移除数据
+    //从operation和imgs数组中移除数据-------
     operation = this.data.operation;
     var imgs = this.data.imgs,
       len = operation.length - 1;
@@ -59,29 +61,6 @@ Page({
       operation: operation,
       imgs: imgs
     })
-  },
-
-  //（弃用）播放动画
-  playAnima: function(i) {
-    var str = 'operation[' + i + '].animaData'
-    var animation = wx.createAnimation({
-      duration: 200, //缩小动画的持续时间
-    })
-    this.animation = animation
-    setTimeout(function() {
-      animation.scale(0.25, 0.25).rotate(30).step()
-      this.setData({
-        [str]: animation.export()
-      })
-    }.bind(this), 100) //缩小动画播放的延迟时间
-    setTimeout(function() {
-      animation.scale(1, 1).rotate(0).step({
-        duration: 200
-      })
-      this.setData({
-        [str]: animation.export()
-      })
-    }.bind(this), 500) //恢复原来大小的动画
   },
 
   //* 点击“已完成”、“待领取”或“未完成”**************************
@@ -128,169 +107,84 @@ Page({
     }
   },
 
-  //* 点击备注输入框*****************
-  catchNoteTap: function(e) {},
-
-  //* 输入备注****************************************
-  bindNoteInput: function(e) {
-    var i = e.currentTarget.dataset.id,
-      note = e.detail.value;
-    if (note != '') {
-      var str1 = 'operation[' + i + '].remark', //完整的备注
-        str2 = 'operation[' + i + '].note'; //缩略的备注
-      this.setData({
-        [str1]: note,
-        [str2]: data.simplfStr(note, MAX_NUM_NOTE)
-      })
-    }
-  },
-
-  //（废弃）点击图片，放大预览
-  catchTapImg: function(e) {
-    var id = e.currentTarget.dataset.id,
-      that = this;
-    wx.getImageInfo({
-      src: that.data.imgs[id],
-      success: function(res) {
-        var width = res.width,
-          height = res.height;
-        console.log("catchTapImg...", width, "X", height);
-        wx.navigateTo({
-          url: "/pages/others/image?width=" + width + "&height=" + height + "&path=" + that.data.imgs[id]
-        })
-      }
-    });
-  },
-
   // 设置operation数据------------------------------------------------------------
   setJobTable: function(res) {
+    if (res.data == null) {
+      wx.hideLoading();
+      return;
+    }
     var operation = res.data,
       len = operation.length,
       my_operation = this.data.operation,
       real_i = my_operation.length,
-      old_len = real_i,
-      button = '领取';
+      old_len = real_i;
     console.log("setJobTable...res.data =", operation);
-    if (this.data.index == 1)
-      button = '完工';
+    //遍历res.data数组--------------------------------
     for (var i = 0; i < len; i++) {
-      my_operation[real_i] = operation[i];
+      my_operation[real_i] = operation[i]; //复制operation[i]给my_operation[real_i]
       my_operation[real_i].j_number = data.convertRecptNum(operation[i].job_number);
+      //备注处理----------------------------
       if (operation[i].remark == 'null') {
         my_operation[real_i].note = '';
         my_operation[real_i].remark = '';
       } else {
         my_operation[real_i].note = data.simplfStr(operation[i].remark, MAX_NUM_NOTE);
       }
+      //设置index---------------------
       my_operation[real_i].index = real_i;
-      my_operation[real_i].button = button;
+      //判断title---------------------
+      if (this.data.index == 0) //已完成
+        my_operation[real_i].img_path_1 = data.Img_Url + operation[i].job_number + '_0' + operation[i].image_1;
+      else {
+        my_operation[real_i].img_path_1 = data.Img_Url + operation[i].receipt_number + '_0' + operation[i].image_1;
+        if (this.data.index == 1) //未完成
+          my_operation[real_i].button = "完工";
+        else //待领取
+          my_operation[real_i].button = "领取";
+      }
       real_i++;
     }
+    //如果有新的数据加载进来-------------
     if (real_i > old_len) {
       wx.setStorageSync('apply_receive_time', my_operation[real_i - 1].apply_receive_time);
       this.setData({
         operation: my_operation
       });
-      this.setImgPath(old_len, real_i);
-    } else {
-      wx.hideLoading();
+    }
+    //如果没有新的数据加载进来----------- 
+    else {
       wx.showToast({
         title: '没有更多的了',
         icon: 'none',
-        duration: 900
+        duration: 1000
       });
     }
-  },
-
-  // 根据订单号设置old_len,real_i之间的工单的recptArrayId----------------------------------
-  setImgPath: function(old_len, real_i) {
-    var recpt_num, hasRecptId = -1,
-      recptArray = this.data.recptArray,
-      len = recptArray.length;
-    for (var i = old_len; i < real_i; i++) {
-      recpt_num = this.data.operation[i].receipt_number;
-      for (var j = 0; j < len; j++)
-        if (recpt_num == recptArray[j].num) {
-          hasRecptId = j;
-          break;
-        }
-      if (hasRecptId > -1) { //如果订单号已经存在
-        this.setData({
-          ['operation[' + i + '].recptArrayId']: hasRecptId,
-        });
-      } else { //如果订单号不存在
-        var id = recptArray.length;
-        recptArray.push({
-          num: recpt_num
-        });
-        this.setData({
-          recptArray: recptArray,
-          ['operation[' + i + '].recptArrayId']: id,
-        })
-        //todo：确定status是否填"0"（表示未完成）
-        this.getRecptImg("0", recpt_num, id, this.setRecptImg);
-      }
-      hasRecptId = -1;
-    }
+    //隐藏loading
     wx.hideLoading();
   },
 
-  // 查询订单图片-------------------------------------------------
-  getRecptImg: function(status, receipt_number, id, func) {
-    var gmt_modify = wx.getStorageSync('gmt_modify'),
-      BillQueryUrl = data.URL_BASE + "BillQueryServlet",
-      that = this;
-    if (gmt_modify == '')
-      gmt_modify = '9999-12-31.0';
-    var myData = {
-      user_id: wx.getStorageSync('user_id'),
-      work_status: status,
-      user_name: app.globalData.userInfo.nickName,
-      role_type: wx.getStorageSync('role_type'),
-      company_id: wx.getStorageSync('company_id'),
-      receipt_number: receipt_number,
-      gmt_modify: gmt_modify,
-    };
-    wx.request({
-      url: BillQueryUrl,
-      data: myData,
-      method: 'POST',
-      header: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-      },
-      success: function(res) { //将查询到的image写入recptArray[id]
-        console.log("setRecptImg..........id =")
-        console.log(id)
-        var num = that.data.recptArray[id].num,
-          str1 = 'recptArray[' + id + '].image_1',
-          str2 = 'recptArray[' + id + '].image_2',
-          str3 = 'recptArray[' + id + '].image_3',
-          str4 = 'recptArray[' + id + '].image_4';
-        that.setData({
-          [str1]: data.Img_Url + num + '_0' + res.data[0].image_1,
-          [str2]: res.data[0].image_2,
-          [str3]: res.data[0].image_3,
-          [str4]: res.data[0].image_4,
-        });
-      },
-      fail: (err) => console.log(err)
-    })
-  },
-
-  //* 点击某条工单-->查询订单详情********************************************
+  //* 点击某条工单-->查询订单/工单详情********************************************
   inquiryRecpt: function(event) {
-    var r_number = event.currentTarget.dataset.num,
-      index = event.currentTarget.dataset.id,
-      recpt = this.data.recptArray[this.data.operation[index].recptArrayId],
-      path1 = recpt.image_1;
-    wx.setStorageSync('imgUrl_1', path1);
-    wx.setStorageSync('r_number', r_number);
-    wx.setStorageSync('imgUrl_2', recpt.image_2);
-    wx.setStorageSync('imgUrl_3', recpt.image_3);
-    wx.setStorageSync('imgUrl_4', recpt.image_4);
-    wx.navigateTo({
-      url: '/pages/recpt/info'
-    })
+    var index = event.currentTarget.dataset.id,
+      operation = this.data.operation[index];
+    wx.setStorageSync('imgUrl_1', operation.img_path_1);
+    wx.setStorageSync('imgUrl_2', operation.image_2);
+    wx.setStorageSync('imgUrl_3', operation.image_3);
+    wx.setStorageSync('imgUrl_4', operation.image_4);
+    //判断title的index
+    if (this.data.index == 0) //title为“已完成”
+    {
+      wx.setStorageSync('info', operation);
+      wx.navigateTo({
+        url: '/pages/progress/info'
+      })
+    } else //title为“未完成”或“待领取”
+    {
+      wx.setStorageSync('r_number', operation.receipt_number);
+      wx.navigateTo({
+        url: '/pages/recpt/info'
+      })
+    }
   },
 
   //* 生命周期函数--监听页面加载***********************************************
@@ -302,9 +196,6 @@ Page({
     data.getOpertData("0", this.setJobTable); //"0"待领取 "1"未完成 "2"已完成
     this.changeTitWXSS(2); //切换到"待领取"页
   },
-
-  //* 生命周期函数--监听页面初次渲染完成
-  onReady: function() {},
 
   //* 生命周期函数--监听页面显示******************************************
   onShow: function() {
@@ -322,27 +213,6 @@ Page({
         isAdmin: true
       })
     }
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function() {
-
   },
 
   //* 页面上拉触底事件的处理函数
@@ -378,60 +248,4 @@ Page({
       path: path,
     }
   },
-
-  // //手指刚放到屏幕触发
-  // touchS: function(e) {
-  //   //判断是否只有一个触摸点
-  //   if (e.touches.length == 1) {
-  //     this.setData({
-  //       //记录触摸起始位置的X坐标
-  //       startX: e.touches[0].clientX
-  //     })
-  //   }
-  // },
-
-  // //触摸时触发，手指在屏幕上每移动一次，触发一次
-  // touchM: function(e) {
-  //   console.log("touchM")
-  //   if (this.data.isMoving) { //如果已经触发滑动事件，就不要重复触发了
-  //     return
-  //   }
-  //   var Width = 80 //如果滑动距离小于这个值，滑动视作无效
-  //   if (e.touches.length == 1) {
-  //     //记录触摸点位置的X坐标
-  //     var moveX = e.touches[0].clientX;
-  //     //计算手指起始点的X坐标与当前触摸点的X坐标的差值（向左划为正，向右滑为负）
-  //     var disX = this.data.startX - moveX;
-  //     console.log("disX==" + disX)
-  //     //→
-  //     if (disX < -Width) {
-  //       var old_index = this.data.index
-  //       if (old_index > 0) {
-  //         this.changeTitWXSS(old_index - 1)
-  //         this.setOperations()
-  //       }
-  //       this.setData({
-  //         isMoving: true
-  //       })
-  //     }
-  //     //←
-  //     else if (disX >= Width) {
-  //       var old_index = this.data.index
-  //       if (old_index < 2) {
-  //         this.changeTitWXSS(old_index + 1)
-  //         this.setOperations()
-  //       }
-  //       this.setData({
-  //         isMoving: true
-  //       })
-  //     }
-  //   }
-  // },
-
-  // //触摸结束
-  // touchE: function(e) {
-  //   this.setData({
-  //     isMoving: false
-  //   })
-  // }
 })

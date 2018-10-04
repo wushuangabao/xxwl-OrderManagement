@@ -74,14 +74,38 @@ Page({
         content: '是否确认您的填写无误并立刻注册？',
         success: function(res) {
           wx.setStorageSync('role_type', "01") //设置用户角色为管理员
-          //用户点击确定，页面跳转
+          //用户点击确定
           if (res.confirm) {
-            data.registerCompany(company_name, that.getIndustryType())
-            wx.redirectTo({
-              url: '/pages/index/index',
-            })
+            data.registerCompany(company_name, that.getIndustryType(), that.registerSuccess);
           }
         }
+      })
+    }
+  },
+
+  //注册成功------------------
+  registerSuccess: function(res) {
+    if (res.data.company_id) {
+      // 将company_id写入缓存
+      wx.setStorageSync('company_id', res.data.company_id);
+      wx.showToast({
+        title: '注册成功',
+        icon: 'success',
+        duration: 1000
+      })
+      //页面跳转
+      setTimeout(function() { //延时1秒
+        wx.redirectTo({
+          url: '/pages/index/index',
+        });
+      }.bind(this), 1000);
+      //如果注册失败
+    } else {
+      console.log('registerCompany...没有得到company_id');
+      wx.showModal({
+        title: '提示',
+        content: "注册失败！请重试...",
+        showCancel: false
       })
     }
   },
@@ -93,7 +117,6 @@ Page({
       name_list = this.data.industry_name_list,
       len = name_list.length,
       type_list = this.data.industry_type;
-    console.log("***industry_name =",name,'***')
     for (var i = 0; i < len; i++) {
       if (name === name_list[i]) {
         return type_list[i];

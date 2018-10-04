@@ -24,13 +24,19 @@ Page({
       processData = [],
       real_i = 0;
     console.log("setProcessData...job_table =", job_table);
+    if (len <= 1)
+      return;
     for (var i = 0; i < len; i++) {
-      var job = job_table[i]
+      var job = job_table[i];
+      if (job.remark == "null") {
+        job.remark = "";
+      }
       //如果已处理
       if (job.work_status == "2") {
         processData[real_i] = {
-          name: job.job_name,
+          job_name: job.job_name,
           user_name: job.user_name,
+          job_number: job.job_number,
           time_date: this.getDate(job.finish_time),
           time_hour: this.getHour(job.finish_time),
           line_color: Dark_Line_Color,
@@ -38,21 +44,24 @@ Page({
           icon: '/imgs/check-circle.png',
           state: '已完成',
           note: job.remark,
+          id: real_i,
         }
         real_i++;
       }
       //如果正在处理
       else if (job.work_status == "1") {
         processData[real_i] = {
-          name: job.job_name,
+          job_name: job.job_name,
           user_name: job.user_name,
+          job_number: job.job_number,
           time_date: this.getDate(job.finish_time), //名为finish_time，其实是领取时间
           time_hour: this.getHour(job.finish_time), //名为finish_time，其实是领取时间
           line_color: Light_Line_Color,
           font_color: Dark_Font_Color,
           icon: '/imgs/time-circle.png',
           state: '处理中',
-          note: job.remark
+          note: job.remark,
+          id: real_i,
         }
         real_i++;
       }
@@ -61,11 +70,13 @@ Page({
       //如果还没处理
       else {
         processData[real_i] = {
-          name: job.job_name,
+          job_name: job.job_name,
+          job_number: job.job_number,
           line_color: Light_Line_Color,
           font_color: Light_Font_Color,
           icon: '/imgs/undo-circle.png',
           note: job.remark,
+          id: real_i,
         }
         real_i++;
       }
@@ -73,6 +84,23 @@ Page({
     processData[real_i - 1].line_color = "#ffffff";
     this.setData({
       processData: processData,
+    })
+  },
+
+  //* 查看工单详情************************************************
+  bindTapToInfo: function(res) {
+    var id = res.currentTarget.dataset.id,
+      progressData = this.data.processData[id];
+    console.log("bindTapToInfo...progressData=", progressData);
+    //todo：设置图片格式的缓存
+    //
+    wx.setStorageSync('info',{
+      job_name: progressData.job_name,
+      job_number: progressData.job_number,
+      remark: progressData.note,
+    })
+    wx.navigateTo({
+      url: "/pages/progress/info"
     })
   },
 
@@ -105,7 +133,7 @@ Page({
   onLoad: function(options) {},
 
   //* 转发********************************************
-  onShareAppMessage: function (res) {
+  onShareAppMessage: function(res) {
     if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }

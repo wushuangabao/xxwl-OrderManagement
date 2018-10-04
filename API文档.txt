@@ -220,4 +220,28 @@ String Next_associate_name=request.getParameter("next_associate_name");
 gmt_modify
 9999-12-31.0
 
-http://121.42.193.223:8088/uploads/picture
+
+RatingCreateServlet点赞接口
+:
+String User_id = request.getParameter("user_id");
+String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+
+String Company_id = request.getParameter("company_id");
+	
+String Their_entity_type=request.getParameter("their_entity_type");  //点赞主体的代码，工单是02，订单是03
+String Their_associate_type=request.getParameter("their_associate_type"); //所点赞主体的类型代码，如工单领料是201
+String Their_associate_number=request.getParameter("their_associate_number");
+ //点赞主体的编号
+
+
+String Their_associate_name=request.getParameter("their_associate_name");
+ //点赞主体类型名称，如领料
+
+String Rating_type=request.getParameter("rating_type");
+	//点赞类型代码，101表示点赞，102表示评论
+String Rating_name=request.getParameter("rating_name");  //点赞类型名称，101是名称为点赞，102名称为评论
+
+String Remark=request.getParameter("remark"); //如果是点赞是，直接赋值"1",如果是评论的时候，就是评论内容
+

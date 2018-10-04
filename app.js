@@ -12,33 +12,17 @@ App({
     wx.login({
       success: function(res) {
         var that = this;
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        if (res.code) {
-          try { //尝试读取缓存中的user_id
-            var user_id = wx.getStorageSync('user_id');
-            if (user_id)
-              console.log("wx.login...缓存中的user_id =", user_id);
-            else //如果不能拿到缓存中的user_id，就向服务器获取
-              wx.request({
-                url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wx8fcba1965a6c333f&secret=f736d11024fd3d60e173e90655d3f95c&js_code=' + res.code + '&grant_type=authorization_code',//1840133524的秘钥为4b1176fdf52fa6bb86f0969bc2569dbb
-                method: "POST",
-                success: function(res) {
-                  wx.setStorageSync('user_id', res.data.openid)
-                  console.log("wx.login...成功向服务器获取user_id!")
-                }
-              })
-          } catch (e) { //如果不能拿到缓存中的user_id，就向服务器获取
-            wx.request({
-              url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wx8fcba1965a6c333f&secret=f736d11024fd3d60e173e90655d3f95c&js_code=' + res.code + '&grant_type=authorization_code',
-              method: "POST",
-              success: function(res) {
-                wx.setStorageSync('user_id', res.data.openid)
-                console.log("wx.login...成功向服务器获取user_id!")
-              }
-            })
-          }
-        } else {
-          console.log('获取用户登录态失败！' + res.errMsg)
+        if (res.code)
+          wx.setStorageSync('code', res.code); //准备发送code到后台换取 openId, sessionKey, unionId
+        else
+          console.log('wx.login.....code获取失败' + res.errMsg);
+        //尝试读取缓存中的user_id
+        var user_id = wx.getStorageSync('user_id');
+        if (user_id)
+          console.log("wx.login...缓存中的user_id =", user_id);
+        else {
+          console.log("wx.login...缓存中的user_id获取失败");
+          //wx.setStorageSync('user_id', '00000');
         }
       }
     })

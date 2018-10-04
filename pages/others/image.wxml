@@ -1,4 +1,0 @@
-<!--pages/others/image.wxml-->
-<scroll-view scroll-x="true">
-  <canvas canvas-id="myCanvas" style="width:{{width}}rpx;height:{{height}}rpx;" />
-</scroll-view>

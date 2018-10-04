@@ -12,7 +12,7 @@
 
 <!--进度列表-->
 <view class='process'>
-  <view class='process-wrap' wx:for="{{processData}}" wx:key="">
+  <view class='process-wrap' wx:for="{{processData}}" wx:key="" data-id='{{item.id}}' bindtap='bindTapToInfo'>
     <!--左侧时间-->
     <view class='time'>
       <view class="time-date">{{item.time_date}}</view>
@@ -27,7 +27,7 @@
     <view class='text' style="color:{{item.font_color}}">
       <view class='text-up'>
         <view style="display:flex;flex-direction:row;">
-          {{item.name}}
+          {{item.job_name}}
           <view class="state">{{item.state}}</view>
         </view>
         <text class='detail-text'>{{item.user_name}}</text>

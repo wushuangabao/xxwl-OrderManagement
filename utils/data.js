@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
 //request API
 ///////////////////////////////////////////////////////
 
@@ -58,29 +58,35 @@ function wxRequest(url, data, resolve) {
 
 // 获取role_type************************************************
 function getRoleType(setRoleType) {
-  var friend_company_id, friend_id, user_id;
-  if (user_id = wx.getStorageSync('user_id'))
+  var company_id = wx.getStorageSync('company_id'),
+    friend_company_id = wx.getStorageSync('friend_company_id'),
+    friend_id = wx.getStorageSync('friend_id'),
+    user_id = wx.getStorageSync('user_id'),
+    code = wx.getStorageSync('code');
+  if (user_id)
     console.log("getRoleType...成功读取缓存中的user_id =", user_id)
   else {
-    console.log("getRoleType...读取缓存中的user_id失败，退出API_LOGON");
-    return;
+    console.log("getRoleType...读取缓存中的user_id失败，发送code:", code);
+    user_id = '00000';
+    wx.setStorageSync('user_id', user_id);
   }
-  try {
-    friend_company_id = wx.getStorageSync('friend_company_id')
-  } catch (e) {
-    friend_company_id = ''
+  if (!friend_company_id) {
+    friend_company_id = '00000';
   }
-  try {
-    friend_id = wx.getStorageSync('friend_id')
-  } catch (e) {
-    friend_id = ''
+  if (!company_id) {
+    company_id = '00000';
+  }
+  if (!friend_id) {
+    friend_id = '00000';
   }
   var data = {
     user_id: user_id,
     nickname: app.globalData.userInfo.nickName,
     image_address: app.globalData.userInfo.avatarUrl,
-    company_id: friend_company_id,
+    company_id: company_id,
+    friend_company_id: friend_company_id,
     friend_id: friend_id,
+    code: code,
   };
   wxRequest(API_LOGON, data, setRoleType)
   console.log("API_LOGON...upload my userInfo:", data)
@@ -168,22 +174,26 @@ function upLoadOpertGet(job_number, time) {
 }
 
 // 工单操作-完工**********************************************
-function upLoadOpertDone(job_number, note) {
+function upLoadOpertDone(param,func) {
   var data = {
     job_event: "02",
     user_id: wx.getStorageSync('user_id'),
-    job_number: job_number,
+    job_number: param.job_number,
     user_name: app.globalData.userInfo.nickName,
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),
     //time: time,
-    remark: note,
+    remark: param.remark,
+    image_1: param.image_1,
+    image_2: param.image_2,
+    image_3: param.image_3,
+    image_4: param.image_4,
   }
-  wxRequest(API_JOBDEAL, data, putOutInfo)
+  wxRequest(API_JOBDEAL, data, func)
 }
 
 // 企业注册**********************************************
-function registerCompany(company_name, company_type) {
+function registerCompany(company_name, company_type, fun) {
   var nickname = app.globalData.userInfo.nickName,
     data = {
       company_name: company_name,
@@ -193,12 +203,7 @@ function registerCompany(company_name, company_type) {
       nickname: nickname,
     };
   console.log('registerCompany, my data = ', data)
-  wxRequest(API_CPNYREG, data, setCompanyID)
-}
-
-// 将company_id写入缓存----------------------------------
-function setCompanyID(res) {
-  wx.setStorageSync('company_id', res.data.company_id)
+  wxRequest(API_CPNYREG, data, fun)
 }
 
 // 通讯录：用户列表查询**********************************************
@@ -279,20 +284,20 @@ function changeCorparam(event, param, func) {
 //输出服务器返回的信息------------------------------------------
 function putOutInfo(res) {
   console.log(res);
-  try{
+  try {
     wx.showToast({
       title: res.data.error,
       icon: 'none',
       duration: 1200
     });
-  }catch(e){}
+  } catch (e) {}
 }
 
 // 角色类型、订单类型、工单类型的代码\名称查询********************
 function getParam(code, func) {
-  var company_type=wx.getStorageSync('company_type');
+  var company_type = wx.getStorageSync('company_type');
   wxRequest(API_PARAQRY, {
-    industry_code: company_type.slice(0,2), //行业代码
+    industry_code: company_type.slice(0, 2), //行业代码
     industry_type: company_type.slice(2), //行业类型
     entity_code: code, //实体代码 "01"角色类型 "02"工单类型 "03"订单类型
   }, func)

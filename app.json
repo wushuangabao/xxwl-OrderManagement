@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/logs/logs",
     "pages/recpt/input",
     "pages/inquiry/inquiry",
     "pages/progress/progress",
@@ -11,12 +10,13 @@
     "pages/friends/manage",
     "pages/operate/create",
     "pages/recpt/info",
-    "pages/others/image"
+    "pages/progress/info",
+    "pages/operate/more/input"
   ],
   "networkTimeout": {
     "request": 10000,
     "downloadFile": 5000,
-    "upLoadFile":5000
+    "upLoadFile": 5000
   },
   "window": {
     "backgroundTextStyle": "light",

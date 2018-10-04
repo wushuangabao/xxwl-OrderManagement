@@ -11,7 +11,8 @@ Page({
 
   // 根据服务器数据设置role_type-------------------------------------
   setRoleType: function(res) {
-    console.log("setRoleType...res = ", res)
+    console.log("setRoleType...res.data = ", res.data);
+    var user_id = wx.getStorageSync('user_id');
     if (res.data.sys_modify) {
       wx.setStorageSync('sys_modify', res.data.sys_modify)
     } else {
@@ -19,22 +20,36 @@ Page({
     }
     wx.setStorageSync('company_type', res.data.company_type);
     data.getRecptType(); //拉取订单类型的信息
-    if (res.data.login_flag == "1") { //用户是第一次使用小程序
+    //设置user_id
+    if (user_id == '00000')
+      if (user_id = res.data.openid) {
+        wx.setStorageSync('user_id', user_id);
+        console.log('setRoleType...user_id:', user_id);
+      }
+      else {
+        console.log('setRoleType...opnenid获取失败，user_id设置失败');
+        //todo:延迟一段时间后重试
+      }
+    //用户是第一次使用小程序，则判断是否有公司id
+    if (res.data.login_flag == "1") {
       try {
         wx.setStorageSync('company_id', res.data.company_id);
       } catch (e) {}
       wx.redirectTo({
         url: '../register/company/company'
       });
-    } else if (res.data.company_id == "00000" && app.globalData.wantRegisterCompany) { //用户是“朋友”
+    }
+    //用户不是第一次使用，用户是“朋友”（公司id为00000），并且想要注册公司
+    else if (res.data.company_id == "00000" && app.globalData.wantRegisterCompany) {
       wx.setStorageSync('company_id', "00000");
       wx.redirectTo({
         url: '../register/company/company'
       });
-    } else if (res.data.role_type != null) { //用户不是第一次使用
+    }
+    //用户不是第一次使用，用户有角色类型
+    else if (res.data.role_type != null) {
       wx.setStorageSync('role_type', res.data.role_type);
       wx.setStorageSync('company_id', res.data.company_id);
-      wx.setStorageSync('company_type', res.data.company_type);
       this.goTo(res.data.role_type);
     }
   },
@@ -83,7 +98,7 @@ Page({
 
   //* 页面加载**************************************************
   onLoad: function(e) {
-    // 尝试获取url中的参数
+    // 尝试获取url中的参数-------
     console.log("index onLoad, e =", e);
     try {
       if (e.company_id)
@@ -91,7 +106,7 @@ Page({
       if (e.user_id)
         wx.setStorageSync('friend_id', e.user_id)
     } catch (e) {}
-    // 获取用户信息
+    // 获取用户信息----------
     var that = this;
     if (app.globalData.userInfo) {
       this.setData({
