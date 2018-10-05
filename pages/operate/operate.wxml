@@ -1,7 +1,5 @@
 <!--pages/operate/operate.wxml-->
 
-<!-- <view class="touches"  bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE"/> -->
-
 <!--head-->
 <view class="tit">
   <block wx:for="{{titles}}" wx:key="id">
@@ -15,34 +13,57 @@
 <view class="list">
   <!--item-->
   <block wx:for="{{operation}}" wx:key="id">
+    <view class="operation-layers">
 
-    <view class="operation" animation="{{item.animaData}}" bindtap='inquiryRecpt' data-id="{{item.index}}">
-      <!--左侧img-->
-      <image src="{{item.img_path_1}}" class="img" mode="aspectFit" data-id="{{item.index}}" />
-      <!--右侧详细信息-->
-      <view class="cont">
-        <!--上方文字-->
-        <view class="up-cont">
-          <view class="up-cont-item-left">
-            <text>{{item.j_number}}</text>
-            <view style='width:30rpx;' />
-            <text>{{item.job_name}}</text>
-          </view>
-          <view style='width:1px;' />
-          <view wx:if="{{isAdmin}}" class="up-cont-item-right">{{item.user_name}}</view>
+      <view wx:if="{{item.moreLayer}}" style='display:flex;flex-direction:column;'>
+        <!--评论展示层-->
+        <view class="comments">
         </view>
-        <!--下方按钮-->
-        <view class="down-cont">
-          <view wx:if="{{item.work_status=='1'}}"></view>
-          <view wx:if="{{item.work_status!='1'}}" class="note">{{item.note}}</view>
-          <view wx:if="{{item.work_status !='2'}}" class="button" catchtap='onTapButton' data-id="{{item.index}}">
-            {{item.button}}
+        <!--评论操作层-->
+        <view class="layer">
+          <view class="comment-input">
+            <input bindinput='bindCommentInput' data-id="{{item.index}}" value="{{item.comment}}" maxlength="50" placeholder="在这里输入评论，字符数最多50" />
           </view>
-          <view wx:if="{{item.work_status=='2'}}" class="done">
-            已完成
+          <view class="comment-confirm" data-id="{{item.index}}" catchtap='catchTapComment'>评论</view>
+        </view>
+        <!--垫底层-->
+        <view style='width:750rpx;height:15rpx;'></view>
+      </view>
+      <!--工单-->
+      <view class="layer" animation="{{item.animaData}}" bindtap='inquiryRecpt' data-id="{{item.index}}">
+        <!--左侧img-->
+        <image src="{{item.img_path_1}}" class="img" mode="aspectFit" />
+        <!--右侧详细信息-->
+        <view class="cont">
+          <!--上方文字-->
+          <view class="up-cont">
+            <view class="up-cont-item-left">
+              <text>{{item.j_number}}</text>
+              <view style='width:30rpx;' />
+              <text>{{item.job_name}}</text>
+            </view>
+            <view style='width:1px;' />
+            <view wx:if="{{isAdmin}}" class="up-cont-item-right">{{item.user_name}}</view>
+          </view>
+          <!--下方-->
+          <view class="down-cont">
+            <view class="note">{{item.note}}</view>
+            <!--未完成&待领取-->
+            <view wx:if="{{item.work_status !='2'}}" class="button" catchtap='onTapButton' data-id="{{item.index}}">
+              {{item.button}}
+            </view>
+            <!--已完成-->
+            <view wx:if="{{item.work_status=='2'}}" class="more">
+              <view class="praise" data-id="{{item.index}}" catchtap='catchTapPraise'>
+                <image src="{{item.hasPraise? '/imgs/praise_fill.png' : '/imgs/praise.png'}}" class="img-praise" mode="aspectFit"></image>
+                <view class="praise-text">{{item.rating_101}}</view>
+              </view>
+              <image src="/imgs/message.png" class="img-more" data-id="{{item.index}}" catchtap='catchTapMore'></image>
+            </view>
           </view>
         </view>
       </view>
+
     </view>
 
   </block>

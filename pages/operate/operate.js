@@ -6,7 +6,6 @@ const util = require('../../utils/util.js'),
   MAX_NUM_NOTE = 24; //note最大长度（按照窄字符计算）
 
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -29,48 +28,68 @@ Page({
     ],
     index: 0,
     operation: [],
+    operationId: null, //正在操作中的operation的下标
     isAdmin: false,
-    note: '',
+    isLoading: false,
     //isMoving: false,
   },
+
+  ///////////////////////////////////////////////////////////////
+  // 工序有关操作
+  ///////////////////////////////////////////////////////////////
 
   //* 点击“领取”或“完工”按钮***********************************
   onTapButton: function(event) {
     var id = event.currentTarget.dataset.id,
       operation = this.data.operation[id],
       job_number = operation.job_number;
+    this.setData({
+      operationId: id
+    });
     if (operation.button == '领取') {
-      data.upLoadOpertGet(job_number);
-    } else if (operation.button == '完工') {
-      //跳转到more/input页面----------
+      data.upLoadOpertGet(job_number, this.finishOperate);
+    } else if (operation.button == '完工') { //跳转到more/input页面
+      wx.setStorageSync('info', operation);
       wx.navigateTo({
-        url: "/pages/operate/more/input?job_number=" + job_number + "&receipt_number=" + operation.receipt_number + "&job_name=" + operation.job_name
-      })
+        url: "/pages/operate/more/input"
+      });
     }
-    //从operation和imgs数组中移除数据-------
-    operation = this.data.operation;
-    var imgs = this.data.imgs,
+  },
+
+  // 完成“领取”操作-----------------------------------------
+  finishOperate: function(res) {
+    if (res.data.code == 1) {
+      this.removeOperation(this.data.operationId);
+    } else {
+      wx.showToast({
+        title: res.data.error,
+        icon: 'none',
+        duration: 1000
+      });
+    }
+  },
+
+  // 从operation数组中移除第id个数据-------------------------
+  removeOperation: function(id) {
+    var operation = this.data.operation,
       len = operation.length - 1;
     for (var i = id; i < len; i++) {
       operation[i] = operation[i + 1];
-      imgs[i] = imgs[i + 1];
     }
     operation.pop();
-    imgs.pop();
     this.setData({
       operation: operation,
-      imgs: imgs
     })
   },
 
   //* 点击“已完成”、“待领取”或“未完成”**************************
   changeTit: function(event) {
+    if (this.data.isLoading)
+      return;
     var name = event.currentTarget.dataset.name;
     if (name == this.data.titles[this.data.index].name)
       return;
-    wx.showLoading({ //让用户进入等待状态，不要操作
-      title: '加载中',
-    });
+    this.loading(); //让用户进入等待状态，不要操作
     if (name == "待领取") {
       this.changeTitWXSS(2)
       data.getOpertData("0", this.setJobTable)
@@ -102,12 +121,13 @@ Page({
         [str2]: '#9E9E9E',
         index: i,
         operation: [],
-        imgs: [],
       })
     }
   },
 
-  // 设置operation数据------------------------------------------------------------
+  /////////////////////////////////////////////////////////////////////////////
+  // 设置operation数据
+  /////////////////////////////////////////////////////////////////////////////
   setJobTable: function(res) {
     if (res.data == null) {
       wx.hideLoading();
@@ -130,8 +150,11 @@ Page({
       } else {
         my_operation[real_i].note = data.simplfStr(operation[i].remark, MAX_NUM_NOTE);
       }
-      //设置index---------------------
+      //设置index、comment和各布尔值---------------------
       my_operation[real_i].index = real_i;
+      my_operation[real_i].comment = null;
+      my_operation[real_i].moreLayer = false;
+      my_operation[real_i].hasPraise = false;
       //判断title---------------------
       if (this.data.index == 0) //已完成
         my_operation[real_i].img_path_1 = data.Img_Url + operation[i].job_number + '_0' + operation[i].image_1;
@@ -160,10 +183,18 @@ Page({
       });
     }
     //隐藏loading
-    wx.hideLoading();
+    if (this.data.isLoading) {
+      this.setData({
+        isLoading: false
+      });
+      wx.hideLoading();
+    }
   },
 
-  //* 点击某条工单-->查询订单/工单详情********************************************
+  //////////////////////////////////////////////////////////////
+  //  详情查询
+  //////////////////////////////////////////////////////////////
+  //* 点击某条工单-->查询订单/工单详情****************************
   inquiryRecpt: function(event) {
     var index = event.currentTarget.dataset.id,
       operation = this.data.operation[index];
@@ -187,12 +218,97 @@ Page({
     }
   },
 
+  //////////////////////////////////////////////////////////////
+  //  点赞、评论、转发
+  //////////////////////////////////////////////////////////////
+
+  //* 点击“More”按钮*****************************************
+  catchTapMore: function(e) {
+    if (this.data.isLoading)
+      return;
+    var index = e.currentTarget.dataset.id,
+      operation = this.data.operation[index],
+      str = "operation[" + index + "].moreLayer";
+    this.setData({
+      [str]: !operation.moreLayer
+    });
+  },
+
+  //* 输入评论******************************
+  bindCommentInput: function(e) {
+    var str = "operation[" + e.currentTarget.dataset.id + "].comment";
+    this.setData({
+      [str]: e.detail.value
+    })
+  },
+
+  //* 确认评论******************************
+  catchTapComment: function(e) {
+    var index = e.currentTarget.dataset.id,
+      operation = this.data.operation[index],
+      str1 = "operation[" + index + "].comment",
+      str2 = "operation[" + index + "].moreLayer",
+      param = {
+        entity_code: '02', //02表示工单，03表示订单
+        job_type_number: operation.job_type,
+        job_number: operation.job_number,
+        job_name: operation.job_name,
+        rating_type: '102',
+        rating_name: '评论',
+        remark: operation.comment,
+      };
+    console.log("catchTapPraise...my param = ", param);
+    data.ratingCreate(param, this.successPraise);
+    this.setData({
+      [str1]: null,
+      [str2]: false
+    })
+  },
+
+  //* 点赞**********************************
+  catchTapPraise: function(e) {
+    var index = e.currentTarget.dataset.id,
+      operation = this.data.operation[index],
+      str1 = "operation[" + index + "].hasPraise",
+      str2 = "operation[" + index + "].rating_101";
+    if (!operation.hasPraise) {
+      this.setData({
+        [str1]: true,
+        [str2]: (parseInt(operation.rating_101) + 1).toString()
+      });
+      var param = {
+        entity_code: '02', //02表示工单，03表示订单
+        entity_type: operation.job_type,
+        entity_number: operation.job_number,
+        entity_name: operation.job_name,
+        rating_type: '101', //101表示点赞，102表示评论
+        rating_name: '点赞',
+        remark: '1',
+      };
+      console.log("catchTapPraise...my param = ", param);
+      data.ratingCreate(param, this.successPraise);
+    }
+  },
+
+  // 成功点赞--------------------
+  successPraise: function(res) {
+    console.log('successPraise...res.data = ', res.data);
+  },
+
+  // 成功评论--------------------
+  successComment: function(res) {
+    console.log('successComment...res.data = ', res.data);
+  },
+
+  //////////////////////////////////////////////////////////////
+  //  生命周期函数
+  //////////////////////////////////////////////////////////////
+
   //* 生命周期函数--监听页面加载***********************************************
   onLoad: function(options) {
     wx.setStorageSync('apply_receive_time', '');
-    wx.showLoading({ //让用户进入等待状态，不要操作
-      title: '加载中',
-    });
+    wx.setStorageSync('info', '');
+    this.loading(); //让用户进入等待状态，不要操作
     data.getOpertData("0", this.setJobTable); //"0"待领取 "1"未完成 "2"已完成
     this.changeTitWXSS(2); //切换到"待领取"页
   },
@@ -213,13 +329,19 @@ Page({
         isAdmin: true
       })
     }
+    //如果是从完工提交页面navigateBack
+    if (wx.getStorageSync('info') === 'success') {
+      var id = this.data.operationId;
+      if (id != null)
+        this.removeOperation(id);
+    }
   },
 
-  //* 页面上拉触底事件的处理函数
+  //* 页面上拉触底事件的处理函数***************
   onReachBottom: function() {
-    wx.showLoading({ //让用户进入等待状态，不要操作
-      title: '加载中',
-    });
+    if (this.data.isLoading)
+      return;
+    this.loading(); //让用户进入等待状态，不要操作
     data.getOpertData(this.getStatus(this.data.index), this.setJobTable)
   },
 
@@ -234,6 +356,18 @@ Page({
       case 2:
         return "0";
     }
+  },
+
+  // 进入Loading状态-----------------
+  loading: function() {
+    if (this.data.isLoading)
+      return;
+    wx.showLoading({
+      title: '加载中',
+    });
+    this.setData({
+      isLoading: true
+    });
   },
 
   //* 转发***********************************************

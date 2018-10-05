@@ -45,6 +45,7 @@ Page({
           state: '已完成',
           note: job.remark,
           id: real_i,
+          imgs: [job.image_1, job.image_2, job.image_3, job.image_4]
         }
         real_i++;
       }
@@ -92,9 +93,13 @@ Page({
     var id = res.currentTarget.dataset.id,
       progressData = this.data.processData[id];
     console.log("bindTapToInfo...progressData=", progressData);
-    //todo：设置图片格式的缓存
-    //
-    wx.setStorageSync('info',{
+    //设置图片格式的缓存
+    wx.setStorageSync('imgUrl_1', data.Img_Url + progressData.job_number + '_0' + progressData.imgs[0]);
+    for (var i = 2; i < 5; i++) {
+      var str = 'imgUrl_' + i;
+      wx.setStorageSync(str, progressData.imgs[i - 1]);
+    }
+    wx.setStorageSync('info', {
       job_name: progressData.job_name,
       job_number: progressData.job_number,
       remark: progressData.note,
@@ -128,9 +133,6 @@ Page({
   getHour: function(time) {
     return time.slice(11, 16)
   },
-
-  //生命周期函数--监听页面加载
-  onLoad: function(options) {},
 
   //* 转发********************************************
   onShareAppMessage: function(res) {

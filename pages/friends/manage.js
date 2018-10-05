@@ -149,20 +149,43 @@ Page({
       role_type_name = this.data.multiArray[1][this.data.multiIndex[1]];
       role_type = this.data.worker_code[this.data.multiIndex[1]];
     }
-    console.log("bindMultiPickerChange...friend =", friend);
-    console.log("changeFriendInfo(", friend.user_id, user_type, role_type, friend.user_type, friend.role_type, ")");
-    data.changeFriendInfo(friend.user_id, user_type, role_type, friend.user_type, friend.role_type);
+    data.changeFriendInfo(friend.user_id, user_type, role_type, friend.user_type, friend.role_type, this.finishChange);
+    wx.showLoading({
+      title: "请稍候..."
+    });
     this.setData({
       [str1]: role_type_name,
       [str2]: user_type,
       [str3]: role_type,
     });
     if (user_type != this.convertTitType(this.data.index))
-      this.removeFriend(id);
+      this.setData({
+        removeId: id,
+      });
+    else
+      this.setData({
+        removeId: -1,
+      });
+  },
+
+  // 修改朋友信息的回调函数------------------------------------------
+  finishChange: function(res) {
+    wx.hideLoading();
+    if (res.data.code == 1)
+      this.removeFriend(this.data.removeId);
+    else {
+      wx.showToast({
+        title: res.data.error,
+        icon: 'none',
+        duration: 1700
+      });
+    }
   },
 
   // 从friend数组中移除一条数据---------------------------------
   removeFriend: function(id) {
+    if (id == -1)
+      return;
     var friends = this.data.friendsInfo,
       newLen = friends.length - 1;
     for (var i = id; i < newLen; i++) {

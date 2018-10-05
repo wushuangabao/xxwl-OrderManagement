@@ -1,20 +1,6 @@
 /* pages/operate/operate.wxss */
 @import "/utils/tabBar.wxss";
 
-page {
-  height: 60%;
-  padding: 0;
-  margin: 0;
-}
-
-.touches {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
 .tit {
   display: flex;
   flex-direction: row;
@@ -44,10 +30,37 @@ page {
   margin-bottom: 120rpx;
 }
 
-.operation {
+.operation-layers {
+  display: flex;
+  flex-direction: column-reverse;
+  border-bottom: 1px solid #ddd;
+}
+
+.layer {
   display: flex;
   flex-direction: row;
-  border-bottom: 1px solid #ddd;
+}
+
+.comment-input {
+  margin-left: 30rpx;
+  height: 25px;
+  width: 560rpx;
+  line-height: 25px;
+  background-color: #fff;
+  color: #696969;
+  border-radius: 4px;
+  border: 1px solid lightgray;
+}
+
+.comment-confirm {
+  margin-left: 10rpx;
+  width: 120rpx;
+  background-color: rgb(75, 187, 0);
+  color: #fff;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 25px;
 }
 
 .img {
@@ -126,11 +139,30 @@ page {
   text-align: center;
 }
 
-.done {
-  padding: 2px;
-  margin-right: 30rpx;
+.more {
   margin-bottom: 5px;
+  display: flex;
+}
+
+.praise {
+  display: flex;
+  flex-direction: row;
+}
+
+.praise-text {
   font-size: 12px;
-  color: rgb(138, 138, 138);
+  line-height: 25px;
   text-align: center;
+}
+
+.img-praise {
+  width: 25px;
+  height: 25px;
+}
+
+.img-more {
+  width: 70rpx;
+  height: 25px;
+  margin-right: 30rpx;
+  margin-left: 10rpx;
 }

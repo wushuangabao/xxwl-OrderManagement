@@ -245,3 +245,14 @@ String Rating_name=request.getParameter("rating_name");  //点赞类型名称，101是名
 
 String Remark=request.getParameter("remark"); //如果是点赞是，直接赋值"1",如果是评论的时候，就是评论内容
 
+RatingQueryServlet点赞评价接口：
+their_entity_type表示主体代码：02是工单，03是订单，
+
+
+their_associate_type是订单或工单的类型
+
+
+their_associate_number是订单或工单的编号
+返回结果：
+rating_type是评价类型，101表示点赞，102表示讨论，
+remark是讨论内容，user_name用户名称

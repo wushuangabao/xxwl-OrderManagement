@@ -1,47 +1,57 @@
 //////////////////////////////////////////////////////
-//request API
+// URL\通用常量
 ///////////////////////////////////////////////////////
 
-// URL通用部分
 const URL_BASE = "https://www.xiangxun1.com/day07/", // http://140.143.154.96
-  Img_Url = 'https://www.gongnang.com/uploads/files/';
+  Img_Url = 'https://www.gongnang.com/uploads/files/',
+  app = getApp();
 
-// 用户授权接口
+// 用户-授权
 var API_LOGON = URL_BASE + "logonAuthServlet",
-  // 用户注册登记接口
+  // 用户-注册登记
   API_REG = URL_BASE + "regServlet",
-  // 订单录入接口
-  API_BILLCRT = URL_BASE + "BillCreateServlet",
-  // 订单查询接口
-  API_BILLQRY = URL_BASE + "BillQueryServlet",
-  // 工单领取或完工接口
-  API_JOBDEAL = URL_BASE + "JobDealServlet",
-  // 工单查询接口
-  API_JOBQRY = URL_BASE + "JobQueryServlet",
-  // 订单进度查询接口
-  API_BILLPRO = URL_BASE + "BillProQueryServlet",
-  // 企业注册接口
+  // 企业-注册
   API_CPNYREG = URL_BASE + "CompanyRegisterServlet",
+  //---------------------------------------------
+  // 订单-录入
+  API_BILLCRT = URL_BASE + "BillCreateServlet",
+  // 订单-查询
+  API_BILLQRY = URL_BASE + "BillQueryServlet",
+  // 订单-进度查询
+  API_BILLPRO = URL_BASE + "BillProQueryServlet",
+  //---------------------------------------------
+  // 工单-领取或完工
+  API_JOBDEAL = URL_BASE + "JobDealServlet",
+  // 工单-查询
+  API_JOBQRY = URL_BASE + "JobQueryServlet",
+  //---------------------------------------------
   // 通讯录-用户列表查询接口
   API_USERQRY = URL_BASE + "userQueryServlet",
   // 通讯录-调整用户role接口
   API_USERDEAL = URL_BASE + "UserDealServlet",
+  //---------------------------------------------
   // 工序设置-模板查询接口
   API_CORPQRY = URL_BASE + "CorparamQueryServlet",
   // 工序设置-增减工序接口
   API_CORPDEAL = URL_BASE + "CorparamDealServlet",
-  // 角色、订单、工单类型的代码、名称查询接口
+  //--------------------------------------------
+  // 查询-角色、订单、工单类型的代码、名称
   API_PARAQRY = URL_BASE + "ParamQueryServlet",
-  // 行业的代码、名称查询接口
+  // 查询-行业的代码、名称
   API_INDUSTRY = URL_BASE + "IndustryQueryServlet",
-  // 图片上传接口
+  //---------------------------------------------
+  // 点赞、评论-操作
+  API_RATINGCRT = URL_BASE + "RatingCreateServlet",
+  // 点赞、评论-查询
+  API_RATINGQRY = URL_BASE + "RatingQueryServlet",
+  //---------------------------------------------
+  // 图片-上传
   API_IMGUP = URL_BASE + "TestUpServlet", //"TestImageServlet",//"ImageUpServlet",//
-  // 图片下载接口
+  // 图片-下载
   API_IMGDOWN = URL_BASE + "ImageDownServlet";
 
-const app = getApp();
 
-// wx.request 封装
+// wx.request 封装-----------------------------------
 function wxRequest(url, data, resolve) {
   wx.request({
     url: url,
@@ -55,6 +65,10 @@ function wxRequest(url, data, resolve) {
     fail: (err) => console.log(err) //可以加入第四个参数reject方法
   })
 }
+
+//////////////////////////////////////////////////
+// request API实现
+//////////////////////////////////////////////////
 
 // 获取role_type************************************************
 function getRoleType(setRoleType) {
@@ -160,21 +174,20 @@ function getOpertData(status_n, func) {
 }
 
 // 工单操作-领取**********************************************
-function upLoadOpertGet(job_number, time) {
+function upLoadOpertGet(job_number, func) {
   var data = {
     job_event: "01",
     user_id: wx.getStorageSync('user_id'),
     job_number: job_number,
     user_name: app.globalData.userInfo.nickName,
-    //time: time,
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),
   }
-  wxRequest(API_JOBDEAL, data, putOutInfo)
+  wxRequest(API_JOBDEAL, data, func)
 }
 
 // 工单操作-完工**********************************************
-function upLoadOpertDone(param,func) {
+function upLoadOpertDone(param, func) {
   var data = {
     job_event: "02",
     user_id: wx.getStorageSync('user_id'),
@@ -215,12 +228,11 @@ function getFriendsList(user_type, func) {
     company_id: wx.getStorageSync('company_id'),
     user_type: user_type, //1、客户 2、员工 3、伙伴 0、其他
   }
-  console.log("my data = ", data)
   wxRequest(API_USERQRY, data, func)
 }
 
 // 通讯录：用户role调整**********************************************
-function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_type0) {
+function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_type0,func) {
   var user_id = wx.getStorageSync('user_id');
   var data = {
     user_id: user_id,
@@ -234,7 +246,7 @@ function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_typ
     user_type0: user_type0, //调整前的用户类型
     role_type0: role_type0, //调整前的角色类型
   }
-  wxRequest(API_USERDEAL, data, putOutInfo)
+  wxRequest(API_USERDEAL, data, func)
 }
 
 // 工序设置：查询模板**********************************************
@@ -281,18 +293,6 @@ function changeCorparam(event, param, func) {
   wxRequest(API_CORPDEAL, data, func);
 }
 
-//输出服务器返回的信息------------------------------------------
-function putOutInfo(res) {
-  console.log(res);
-  try {
-    wx.showToast({
-      title: res.data.error,
-      icon: 'none',
-      duration: 1200
-    });
-  } catch (e) {}
-}
-
 // 角色类型、订单类型、工单类型的代码\名称查询********************
 function getParam(code, func) {
   var company_type = wx.getStorageSync('company_type');
@@ -324,8 +324,42 @@ function getRecptType() {
   getParam("03", setRecptType)
 }
 
+// 用户进行点赞、评论*******************************************
+function ratingCreate(param, func) {
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    company_id: wx.getStorageSync('company_id'),
+    ////
+    their_entity_type: param.entity_code, //02表示工单，03表示订单
+    their_associate_type: param.entity_type,
+    their_associate_number: param.entity_number,
+    their_associate_name: param.entity_name,
+    rating_type: param.rating_type, //101表示点赞，102表示评论
+    rating_name: param.rating_name,
+    remark: param.remark
+  };
+  wxRequest(API_RATINGCRT, data, func);
+}
+
+// 点赞、评论记录查询******************************************
+function ratingQuery(param, func) {
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    company_id: wx.getStorageSync('company_id'),
+    ////
+    their_entity_type: param.entity_code, //主体代码：02是工单，03是订单
+    their_associate_type: param.entity_type, //订单或工单的类型编号
+    their_associate_number: entity_number, //订单或工单的编号
+  };
+  wxRequest(API_RATINGQRY, data, func);
+}
+
 ///////////////////////////////////////////////////////
-//data
+// 全局data处理
 ///////////////////////////////////////////////////////
 
 // 将行业类型的数组写入app.globalData----------------------------
@@ -404,7 +438,7 @@ function simplfStr(remark, n) {
 }
 
 //////////////////////////////////////////////////////////
-//module API
+// module API
 //////////////////////////////////////////////////////////
 
 module.exports = {
@@ -425,6 +459,7 @@ module.exports = {
   getParam: getParam,
   getIndustry: getIndustry,
   getRecptType: getRecptType,
+  ratingCreate: ratingCreate,
 
   convertType: convertType,
   convertRecptNum: convertRecptNum,

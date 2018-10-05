@@ -5,7 +5,7 @@ const data = require('../../../utils/data.js')
 Page({
 
   data: {
-    job_name: "",
+    info: null,
     textAreaValue1: '', //备注
     img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
   },
@@ -46,14 +46,14 @@ Page({
           if (res.confirm) { //用户点击确定
             var img_format = that.getImgFormat(),
               param = {
-                job_number: that.data.job_number,
+                job_number: that.data.info.job_number,
                 remark: that.data.textAreaValue1,
                 image_1: img_format[0],
                 image_2: img_format[1],
                 image_3: img_format[2],
                 image_4: img_format[3],
               };
-            console.log("param = ",param)
+            console.log("完工提交...my param = ", param)
             wx.showLoading({
               title: '提交中',
             });
@@ -88,34 +88,30 @@ Page({
       img_path = this.hasImg(),
       len = img_path.length,
       that = this;
-    console.log("uploadImg...job_number = ", job_number);
     wx.hideLoading();
-    wx.showToast({
-      title: '提交成功',
-      icon: 'success',
-      duration: 1000
-    });
-    //清空表单-------
-    that.setData({
-      textAreaValue1: '',
-      img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
-    })
-    //回到原来的页面----
-    wx.navigateBack({
-      delta: 1
-    })
-    //上传图片----------
-    if (len > 0)
-      for (var i = 0; i < len; i++)
-        wx.uploadFile({
-          url: 'https://www.gongnang.com/home/file/upload',
-          filePath: img_path[i],
-          name: 'file',
-          formData: {
-            'image_id': job_number + '_' + i
-          },
-          success: function(res) {}
-        });
+    if (res.data.code == 1) { //如果成功
+      wx.setStorageSync('info','success');
+      wx.navigateBack({ //回到原来的页面
+        delta: 1
+      })
+      if (len > 0)
+        for (var i = 0; i < len; i++)  //上传图片
+          wx.uploadFile({
+            url: 'https://www.gongnang.com/home/file/upload',
+            filePath: img_path[i],
+            name: 'file',
+            formData: {
+              'image_id': job_number + '_' + i
+            },
+            success: function (res) {}
+          });
+    } else {
+      wx.showToast({
+        title: res.data.error,
+        icon: 'none',
+        duration: 1000
+      });
+    }
   },
 
   // 检查提交的数据是否符合格式------------------------------------
@@ -142,12 +138,11 @@ Page({
 
   //* 监听页面加载**************************************
   onLoad: function(options) {
-    console.log("options = ", options)
+    var info = wx.getStorageSync('info');
+    info.r_number = data.convertRecptNum(info.receipt_number);
     this.setData({
-      job_name: options.job_name,
-      receipt_number: options.receipt_number,
-      job_number: options.job_number,
-    })
+      info: info
+    });
   },
 
   //* 转发********************************************
