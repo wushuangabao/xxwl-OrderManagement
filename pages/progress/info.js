@@ -11,11 +11,13 @@ Page({
     autoplay: true,
     interval: 5000,
     duration: 1000,
+    praiseArray: [],
+    commentArray: [],
   },
 
   // 设置this.data中的info-----------------------------------
   setInfo: function(info) {
-    var   j_number = data.convertRecptNum(info.job_number),
+    var j_number = data.convertRecptNum(info.job_number),
       str = 'info.j_number';
     if (info.remark == '')
       info.remark = '无备注';
@@ -41,9 +43,70 @@ Page({
     });
   },
 
+  // 完成点赞、评论查询-----------------------------
+  finishRatQry: function(res) {
+    var praiseArray = [],
+      commentArray = [],
+      p_i = 0,
+      c_i = 0,
+      len = res.data.length;
+    for (var i = 0; i < len; i++)
+      if (res.data[i].rating_type == '101') { //点赞
+        //判断是否点赞用户是否重复
+        var p_l = praiseArray.length,
+          p_b = false;
+        for (var j = 0; j < p_l; j++)
+          if (praiseArray[j].user_id == res.data[i].user_id) {
+            p_b = true;
+            break;
+          }
+        if (!p_b) { //如果没有重复
+          praiseArray[p_i] = {
+            user_id: res.data[i].user_id,
+            image_address: res.data[i].image_address
+          };
+          p_i++;
+        }
+      } else if (res.data[i].rating_type == '102') { //评论
+      commentArray[c_i] = {
+        user_name: res.data[i].user_name,
+        comment: res.data[i].remark
+      };
+      c_i++;
+    }
+    //将praiseArray按每8个一组拆分成多个数组
+    var n_pA = parseInt(p_i / 8), //满8个的数组的数目
+      praiseArray1 = [],
+      praiseArray2 = [];
+    for (var i = 0; i < n_pA; i++) { //将满8个的数组填满
+      var preN = 8 * i;
+      for (var j = 0; j < 8; j++)
+        praiseArray1[j] = praiseArray[preN + j];
+      praiseArray2[i] = praiseArray1;
+      praiseArray1 = [];
+    }
+    var preN = n_pA * 8,
+      n_lastArray = p_i - preN; //最后一个数组的数目
+    if (n_lastArray > 0) {
+      for (var i = 0; i < n_lastArray; i++) //填最后一个数组
+        praiseArray1[i] = praiseArray[preN + i];
+      praiseArray2[n_pA] = praiseArray1;
+    }
+    //设置页面数据
+    this.setData({
+      praiseArray: praiseArray2,
+      commentArray: commentArray
+    })
+  },
+
   //* 生命周期函数--监听页面加载********************
   onLoad: function(options) {
     var info = wx.getStorageSync('info');
+    data.ratingQuery({
+      entity_type: info.job_type,
+      entity_number: info.job_number,
+      entity_code: '02'
+    }, this.finishRatQry);
     this.setImgPath(info.job_number);
     this.setInfo(info);
   },
@@ -56,8 +119,9 @@ Page({
     if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }
-    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
-    console.log("onShareAppMessage, path =", path)
+    var info = this.data.info,
+      path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&et=02&at=' + info.job_type + '&anum=' + info.job_number + '&anam=' + info.job_name;
+    console.log("onShareAppMessage, path =", path);
     return {
       title: '生产管理小程序',
       path: path,

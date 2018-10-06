@@ -15,20 +15,9 @@
   <block wx:for="{{operation}}" wx:key="id">
     <view class="operation-layers">
 
-      <view wx:if="{{item.moreLayer}}" style='display:flex;flex-direction:column;'>
-        <!--评论展示层-->
-        <view class="comments">
-        </view>
-        <!--评论操作层-->
-        <view class="layer">
-          <view class="comment-input">
-            <input bindinput='bindCommentInput' data-id="{{item.index}}" value="{{item.comment}}" maxlength="50" placeholder="在这里输入评论，字符数最多50" />
-          </view>
-          <view class="comment-confirm" data-id="{{item.index}}" catchtap='catchTapComment'>评论</view>
-        </view>
-        <!--垫底层-->
-        <view style='width:750rpx;height:15rpx;'></view>
-      </view>
+      <import src="../../utils/commentLayer.wxml" />
+      <template wx:if="{{item.moreLayer}}" is="commentLayer" data="{{...item}}" />
+
       <!--工单-->
       <view class="layer" animation="{{item.animaData}}" bindtap='inquiryRecpt' data-id="{{item.index}}">
         <!--左侧img-->

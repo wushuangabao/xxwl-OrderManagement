@@ -1,39 +1,75 @@
 /* pages/recpt/info.wxss */
 
-page {
-  height: 100%;
-}
-
 .container {
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.itemView1 {
+.itemView {
   width: 670rpx;
   padding: 40rpx;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
   background-color: #fff;
-  margin-bottom: 60rpx;
+  margin-bottom: 40rpx;
+  margin-top: 20rpx;
 }
 
-.swiper{
+.swiper {
   width: 750rpx;
-  height: 650rpx;
+  height: 750rpx;
   padding: 20rpx;
   border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
   background-color: #fff;
-    margin-bottom: 60rpx;
+  margin-bottom: 20rpx;
 }
 
 .slide-image {
   width: 710rpx;
-  height: 610rpx;
+  height: 710rpx;
+}
+
+.itemView-praise {
+  width: 710rpx;
+  padding: 20rpx;
+  display: flex;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  background-color: #fff;
+  margin-bottom: 40rpx;
+}
+
+.praise-line {
+  display: flex;
+}
+
+.praise-png {
+  margin: 10rpx;
+  width: 62rpx;
+  height: 62rpx;
+}
+
+.praise-img {
+  margin: 5rpx;
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.comment-png {
+  margin-left: -5rpx;
+  margin-right: 15rpx;
+  width: 62rpx;
+  height: 62rpx;
+}
+
+.comment-item{
+  width:618rpx;
+  font-size: 13px;
+  line-height: 15px;
+  margin: 10rpx;
+  margin-right: -5rpx;
 }

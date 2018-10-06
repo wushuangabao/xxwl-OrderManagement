@@ -40,6 +40,7 @@ Page({
     ],
     worker: [],
     multiIndex: [0, 0],
+    infoReady: null,
   },
 
   // 中文转化为数字---------------------------------------------------
@@ -154,9 +155,10 @@ Page({
       title: "请稍候..."
     });
     this.setData({
-      [str1]: role_type_name,
-      [str2]: user_type,
-      [str3]: role_type,
+      infoReady: {
+        str: [str1, str2, str3],
+        data: [role_type_name, user_type, role_type]
+      }
     });
     if (user_type != this.convertTitType(this.data.index))
       this.setData({
@@ -171,9 +173,19 @@ Page({
   // 修改朋友信息的回调函数------------------------------------------
   finishChange: function(res) {
     wx.hideLoading();
-    if (res.data.code == 1)
-      this.removeFriend(this.data.removeId);
-    else {
+    if (res.data.code == 1) { //成功
+      if (this.data.removeId == -1) {
+        var info_str = this.data.infoReady.str,
+          info_data = this.data.infoReady.data;
+        this.setData({
+          [info_str[0]]: info_data[0],
+          [info_str[1]]: info_data[1],
+          [info_str[2]]: info_data[2],
+          infoReady: null
+        })
+      } else
+        this.removeFriend(this.data.removeId);
+    } else { //失败
       wx.showToast({
         title: res.data.error,
         icon: 'none',
@@ -184,8 +196,6 @@ Page({
 
   // 从friend数组中移除一条数据---------------------------------
   removeFriend: function(id) {
-    if (id == -1)
-      return;
     var friends = this.data.friendsInfo,
       newLen = friends.length - 1;
     for (var i = id; i < newLen; i++) {

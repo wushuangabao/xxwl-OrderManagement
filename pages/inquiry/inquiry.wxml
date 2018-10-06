@@ -14,9 +14,14 @@
   <view class="list">
     <!--item-->
     <block wx:for="{{receipt}}" wx:key="key">
+   <view class="receipt-layers">
+
+      <import src="../../utils/commentLayer.wxml" />
+      <template wx:if="{{item.moreLayer}}" is="commentLayer" data="{{...item}}" />
+
       <view class="receipt" bindtap='inquiryRecpt' data-num='{{item.receipt_number}}' data-id='{{item.index}}'>
         <!--虚拟按钮-->
-        <view class="more-button" catchtap="inquiry" data-num="{{item.receipt_number}}" data-type="{{item.receipt_type}}"/>
+        <view class="progress-button" catchtap="inquiry" data-num="{{item.receipt_number}}" data-type="{{item.receipt_type}}" />
         <!--左侧图片-->
         <view>
           <image src="{{item.r_img}}" class="r-img" mode="aspectFit" />
@@ -25,16 +30,27 @@
         <view class="cont">
           <!--上方文字-->
           <view class="up-cont">
-            <text class="up-cont-item">{{item.r_number}}</text>
-            <text class="up-cont-item">{{item.type}}</text>
-            <text class="up-cont-item">{{item.state}}</text>
+            <view>
+              <text class="up-cont-item">{{item.r_number}}</text>
+              <text class="up-cont-item">{{item.type}}</text>
+              <text class="up-cont-item">{{item.state}}</text>
+            </view>
+            <view id="{{item.id}}" class="progress">查看进度</view>
           </view>
           <!--下方文字-->
           <view class="down-cont">
             <text class="remark">{{item.note}}</text>
-            <view id="{{item.id}}" class="more" animation="{{item.animaData}}">查看进度</view>
+            <view wx:if="{{true}}" class="more">
+              <view class="praise" data-id="{{item.index}}" catchtap='catchTapPraise'>
+                <image src="{{item.hasPraise? '/imgs/praise_fill.png' : '/imgs/praise.png'}}" class="img-praise" mode="aspectFit"></image>
+                <view class="praise-text">{{item.rating_101}}</view>
+              </view>
+              <image src="/imgs/message.png" class="img-more" data-id="{{item.index}}" catchtap='catchTapMore'></image>
+            </view>
           </view>
         </view>
+      </view>
+
       </view>
     </block>
   </view>

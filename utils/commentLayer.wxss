@@ -1,0 +1,25 @@
+.layer {
+  display: flex;
+}
+
+.comment-input {
+  margin-left: 30rpx;
+  height: 25px;
+  width: 560rpx;
+  line-height: 25px;
+  background-color: #fff;
+  color: #696969;
+  border-radius: 4px;
+  border: 1px solid lightgray;
+}
+
+.comment-confirm {
+  margin-left: 10rpx;
+  width: 120rpx;
+  background-color: rgb(75, 187, 0);
+  color: #fff;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 25px;
+}

@@ -1,0 +1,16 @@
+<template name="commentLayer">
+  <view style='display:flex;flex-direction:column;'>
+    <!--评论展示层-->
+    <view class="comments">
+    </view>
+    <!--评论操作层-->
+    <view class="layer">
+      <view class="comment-input">
+        <input bindinput='bindCommentInput' data-id="{{index}}" value="{{comment}}" maxlength="32" placeholder="在这里输入评论，字符数最多32" />
+      </view>
+      <view class="comment-confirm" data-id="{{index}}" catchtap='catchTapComment'>评论</view>
+    </view>
+    <!--垫底层-->
+    <view style='width:750rpx;height:15rpx;'></view>
+  </view>
+</template>

@@ -18,11 +18,14 @@ Page({
     index: 0,
     receipt: [],
     isAdmin: false,
+    isLoading:false,
     status: "0", //0表示未完成，1表示已完成
   },
 
   //* 点击“已完成”或“未完成”**********************************
   changeTit: function(event) {
+    if (this.data.isLoading)
+      return;
     var name = event.currentTarget.dataset.name;
     if (this.data.titles[this.data.index].name == name)
       return;
@@ -31,7 +34,8 @@ Page({
     });
     this.setData({
       receipt: [],
-    })
+      isLoading:true
+    });
     if (name == "未完成") {
       this.changeTitWXSS(1)
       data.getRecptData("0", "00000", this.setRecptData)
@@ -114,11 +118,16 @@ Page({
       old_data[real_i].type = r_type;
       old_data[real_i].index = real_i;
       old_data[real_i].r_img = data.Img_Url + _data_[i].receipt_number + '_0' + _data_[i].image_1;
+      old_data[real_i].moreLayer = false;
+      old_data[real_i].hasPraise = false;
+      old_data[real_i].comment = null;
       real_i++;
     }
     this.setData({
-      receipt: old_data
-    })
+      receipt: old_data,
+      isLoading:false,
+    });
+    wx.hideLoading();
     if (real_i > old_len) {
       wx.setStorageSync('gmt_modify', old_data[real_i - 1].gmt_modify);
     } else {
@@ -128,7 +137,6 @@ Page({
         duration: 900
       })
     }
-    wx.hideLoading();
   },
 
   //* 点击“查看进度”************************************************
@@ -137,46 +145,100 @@ Page({
       r_type = event.currentTarget.dataset.type;
     wx.setStorageSync('r_number', r_number);
     wx.setStorageSync('r_type', r_type);
-    //根据r_number检索数据在receipt数组中的位置，播放动画
-    // var recpts = this.data.receipt,len = recpts.length
-    // for (var i = 0; i < len; i++) {
-    //   var recpt = recpts[i]
-    //   if (recpt.receipt_number == r_number) {
-    //     this.playAnima(i)
-    //   }
-    // }
-    //延迟300ms后跳页面
-    //setTimeout(function() {
     wx.navigateTo({
       url: '../progress/progress'
     })
-    //}.bind(this), 300)
   },
 
-  // （废弃）播放动画
-  playAnima: function(i) {
-    var str = 'receipt[' + i + '].animaData'
-    var animation = wx.createAnimation({
-      duration: 200,
-    })
-    this.animation = animation
-    //缩小
-    animation.scale(0.7, 0.7).step()
+  //////////////////////////////////////////////////////////////
+  // 点赞、评论
+  //////////////////////////////////////////////////////////////
+
+  //* 点击“More”按钮*****************************************
+  catchTapMore: function (e) {
+    if (this.data.isLoading)
+      return;
+    var index = e.currentTarget.dataset.id,
+      r = this.data.receipt[index],
+      str = "receipt[" + index + "].moreLayer";
     this.setData({
-      [str]: animation.export()
-    })
-    //放大
-    setTimeout(function() {
-      animation.scale(1, 1).step({
-        duration: 100
-      })
-      this.setData({
-        [str]: animation.export()
-      })
-    }.bind(this), 200)
+      [str]: !r.moreLayer
+    });
   },
 
-  //* 生命周期函数--监听页面显示***********************************
+  //* 输入评论******************************
+  bindCommentInput: function (e) {
+    var str = "receipt[" + e.currentTarget.dataset.id + "].comment";
+    this.setData({
+      [str]: e.detail.value
+    })
+  },
+
+  //* 确认评论******************************
+  catchTapComment: function (e) {
+    var index = e.currentTarget.dataset.id,
+      receipt = this.data.receipt[index];
+    if (receipt.comment) {
+      var str1 = "receipt[" + index + "].comment",
+        str2 = "receipt[" + index + "].moreLayer",
+        param = {
+          entity_code: '03', //02表示工单，03表示订单
+          entity_type: receipt.receipt_type,
+          entity_number: receipt.receipt_number,
+          entity_name: receipt.receipt_name,
+          rating_type: '102',
+          rating_name: '评论',
+          remark: receipt.comment,
+        };
+      console.log("catchTapComment...my param = ", param);
+      data.ratingCreate(param, this.successComment);
+      this.setData({
+        [str1]: null,
+        [str2]: false
+      })
+    }
+  },
+
+  //* 点赞**********************************
+  catchTapPraise: function (e) {
+    var index = e.currentTarget.dataset.id,
+      receipt = this.data.receipt[index],
+      str1 = "receipt[" + index + "].hasPraise",
+      str2 = "receipt[" + index + "].rating_101";
+    if (!receipt.hasPraise) {
+      this.setData({
+        [str1]: true,
+        [str2]: (parseInt(receipt.rating_101) + 1).toString()
+      });
+      var param = {
+        entity_code: '03', //02表示工单，03表示订单
+        entity_type: receipt.receipt_type,
+        entity_number: receipt.receipt_number,
+        entity_name: receipt.receipt_name,
+        rating_type: '101', //101表示点赞，102表示评论
+        rating_name: '点赞',
+        remark: '1',
+      };
+      console.log("catchTapPraise...my param = ", param);
+      data.ratingCreate(param, this.successPraise);
+    }
+  },
+
+  // 成功点赞--------------------
+  successPraise: function (res) {
+    console.log('successPraise...res.data = ', res.data);
+  },
+
+  // 成功评论--------------------
+  successComment: function (res) {
+    console.log('successComment...res.data = ', res.data);
+  },
+
+  ////////////////////////////////////////////////////////////////
+  // 生命周期函数
+  ////////////////////////////////////////////////////////////////
+
+  //* 监听页面显示***********************************
   onShow: function() {
     //判断用户身份是否为管理员
     var value = wx.getStorageSync('role_type')
@@ -199,6 +261,9 @@ Page({
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
+    this.setData({
+      isLoading:true
+    });
     wx.setStorageSync('gmt_modify', '');
     data.getRecptData(this.data.status, "00000", this.setRecptData);
     this.changeTitWXSS(1) //切换到"未完成"页
@@ -206,38 +271,15 @@ Page({
 
   //* 页面上拉触底事件的处理函数***************************************
   onReachBottom: function() {
+    if (this.data.isLoading)
+      return;
     wx.showLoading({ //让用户进入等待状态，不要操作
       title: '加载中',
     });
+    this.setData({
+      isLoading: true
+    });
     data.getRecptData(this.data.status, "00000", this.setRecptData)
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function() {
-
   },
 
   //* 转发********************************************

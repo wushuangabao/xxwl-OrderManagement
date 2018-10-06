@@ -8,7 +8,7 @@
 
     <view class="itemView1">
       <view class="input">
-        订单：{{info.r_number}}，工单：{{info.j_number}} {{info.job_name}}
+        工单号：{{info.j_number}}，工序名：{{info.job_name}}
       </view>
     </view>
 

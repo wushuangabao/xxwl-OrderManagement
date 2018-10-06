@@ -84,18 +84,14 @@ Page({
 
   // 工单数据上传完毕--------------------------------------------
   finishInput: function(res) {
-    var job_number = this.data.job_number,
+    var job_number = this.data.info.job_number,
       img_path = this.hasImg(),
       len = img_path.length,
       that = this;
     wx.hideLoading();
     if (res.data.code == 1) { //如果成功
-      wx.setStorageSync('info','success');
-      wx.navigateBack({ //回到原来的页面
-        delta: 1
-      })
       if (len > 0)
-        for (var i = 0; i < len; i++)  //上传图片
+        for (var i = 0; i < len; i++) //上传图片
           wx.uploadFile({
             url: 'https://www.gongnang.com/home/file/upload',
             filePath: img_path[i],
@@ -103,8 +99,14 @@ Page({
             formData: {
               'image_id': job_number + '_' + i
             },
-            success: function (res) {}
+            success: function(res) {
+              console.log('工单图片上传成功，res.data = ', res.data);
+            }
           });
+      wx.setStorageSync('info', 'success');
+      wx.navigateBack({ //回到原来的页面
+        delta: 1
+      });
     } else {
       wx.showToast({
         title: res.data.error,

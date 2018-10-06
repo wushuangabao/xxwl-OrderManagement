@@ -26,10 +26,10 @@ Page({
         wx.setStorageSync('user_id', user_id);
         console.log('setRoleType...user_id:', user_id);
       }
-      else {
-        console.log('setRoleType...opnenid获取失败，user_id设置失败');
-        //todo:延迟一段时间后重试
-      }
+    else {
+      console.log('setRoleType...opnenid获取失败，user_id设置失败');
+      //todo:延迟一段时间后重试
+    }
     //用户是第一次使用小程序，则判断是否有公司id
     if (res.data.login_flag == "1") {
       try {
@@ -100,12 +100,27 @@ Page({
   onLoad: function(e) {
     // 尝试获取url中的参数-------
     console.log("index onLoad, e =", e);
-    try {
-      if (e.company_id)
-        wx.setStorageSync('friend_company_id', e.company_id)
-      if (e.user_id)
-        wx.setStorageSync('friend_id', e.user_id)
-    } catch (e) {}
+    if (e.company_id)
+      wx.setStorageSync('friend_company_id', e.company_id);
+    if (e.user_id)
+      wx.setStorageSync('friend_id', e.user_id);
+    if (e.et) {
+      var info = {
+        entity_type: e.et,
+        associate_type: e.at,
+        associate_number: e.anum,
+        associate_name: e.anam
+      };
+      wx.setStorageSync('info', info);
+    } else {
+      var info = {
+        entity_type: '00',
+        associate_type: '000',
+        associate_number: '0000000000000000000',
+        associate_name: ''
+      };
+      wx.setStorageSync('info', info);
+    }
     // 获取用户信息----------
     var that = this;
     if (app.globalData.userInfo) {

@@ -253,6 +253,16 @@ their_associate_type是订单或工单的类型
 
 
 their_associate_number是订单或工单的编号
-返回结果：
-rating_type是评价类型，101表示点赞，102表示讨论，
-remark是讨论内容，user_name用户名称
+返回结果：数组，元素为
+code:0
+finish_time:"2018-10-05 22:38:50.0"
+rating_name:"点赞"
+rating_number:"0420181005223850247"
+rating_status:"1"
+rating_type:"101"
+remark:"1"
+user_id:"oh1zH5QdEhZG_k44r-VEKO8uhCPw"
+user_name:"无双BaOY_WHA"
+image_address:
+按时间顺序排列，主义去掉user_id重复的元素。
+

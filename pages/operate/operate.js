@@ -219,7 +219,7 @@ Page({
   },
 
   //////////////////////////////////////////////////////////////
-  //  点赞、评论、转发
+  //  点赞、评论
   //////////////////////////////////////////////////////////////
 
   //* 点击“More”按钮*****************************************
@@ -245,24 +245,26 @@ Page({
   //* 确认评论******************************
   catchTapComment: function(e) {
     var index = e.currentTarget.dataset.id,
-      operation = this.data.operation[index],
-      str1 = "operation[" + index + "].comment",
-      str2 = "operation[" + index + "].moreLayer",
-      param = {
-        entity_code: '02', //02表示工单，03表示订单
-        job_type_number: operation.job_type,
-        job_number: operation.job_number,
-        job_name: operation.job_name,
-        rating_type: '102',
-        rating_name: '评论',
-        remark: operation.comment,
-      };
-    console.log("catchTapPraise...my param = ", param);
-    data.ratingCreate(param, this.successPraise);
-    this.setData({
-      [str1]: null,
-      [str2]: false
-    })
+      operation = this.data.operation[index];
+    if (operation.comment) {
+      var str1 = "operation[" + index + "].comment",
+        str2 = "operation[" + index + "].moreLayer",
+        param = {
+          entity_code: '02', //02表示工单，03表示订单
+          entity_type: operation.job_type,
+          entity_number: operation.job_number,
+          entity_name: operation.job_name,
+          rating_type: '102',
+          rating_name: '评论',
+          remark: operation.comment,
+        };
+      console.log("catchTapComment...my param = ", param);
+      data.ratingCreate(param, this.successComment);
+      this.setData({
+        [str1]: null,
+        [str2]: false
+      })
+    }
   },
 
   //* 点赞**********************************

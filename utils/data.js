@@ -76,7 +76,12 @@ function getRoleType(setRoleType) {
     friend_company_id = wx.getStorageSync('friend_company_id'),
     friend_id = wx.getStorageSync('friend_id'),
     user_id = wx.getStorageSync('user_id'),
-    code = wx.getStorageSync('code');
+    code = wx.getStorageSync('code'),
+    info = wx.getStorageSync('info'),
+    entity_type = info.entity_type,
+    associate_type = info.associate_type,
+    associate_number = info.associate_number,
+    associate_name = info.associate_name;
   if (user_id)
     console.log("getRoleType...成功读取缓存中的user_id =", user_id)
   else {
@@ -84,15 +89,12 @@ function getRoleType(setRoleType) {
     user_id = '00000';
     wx.setStorageSync('user_id', user_id);
   }
-  if (!friend_company_id) {
+  if (!friend_company_id)
     friend_company_id = '00000';
-  }
-  if (!company_id) {
+  if (!company_id)
     company_id = '00000';
-  }
-  if (!friend_id) {
+  if (!friend_id)
     friend_id = '00000';
-  }
   var data = {
     user_id: user_id,
     nickname: app.globalData.userInfo.nickName,
@@ -101,6 +103,10 @@ function getRoleType(setRoleType) {
     friend_company_id: friend_company_id,
     friend_id: friend_id,
     code: code,
+    their_entity_type: entity_type,
+    their_associate_type: associate_type,
+    their_associate_number: associate_number,
+    their_associate_name: associate_name
   };
   wxRequest(API_LOGON, data, setRoleType)
   console.log("API_LOGON...upload my userInfo:", data)
@@ -232,7 +238,7 @@ function getFriendsList(user_type, func) {
 }
 
 // 通讯录：用户role调整**********************************************
-function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_type0,func) {
+function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_type0, func) {
   var user_id = wx.getStorageSync('user_id');
   var data = {
     user_id: user_id,
@@ -353,7 +359,7 @@ function ratingQuery(param, func) {
     ////
     their_entity_type: param.entity_code, //主体代码：02是工单，03是订单
     their_associate_type: param.entity_type, //订单或工单的类型编号
-    their_associate_number: entity_number, //订单或工单的编号
+    their_associate_number: param.entity_number, //订单或工单的编号
   };
   wxRequest(API_RATINGQRY, data, func);
 }
@@ -460,6 +466,7 @@ module.exports = {
   getIndustry: getIndustry,
   getRecptType: getRecptType,
   ratingCreate: ratingCreate,
+  ratingQuery: ratingQuery,
 
   convertType: convertType,
   convertRecptNum: convertRecptNum,

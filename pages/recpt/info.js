@@ -1,5 +1,4 @@
 // pages/recpt/info.js
-
 const data = require('../../utils/data.js')
 
 Page({
@@ -11,6 +10,8 @@ Page({
     autoplay: true,
     interval: 5000,
     duration: 1000,
+    praiseArray: [],
+    commentArray: [],
   },
 
   //* （弃用，因为手机上有bug）点击图片
@@ -31,7 +32,7 @@ Page({
 
   // 设置this.data中的receipt数组-----------------------------------
   setRecptInfo: function(res) {
-    console.log("setRecptInfo...res.data =", info);
+    console.log("setRecptInfo...res.data =", res.data);
     var info = res.data,
       r_number = data.convertRecptNum(res.data[0].receipt_number),
       str = 'recpt_info.r_number';
@@ -39,10 +40,13 @@ Page({
       info[0].remark = '无备注';
     this.setData({
       recpt_info: info[0],
-    });
-    this.setData({
       [str]: r_number
     });
+    data.ratingQuery({
+      entity_type: info[0].receipt_type,
+      entity_number: info[0].receipt_number,
+      entity_code: '03'
+    }, this.finishRatQry);
   },
 
   // 设置图片数组-------------------------------------
@@ -59,22 +63,57 @@ Page({
     });
   },
 
-  // （废弃）下载图片
-  getImgPath: function(i, r_number) {
-    var that = this;
-    wx.downloadFile({
-      url: data.API_IMGDOWN + i,
-      header: {
-        "receipt_number": r_number
-      },
-      success: function(res) {
-        if (res.statusCode === 200) {
-          console.log('getImgPath' + i + '...res =', res);
-          that.setData({
-            ['imgUrls[' + (i - 1) + ']']: res.tempFilePath
-          });
+  // 完成点赞、评论查询-----------------------------
+  finishRatQry: function (res) {
+    var praiseArray = [],
+      commentArray = [],
+      p_i = 0,
+      c_i = 0,
+      len = res.data.length;
+    for (var i = 0; i < len; i++)
+      if (res.data[i].rating_type == '101') { //点赞
+        //判断是否点赞用户是否重复
+        var p_l = praiseArray.length,
+          p_b = false;
+        for (var j = 0; j < p_l; j++)
+          if (praiseArray[j].user_id == res.data[i].user_id) {
+            p_b = true;
+            break;
+          }
+        if (!p_b) { //如果没有重复
+          praiseArray[p_i] = {
+            user_id: res.data[i].user_id,
+            image_address: res.data[i].image_address
+          };
+          p_i++;
         }
+      } else if (res.data[i].rating_type == '102') { //评论
+        commentArray[c_i] = {
+          user_name: res.data[i].user_name,
+          comment: res.data[i].remark
+        };
+        c_i++;
       }
+    var n_pA = parseInt(p_i / 8), //满8个的数组的数目
+      praiseArray1 = [],
+      praiseArray2 = [];
+    for (var i = 0; i < n_pA; i++) { //将满8个的数组填满
+      var preN = 8 * i;
+      for (var j = 0; j < 8; j++)
+        praiseArray1[j] = praiseArray[preN + j];
+      praiseArray2[i] = praiseArray1;
+      praiseArray1 = [];
+    }
+    var preN = n_pA * 8,
+      n_lastArray = p_i - preN; //最后一个数组的数目
+    if (n_lastArray > 0) {
+      for (var i = 0; i < n_lastArray; i++) //填最后一个数组
+        praiseArray1[i] = praiseArray[preN + i];
+      praiseArray2[n_pA] = praiseArray1;
+    }
+    this.setData({
+      praiseArray: praiseArray2,
+      commentArray: commentArray
     })
   },
 
@@ -85,26 +124,14 @@ Page({
     data.getRecptData(options.done, r_number, this.setRecptInfo)
   },
 
-  //* 生命周期函数--监听页面显示********************
-  onShow: function() {},
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {},
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {},
-
   //* 转发********************************************
   onShareAppMessage: function(res) {
     if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }
-    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
-    console.log("onShareAppMessage, path =", path)
+    var info = this.data.recpt_info,
+      path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&et=03&at=' + info.receipt_type + '&anum=' + info.receipt_number + '&anam=' + info.receipt_name;
+    console.log("onShareAppMessage, path =", path);
     return {
       title: '生产管理小程序',
       path: path,
