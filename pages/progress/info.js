@@ -133,7 +133,7 @@ Page({
       path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&et=02&at=' + info.job_type + '&anum=' + info.job_number + '&anam=' + info.job_name;
     console.log("onShareAppMessage, path =", path);
     return {
-      title: '生产管理小程序',
+      title: '工单' + info.j_number + info.job_name,
       path: path,
     }
   }

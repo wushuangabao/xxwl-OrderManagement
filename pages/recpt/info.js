@@ -146,7 +146,7 @@ Page({
       path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&et=03&at=' + info.receipt_type + '&anum=' + info.receipt_number + '&anam=' + info.receipt_name;
     console.log("onShareAppMessage, path =", path);
     return {
-      title: '生产管理小程序',
+      title: '订单' + info.r_number + info.receipt_name,
       path: path,
     }
   }

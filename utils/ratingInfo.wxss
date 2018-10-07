@@ -44,9 +44,8 @@
 .comment-item-right {
   display: flex;
   flex-direction: column;
-  width: 578rpx;
+  width: 603rpx;
   margin-left:20rpx;
-  margin-right:30rpx;
 }
 
 .comment-item-right-up {
