@@ -1,0 +1,29 @@
+<template name="praiseInfo">
+  <view wx:if="{{praiseArray.length>0}}" class="itemView-praise">
+    <image src="/imgs/praise.png" class="praise-png"></image>
+    <view class='praise-imgs'>
+      <view wx:for="{{praiseArray}}" wx:key="ID" class="praise-line">
+        <view wx:for="{{item}}" wx:key="id">
+          <image src="{{item.image_address}}" class="user-img-72"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<template name="commentInfo">
+  <view wx:if="{{commentArray.length>0}}" class="itemView-comment">
+    <!-- comment-item -->
+    <view wx:for="{{commentArray}}" wx:key="id" class="comment-item">
+      <!-- left -->
+      <image src="{{item.image_address}}" class="user-img-72"></image>
+      <!-- right -->
+      <view class="comment-item-right">
+        <view class="comment-item-right-up">
+          <view style='color:blue;'>{{item.user_name}}</view>
+          <view style='color:#888888;'>{{item.time}}</view>
+        </view>
+        <view>{{item.comment}}</view>
+      </view>
+    </view>
+  </view>
+</template>

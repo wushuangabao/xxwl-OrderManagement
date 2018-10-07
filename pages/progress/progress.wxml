@@ -1,18 +1,17 @@
 <!--pages/progress/progress.wxml-->
+<import src="../../utils/commentLayer.wxml" />
 
-<!--上方查询-->
-
+<!--上方标题-->
 <view class="inquiry">
   {{receipt_type}}
   <view style="width:30rpx" /> {{receipt_number}}
   <view style="width:20rpx" />
 </view>
-
 <view style="height:40rpx" />
 
 <!--进度列表-->
 <view class='process'>
-  <view class='process-wrap' wx:for="{{processData}}" wx:key="" data-id='{{item.id}}' bindtap='bindTapToInfo'>
+  <view class='process-wrap' wx:for="{{processData}}" wx:key="" data-id='{{item.index}}' bindtap='bindTapToInfo'>
     <!--左侧时间-->
     <view class='time'>
       <view class="time-date">{{item.time_date}}</view>
@@ -24,7 +23,8 @@
       <view class='line' style="background:{{item.line_color}}" />
     </view>
     <!--右侧文字-->
-    <view class='text' style="color:{{item.font_color}}">
+    <view class='text' style="color:{{item.font_color}};">
+      <!--上-->
       <view class='text-up'>
         <view style="display:flex;flex-direction:row;">
           {{item.job_name}}
@@ -32,7 +32,16 @@
         </view>
         <text class='detail-text'>{{item.user_name}}</text>
       </view>
-      <view class='text-down'>{{item.note}}</view>
+      <!--中-->
+      <view class='text-mid'>{{item.note}}</view>
+      <!--下-->
+      <view wx:if="{{item.state=='已完成'}}" class='text-down'>
+        <template is="praiseAndMore" data="{{...item}}" />
+      </view>
+      <!--隐藏评论层-->
+      <template wx:if="{{item.moreLayer}}" is="commentLayer" data="{{...item}}" />
+      <!--垫底层-->
+      <view style='height:15px;'></view>
     </view>
   </view>
 </view>

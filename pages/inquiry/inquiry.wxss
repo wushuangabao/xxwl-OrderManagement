@@ -64,7 +64,7 @@
 }
 
 .r-img {
-  padding: 5px;
+  padding: 10rpx;
   width: 60px;
   height: 60px;
 }
@@ -91,13 +91,13 @@
 .progress {
   margin-top: 2px;
   font-size: 12px;
-  padding-right: 12px;
+  margin-right: 20rpx;
   color: #999;
 }
 
 .progress-button {
   width: 180rpx;
-  height:35px;
+  height: 35px;
   position: absolute;
   right: 0;
   z-index: 98;
@@ -111,31 +111,11 @@
   font-size: 12px;
 }
 
-.remark{
+.remark {
   margin-top: 4px;
 }
 
 .more {
   display: flex;
-}
-
-.praise {
-  display: flex;
-}
-
-.praise-text {
-  line-height: 25px;
-  text-align: center;
-}
-
-.img-praise {
-  width: 25px;
-  height: 25px;
-}
-
-.img-more {
-  width: 70rpx;
-  height: 25px;
-  margin-right: 12px;
-  margin-left: 10rpx;
+  margin-right: 20rpx;
 }

@@ -25,24 +25,8 @@
     {{recpt_info.remark}}
   </view>
 
-  <view wx:if="{{praiseArray.length>0}}" class="itemView-praise">
-    <image src="/imgs/praise.png" class="praise-png"></image>
-    <view class='praise-imgs'>
-      <view wx:for="{{praiseArray}}" wx:key="ID" class="praise-line">
-        <view wx:for="{{item}}" wx:key="id">
-          <image src="{{item.image_address}}" class="praise-img"></image>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <view wx:if="{{commentArray.length>0}}" class="itemView-praise">
-    <image src="/imgs/message.png" class="comment-png"></image>
-    <view class='praise-imgs'>
-      <view wx:for="{{commentArray}}" wx:key="id" class="comment-item">
-        <view>{{item.user_name + "：" +item.comment }}</view>
-      </view>
-    </view>
-  </view>
+<import src="../../utils/ratingInfo.wxml" />
+<template is="praiseInfo" data="{{praiseArray}}" />
+<template is="commentInfo" data="{{commentArray}}" />
 
 </view>

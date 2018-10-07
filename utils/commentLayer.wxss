@@ -1,11 +1,12 @@
 .layer {
   display: flex;
+  width: 100%;
 }
 
 .comment-input {
-  margin-left: 30rpx;
+  margin-left: 2%;
   height: 25px;
-  width: 560rpx;
+  width: 75%;
   line-height: 25px;
   background-color: #fff;
   color: #696969;
@@ -14,12 +15,28 @@
 }
 
 .comment-confirm {
-  margin-left: 10rpx;
-  width: 120rpx;
+  margin-left: 1%;
+  width: 20%;
   background-color: rgb(75, 187, 0);
   color: #fff;
   border-radius: 4px;
   text-align: center;
   font-size: 12px;
   line-height: 25px;
+}
+
+.praise-text {
+  line-height: 25px;
+  text-align: center;
+}
+
+.img-praise {
+  width: 25px;
+  height: 25px;
+}
+
+.img-more {
+  width: 30px;
+  height: 25px;
+  margin-left: 10rpx;
 }

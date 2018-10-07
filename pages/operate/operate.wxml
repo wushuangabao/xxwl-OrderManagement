@@ -43,11 +43,7 @@
             </view>
             <!--已完成-->
             <view wx:if="{{item.work_status=='2'}}" class="more">
-              <view class="praise" data-id="{{item.index}}" catchtap='catchTapPraise'>
-                <image src="{{item.hasPraise? '/imgs/praise_fill.png' : '/imgs/praise.png'}}" class="img-praise" mode="aspectFit"></image>
-                <view class="praise-text">{{item.rating_101}}</view>
-              </view>
-              <image src="/imgs/message.png" class="img-more" data-id="{{item.index}}" catchtap='catchTapMore'></image>
+              <template is="praiseAndMore" data="{{...item}}" />
             </view>
           </view>
         </view>

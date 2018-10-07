@@ -181,6 +181,7 @@ Page({
     if (receipt.comment) {
       var str1 = "receipt[" + index + "].comment",
         str2 = "receipt[" + index + "].moreLayer",
+        str3 = "receipt[" + index + "].rating_102",
         param = {
           entity_code: '03', //02表示工单，03表示订单
           entity_type: receipt.receipt_type,
@@ -194,7 +195,8 @@ Page({
       data.ratingCreate(param, this.successComment);
       this.setData({
         [str1]: null,
-        [str2]: false
+        [str2]: false,
+        [str3]: (parseInt(receipt.rating_102) + 1).toString()
       })
     }
   },

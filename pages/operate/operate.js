@@ -249,6 +249,7 @@ Page({
     if (operation.comment) {
       var str1 = "operation[" + index + "].comment",
         str2 = "operation[" + index + "].moreLayer",
+        str3 = "operation[" + index + "].rating_102",
         param = {
           entity_code: '02', //02表示工单，03表示订单
           entity_type: operation.job_type,
@@ -262,7 +263,8 @@ Page({
       data.ratingCreate(param, this.successComment);
       this.setData({
         [str1]: null,
-        [str2]: false
+        [str2]: false,
+        [str3]: (parseInt(operation.rating_102) + 1).toString()
       })
     }
   },

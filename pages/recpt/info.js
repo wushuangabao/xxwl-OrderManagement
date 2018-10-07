@@ -90,7 +90,9 @@ Page({
       } else if (res.data[i].rating_type == '102') { //评论
         commentArray[c_i] = {
           user_name: res.data[i].user_name,
-          comment: res.data[i].remark
+          comment: res.data[i].remark,
+          image_address: res.data[i].image_address,
+          time: this.simpTime(res.data[i].finish_time)
         };
         c_i++;
       }
@@ -122,6 +124,17 @@ Page({
     var r_number = wx.getStorageSync('r_number');
     this.setImgPath(r_number);
     data.getRecptData(options.done, r_number, this.setRecptInfo)
+  },
+
+  // time字符串处理--------------------------
+  simpTime: function (time) {
+    return time.slice(5, 16)
+  },
+  getDate: function (time) {
+    return time.slice(5, 10)
+  },
+  getHour: function (time) {
+    return time.slice(11, 16)
   },
 
   //* 转发********************************************

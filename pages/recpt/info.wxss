@@ -1,4 +1,5 @@
 /* pages/recpt/info.wxss */
+@import "/utils/ratingInfo.wxss";
 
 .container {
   display: flex;
@@ -31,45 +32,4 @@
 .slide-image {
   width: 710rpx;
   height: 710rpx;
-}
-
-.itemView-praise {
-  width: 710rpx;
-  padding: 20rpx;
-  display: flex;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
-  background-color: #fff;
-  margin-bottom: 40rpx;
-}
-
-.praise-line {
-  display: flex;
-}
-
-.praise-png {
-  margin: 10rpx;
-  width: 62rpx;
-  height: 62rpx;
-}
-
-.praise-img {
-  margin: 5rpx;
-  width: 72rpx;
-  height: 72rpx;
-}
-
-.comment-png {
-  margin-left: -5rpx;
-  margin-right: 15rpx;
-  width: 62rpx;
-  height: 62rpx;
-}
-
-.comment-item{
-  width:618rpx;
-  font-size: 13px;
-  line-height: 15px;
-  margin: 10rpx;
-  margin-right: -5rpx;
 }

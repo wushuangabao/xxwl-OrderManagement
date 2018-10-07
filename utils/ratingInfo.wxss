@@ -1,0 +1,56 @@
+.itemView-praise {
+  width: 710rpx;
+  padding: 20rpx;
+  display: flex;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  background-color: #fff;
+  margin-bottom: 40rpx;
+}
+
+.itemView-comment {
+  width: 710rpx;
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  background-color: #fff;
+  margin-bottom: 40rpx;
+}
+
+.praise-line {
+  display: flex;
+}
+
+.praise-png {
+  margin: 10rpx;
+  width: 62rpx;
+  height: 62rpx;
+}
+
+.user-img-72 {
+  margin: 5rpx;
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.comment-item {
+  display: flex;
+  font-size: 14px;
+  line-height: 40rpx;
+}
+
+.comment-item-right {
+  display: flex;
+  flex-direction: column;
+  width: 578rpx;
+  margin-left:20rpx;
+  margin-right:30rpx;
+}
+
+.comment-item-right-up {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}

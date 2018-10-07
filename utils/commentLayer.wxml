@@ -1,16 +1,26 @@
 <template name="commentLayer">
-  <view style='display:flex;flex-direction:column;'>
+  <view style='display:flex;flex-direction:column;width:100%'>
     <!--评论展示层-->
     <view class="comments">
     </view>
     <!--评论操作层-->
     <view class="layer">
       <view class="comment-input">
-        <input bindinput='bindCommentInput' data-id="{{index}}" value="{{comment}}" maxlength="32" placeholder="在这里输入评论，字符数最多32" />
+        <input bindinput='bindCommentInput' data-id="{{index}}" value="{{comment}}" focus='true' maxlength="32" placeholder="在这里输入评论，字符数最多32" />
       </view>
       <view class="comment-confirm" data-id="{{index}}" catchtap='catchTapComment'>评论</view>
     </view>
     <!--垫底层-->
     <view style='width:750rpx;height:15rpx;'></view>
+  </view>
+</template>
+<template name="praiseAndMore">
+  <view style='display:flex;' data-id="{{index}}" catchtap='catchTapPraise'>
+    <image src="{{hasPraise? '/imgs/praise_fill.png' : '/imgs/praise.png'}}" class="img-praise" mode="aspectFit"></image>
+    <view class="praise-text">{{rating_101}}</view>
+  </view>
+  <view style='display:flex;' data-id="{{index}}" catchtap='catchTapMore'>
+    <image src="/imgs/message.png" class="img-more"></image>
+    <view class="praise-text">{{rating_102}}</view>
   </view>
 </template>

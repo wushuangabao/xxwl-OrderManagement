@@ -16,8 +16,10 @@ Page({
     receipt_type: '',
     processData: [],
   },
-
-  // 根据拉取的job_table，设置进度条数据--------------------------------------
+  
+  ////////////////////////////////////////////////////////////////////////
+  // 根据拉取的job_table，设置进度条数据
+  ////////////////////////////////////////////////////////////////////////
   setProcessData: function(res) {
     var job_table = res.data,
       len = job_table.length,
@@ -35,6 +37,7 @@ Page({
       if (job.work_status == "2") {
         processData[real_i] = {
           job_name: job.job_name,
+          job_type: job.job_type,
           user_name: job.user_name,
           job_number: job.job_number,
           time_date: this.getDate(job.finish_time),
@@ -44,8 +47,13 @@ Page({
           icon: '/imgs/check-circle.png',
           state: '已完成',
           note: job.remark,
-          id: real_i,
-          imgs: [job.image_1, job.image_2, job.image_3, job.image_4]
+          index: real_i,
+          imgs: [job.image_1, job.image_2, job.image_3, job.image_4],
+          hasPraise:false,
+          moreLayer:false,
+          comment:null,
+          rating_101:job.rating_101,
+          rating_102: job.rating_102,
         }
         real_i++;
       }
@@ -62,7 +70,12 @@ Page({
           icon: '/imgs/time-circle.png',
           state: '处理中',
           note: job.remark,
-          id: real_i,
+          index: real_i,
+          hasPraise: false,
+          moreLayer: false,
+          comment: null,
+          rating_101: job.rating_101,
+          rating_102: job.rating_102,
         }
         real_i++;
       }
@@ -77,7 +90,12 @@ Page({
           font_color: Light_Font_Color,
           icon: '/imgs/undo-circle.png',
           note: job.remark,
-          id: real_i,
+          index: real_i,
+          hasPraise: false,
+          moreLayer: false,
+          comment: null,
+          rating_101: job.rating_101,
+          rating_102: job.rating_102,
         }
         real_i++;
       }
@@ -86,6 +104,92 @@ Page({
     this.setData({
       processData: processData,
     })
+  },
+
+  //////////////////////////////////////////////////////////////
+  //  点赞、评论
+  //////////////////////////////////////////////////////////////
+
+  //* 点击“More”按钮*****************************************
+  catchTapMore: function (e) {
+    if (this.data.isLoading)
+      return;
+    var index = e.currentTarget.dataset.id,
+      operation = this.data.processData[index],
+      str = "processData[" + index + "].moreLayer";
+    this.setData({
+      [str]: !operation.moreLayer
+    });
+  },
+
+  //* 输入评论******************************
+  bindCommentInput: function (e) {
+    var str = "processData[" + e.currentTarget.dataset.id + "].comment";
+    this.setData({
+      [str]: e.detail.value
+    })
+  },
+
+  //* 确认评论******************************
+  catchTapComment: function (e) {
+    var index = e.currentTarget.dataset.id,
+      operation = this.data.processData[index];
+    if (operation.comment) {
+      var str1 = "processData[" + index + "].comment",
+        str2 = "processData[" + index + "].moreLayer",
+        str3 = "processData[" + index + "].rating_102",
+        param = {
+          entity_code: '02', //02表示工单，03表示订单
+          entity_type: operation.job_type,
+          entity_number: operation.job_number,
+          entity_name: operation.job_name,
+          rating_type: '102',
+          rating_name: '评论',
+          remark: operation.comment,
+        };
+      console.log("catchTapComment...my param = ", param);
+      data.ratingCreate(param, this.successComment);
+      this.setData({
+        [str1]: null,
+        [str2]: false,
+        [str3]: (parseInt(operation.rating_102) + 1).toString()
+      })
+    }
+  },
+
+  //* 点赞**********************************
+  catchTapPraise: function (e) {
+    var index = e.currentTarget.dataset.id,
+      operation = this.data.processData[index],
+      str1 = "processData[" + index + "].hasPraise",
+      str2 = "processData[" + index + "].rating_101";
+    if (!operation.hasPraise) {
+      this.setData({
+        [str1]: true,
+        [str2]: (parseInt(operation.rating_101) + 1).toString()
+      });
+      var param = {
+        entity_code: '02', //02表示工单，03表示订单
+        entity_type: operation.job_type,
+        entity_number: operation.job_number,
+        entity_name: operation.job_name,
+        rating_type: '101', //101表示点赞，102表示评论
+        rating_name: '点赞',
+        remark: '1',
+      };
+      console.log("catchTapPraise...my param = ", param);
+      data.ratingCreate(param, this.successPraise);
+    }
+  },
+
+  // 成功点赞--------------------
+  successPraise: function (res) {
+    console.log('successPraise...res.data = ', res.data);
+  },
+
+  // 成功评论--------------------
+  successComment: function (res) {
+    console.log('successComment...res.data = ', res.data);
   },
 
   //* 查看工单详情************************************************
@@ -101,6 +205,7 @@ Page({
     }
     wx.setStorageSync('info', {
       job_name: progressData.job_name,
+      job_type: progressData.job_type,
       job_number: progressData.job_number,
       remark: progressData.note,
     })
