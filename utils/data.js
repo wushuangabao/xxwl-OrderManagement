@@ -302,6 +302,8 @@ function changeCorparam(event, param, func) {
 // 角色类型、订单类型、工单类型的代码\名称查询********************
 function getParam(code, func) {
   var company_type = wx.getStorageSync('company_type');
+  if(!company_type || company_type=='null')
+    company_type = wx.getStorageSync('friend_company_type');
   wxRequest(API_PARAQRY, {
     industry_code: company_type.slice(0, 2), //行业代码
     industry_type: company_type.slice(2), //行业类型

@@ -56,9 +56,10 @@ Page({
     if (company_name == '') {
       prompt = '企业名称不能为空！'
     }
-    if (this.data.index[0] === 0 && this.data.index[1] === 0) {
-      prompt = prompt + '行业未选择！'
-    }
+    // 因为有些型号手机的行业无法选择，故不加以判断
+    // if (this.data.index[0] === 0 && this.data.index[1] === 0) {
+    //   prompt = prompt + '行业未选择！';
+    // }
     //如果prompt非空，说明输入有误
     if (prompt) {
       wx.showModal({
@@ -113,6 +114,10 @@ Page({
   // 获取行业代码----------------------------------
   // 形式为industry_code + industry_type字符串
   getIndustryType: function() {
+    // 因为有些型号手机的行业无法选择，所以加入以下if语句
+    if (this.data.index[0] === 0 && this.data.index[1] === 0) {
+      return '10101';
+    }
     var name = this.data.industry_name[1][this.data.index[1]],
       name_list = this.data.industry_name_list,
       len = name_list.length,
@@ -163,7 +168,7 @@ Page({
     if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }
-    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&company_type=' + wx.getStorageSync('company_type');
     console.log("onShareAppMessage, path =", path)
     return {
       title: '生产管理小程序',

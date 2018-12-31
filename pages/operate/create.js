@@ -332,7 +332,7 @@ Page({
     if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }
-    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&company_type=' + wx.getStorageSync('company_type');
     console.log("onShareAppMessage, path =", path)
     return {
       title: '生产管理小程序',

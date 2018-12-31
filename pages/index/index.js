@@ -104,6 +104,8 @@ Page({
       wx.setStorageSync('friend_company_id', e.company_id);
     if (e.user_id)
       wx.setStorageSync('friend_id', e.user_id);
+    if (e.company_type)
+      wx.setStorageSync('friend_company_type', e.company_type);
     if (e.et) {
       var info = {
         entity_type: e.et,
@@ -185,8 +187,8 @@ Page({
     if (res.from === 'button') { //如果来自页面内转发按钮
       console.log(res.target)
     }
-    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id')
-    console.log("onShareAppMessage, path =", path)
+    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&company_type=' + wx.getStorageSync('company_type');
+    console.log("onShareAppMessage, path =", path);
     return {
       title: '生产管理小程序',
       path: path,
