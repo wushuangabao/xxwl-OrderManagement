@@ -1,0 +1,24 @@
+<!--pages/market/order/order.wxml-->
+<view class="recpt-whole">
+  <view class="recpt-item">
+    <view class="recpt-item-left">店铺：</view>
+    <view class="recpt-item-right">仁和医院</view>
+  </view>
+  <view class="recpt-item">
+    <view class="recpt-item-left">产品介绍：</view>
+    <view class="recpt-item-right">综合个人健康体检套餐</view>
+  </view>
+  <view class="recpt-item">
+    <view class="recpt-item-left">产品价格：</view>
+    <view class="recpt-item-right">￥500.00</view>
+  </view>
+  <view class="recpt-item">
+    <view class="recpt-item-left">预订金额：</view>
+    <view class="recpt-item-right">￥50.00</view>
+  </view>
+  <view class="recpt-item">
+    <view class="recpt-item-left">备注：</view>
+    <view class="recpt-item-right"></view>
+  </view>
+  <button class="button-order">预订</button>
+</view>

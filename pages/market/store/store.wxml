@@ -1,0 +1,6 @@
+<!--pages/market/store/store.wxml-->
+<view>
+
+  <import src="../../../utils/tabBar.wxml" />
+  <template is="tabBar" data="{{tabBar: tabBar}}" />
+</view>

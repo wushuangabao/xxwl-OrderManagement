@@ -8,8 +8,10 @@ const URL_BASE = "https://www.xiangxun1.com/day07/", // http://140.143.154.96
 
 // 用户-授权
 var API_LOGON = URL_BASE + "logonAuthServlet",
-  // 用户-注册登记
+  // 用户-注册登记（没有用到）
   API_REG = URL_BASE + "regServlet",
+  // 根据角色查询TabBar接口
+  API_ROLE = URL_BASE + "RoleEntityServlet",
   // 企业-注册
   API_CPNYREG = URL_BASE + "CompanyRegisterServlet",
   //---------------------------------------------
@@ -30,6 +32,11 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   // 通讯录-调整用户role接口
   API_USERDEAL = URL_BASE + "UserDealServlet",
   //---------------------------------------------
+  // 商群-某级别用户列表查询接口
+  API_USERLVQRY = URL_BASE + "userLevelQueryServlet",
+  // 商群-点击某个用户后获取对应的列表
+  API_ENTPARAM = URL_BASE + "EntityParamServlet",
+  //---------------------------------------------
   // 工序设置-模板查询接口
   API_CORPQRY = URL_BASE + "CorparamQueryServlet",
   // 工序设置-增减工序接口
@@ -48,8 +55,12 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   // 图片-上传
   API_IMGUP = URL_BASE + "TestUpServlet", //"TestImageServlet",//"ImageUpServlet",//
   // 图片-下载
-  API_IMGDOWN = URL_BASE + "ImageDownServlet";
-
+  API_IMGDOWN = URL_BASE + "ImageDownServlet",
+  //----------------------------------------------
+  // market角色-内容list查询
+  API_CONTQRY = URL_BASE + "ContentQueryServlet",
+  // market角色-钱包-明细查询
+  API_ACCLOGQRY = URL_BASE + "AccountLogServlet";
 
 // wx.request 封装-----------------------------------
 function wxRequest(url, data, resolve) {
@@ -110,6 +121,22 @@ function getRoleType(setRoleType) {
   };
   wxRequest(API_LOGON, data, setRoleType)
   console.log("API_LOGON...upload my userInfo:", data)
+}
+
+// 查询角色，用于设置tabBar**************************************
+function getEntityOfRole(func) {
+  var company_id = wx.getStorageSync('company_id');
+  if (!company_id)
+    company_id = '00000';
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    company_id: company_id,
+    company_name: "null",
+  }
+  console.log("getEntityOfRole...my data = ", data);
+  wxRequest(API_ROLE, data, func);
 }
 
 // 上传录入订单数据**********************************************
@@ -255,6 +282,36 @@ function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_typ
   wxRequest(API_USERDEAL, data, func)
 }
 
+// 商群：某级别的用户列表查询******************************************
+function getUsersByLevel(user_level,func){
+  var data={
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    company_id: wx.getStorageSync('company_id'),
+    user_level: user_level,
+  }
+  wxRequest(API_USERLVQRY,data,func);
+}
+
+// 商群：点击某个用户后，获取对应的列表*******************************
+function getParamsByEntity(param,func){
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    company_id: wx.getStorageSync('company_id'),
+    company_name:"null",
+    their_scene_code:"01",//表示用户
+    their_scene_type:"301",//role_type，小程序进入的模式。为测试暂时写死为“代理商”模式
+    their_scene_name:"商群",
+    their_associate_code:"01",
+    their_associate_type:"301",
+    their_associate_name:"null",
+  }
+  wxRequest(API_ENTPARAM, data, func);
+}
+
 // 工序设置：查询模板**********************************************
 function getCorparam(recpt_type, func) {
   var data = {
@@ -302,7 +359,7 @@ function changeCorparam(event, param, func) {
 // 角色类型、订单类型、工单类型的代码\名称查询********************
 function getParam(code, func) {
   var company_type = wx.getStorageSync('company_type');
-  if(!company_type || company_type=='null')
+  if (!company_type || company_type == 'null')
     company_type = wx.getStorageSync('friend_company_type');
   wxRequest(API_PARAQRY, {
     industry_code: company_type.slice(0, 2), //行业代码
@@ -365,6 +422,52 @@ function ratingQuery(param, func) {
   };
   wxRequest(API_RATINGQRY, data, func);
 }
+
+// market角色-内容list查询*********************************************
+function getContent(param,func){
+  var data={
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    work_status: '',
+    company_id: wx.getStorageSync('company_id'),
+    their_associate_code:"01", //主体。用户为“01”
+    their_associate_type:"000",
+    their_associate_number:"",
+    their_associate_name:"",
+    other_associate_code:"07", //所选的主体。内容为“07”
+    other_associate_type:"000",
+    other_associate_number:"00000",
+    other_associate_name:""
+  };
+  wxRequest(API_CONTQRY,data,func);
+}
+
+// market角色-钱包-明细查询*************************************
+function getAccLog(param,func){
+  var gmt_modify = wx.getStorageSync('gmt_modify');
+  if (gmt_modify == '')
+    gmt_modify = '9999-08-25 20:44:28';
+  console.log('getAccLog...gmt_modify =', gmt_modify);
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    work_status: '',
+    company_id: wx.getStorageSync('company_id'),
+    their_associate_code: param.their_associate_code, //主体。用户为“01”
+    their_associate_type: param.their_associate_type,
+    their_associate_number: param.their_associate_number,
+    their_associate_name: param.their_associate_name,
+    other_associate_code: param.other_associate_code, //所选的主体。钱包为“08”
+    other_associate_type: param.other_associate_type,
+    other_associate_number: param.other_associate_number,
+    other_associate_name: param.other_associate_name,
+    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+  };
+  wxRequest(API_ACCLOGQRY, data, func);
+}
+
 
 ///////////////////////////////////////////////////////
 // 全局data处理
@@ -452,6 +555,7 @@ function simplfStr(remark, n) {
 module.exports = {
   wxRequest: wxRequest,
   getRoleType: getRoleType,
+  getEntityOfRole: getEntityOfRole,
   upLoadRecpt: upLoadRecpt,
   getRecptData: getRecptData,
   getProgrData: getProgrData,
@@ -463,6 +567,10 @@ module.exports = {
   changeFriendInfo: changeFriendInfo,
   getCorparam: getCorparam,
   changeCorparam: changeCorparam,
+  getUsersByLevel: getUsersByLevel,
+  getParamsByEntity: getParamsByEntity,
+  getContent: getContent,
+  getAccLog: getAccLog,
 
   getParam: getParam,
   getIndustry: getIndustry,

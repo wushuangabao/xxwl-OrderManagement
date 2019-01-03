@@ -8,6 +8,7 @@ role_type
 101-199 工人
 100 客户
 300 伙伴
+301市场（推广人员）
 
 
 网上资料：
@@ -221,8 +222,8 @@ gmt_modify
 9999-12-31.0
 
 
-RatingCreateServlet点赞接口
-:
+
+--RatingCreateServlet点赞接口--------------------------------
 String User_id = request.getParameter("user_id");
 String User_name = request.getParameter("user_name");
 
@@ -245,6 +246,7 @@ String Rating_name=request.getParameter("rating_name");  //点赞类型名称，101是名
 
 String Remark=request.getParameter("remark"); //如果是点赞是，直接赋值"1",如果是评论的时候，就是评论内容
 
+--------------------------------------------------------
 RatingQueryServlet点赞评价接口：
 their_entity_type表示主体代码：02是工单，03是订单，
 
@@ -264,5 +266,166 @@ remark:"1"
 user_id:"oh1zH5QdEhZG_k44r-VEKO8uhCPw"
 user_name:"无双BaOY_WHA"
 image_address:
-按时间顺序排列，主义去掉user_id重复的元素。
+按时间顺序排列，注意去掉user_id重复的元素。
+
+--------------------------------------------------------
+RoleEntityServlet  角色->TabBar接口
+输入：
+String User_id = request.getParameter("user_id");   //录单操作ID
+String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+
+String Company_id = request.getParameter("company_id");
+	
+String Company_name = request.getParameter("company_name");
+输出：
+entity_code;     主体代码
+
+entity_name;   主体名称
+serial_number;   序号
+res.data示例：
+[{entity_code: "01", entity_name: "商群", serial_number: "1"},
+{entity_code: "09", entity_name: "店铺", serial_number: "2"}]
+
+商群01、工单02、订单03、评价单04、
+业务单据05、记账凭证06、内容07、钱包08、店铺09、商品10
+-------------------------------------------------------------
+商群级别查询接口：userLevelQueryServlet
+:
+输入：	String User_id = request.getParameter("user_id");   //录单操作ID
+String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+String Company_id = request.getParameter("company_id");
+
+String User_level = request.getParameter("user_level");
+
+
+user_level为几级代理，01表示一级代理，02表示二级代理，03表示三级代理
+--------------------------------------------------------------
+切换路由菜单接口：EntityParamServlet
+输入：
+String User_id = request.getParameter("user_id");   //录单操作ID
+String User_name = request.getParameter("user_name");
+String Role_type = request.getParameter("role_type");
+
+String Company_id = request.getParameter("company_id");
+
+String Company_name = request.getParameter("company_name");
+
+String their_scene_code = request.getParameter("their_scene_code");
+String their_scene_type = request.getParameter("their_scene_type");
+
+String their_scene_name = request.getParameter("their_scene_code");
+		   
+		  String their_associate_code  = request.getParameter("their_associate_code");
+String their_associate_type = request.getParameter("their_associate_type");
+String their_associate_name = request.getParameter("their_associate_name");
+参考： their_scene_code = "01"; 表示用户
+
+their_scene_type = "301";   表示该小程序进入的代理商模式
+
+their_associate_code ="01";  表示用户
+
+their_associate_type = "301"; 表示当前的选择代理商
+输出:
+[{"code":1,"other_associate_code":"01","other_associate_name":"详情","other_associate_type":"000"},{"code":1,"other_associate_code":"01","other_associate_name":"代理商","other_associate_type":"301"},{"code":1,"other_associate_code":"03","other_associate_name":"订单","other_associate_type":"000"}]
+
+
+------------------------------------------------------------------------------------
+内容项的查询接口：ContentQueryServlet
+
+
+输入：String User_id = request.getParameter("user_id");   //录单操作ID
+String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+
+String Work_status = request.getParameter("work_status");
+
+String Company_id = request.getParameter("company_id");
+	
+String their_associate_code  = request.getParameter("their_associate_code");  主体代码 用户为01
+
+String their_associate_type = request.getParameter("their_associate_type");  赋值：000
+String their_associate_number = request.getParameter("their_associate_number");  所选择的主体编号
+String their_associate_name = request.getParameter("their_associate_name");  所选择的主体名称
+
+String other_associate_code  = request.getParameter("other_associate_code"); 所选择的主体代码，内容为07
+
+String other_associate_type = request.getParameter("other_associate_type");  赋值：000
+String other_associate_number = request.getParameter("other_associate_number");      赋值：00000
+
+String other_associate_name = request.getParameter("other_associate_name");   不用赋值
+
+---------------------------------------------------------------------------------------
+钱包（账户）明细查询接口：
+AccountLogServlet
+
+String User_id = request.getParameter("user_id");   //录单操作ID
+String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+
+String Work_status = request.getParameter("work_status");
+
+String Company_id = request.getParameter("company_id");
+String their_associate_code  = request.getParameter("their_associate_code");
+
+String their_associate_type = request.getParameter("their_associate_type");
+
+String their_associate_number = request.getParameter("their_associate_number");
+
+String their_associate_name = request.getParameter("their_associate_name");
+
+String other_associate_code  = request.getParameter("other_associate_code");
+
+String other_associate_type = request.getParameter("other_associate_type");
+
+String other_associate_number = request.getParameter("other_associate_number");
+String other_associate_name = request.getParameter("other_associate_name");
+String Gmt_modify = request.getParameter("gmt_modify");
+
+
+输出：
+
+[{accountNo:"0820181218101932521"
+accountType:"1122"
+aliasName:"应收帐款-蓝三科技工商银行账户2"
+amount:800
+createTime:"2018-12-24 14:28:17.0"
+currency:0
+event_code:"1"
+remark:"格力电器借出款项"
+typeName:"应收帐款"}]
+
+-------------------------------------------------------------------------------
+订单查询（基于关系连接）接口：
+BillQuery2Servlet
+
+输出：
+String User_id = request.getParameter("user_id");//录单操作ID 
+String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+
+String Work_status = request.getParameter("work_status");
+String Company_id = request.getParameter("company_id");
+String their_associate_code  = request.getParameter("their_associate_code");
+	
+String their_associate_type = request.getParameter("their_associate_type");
+
+String their_associate_number = request.getParameter("their_associate_number");
+
+String their_associate_name = request.getParameter("their_associate_name");
+
+String other_associate_code  = request.getParameter("other_associate_code");
+
+String other_associate_type = request.getParameter("other_associate_type");
+
+String other_associate_number = request.getParameter("other_associate_number");
+String other_associate_name = request.getParameter("other_associate_name");
+
+String Gmt_modify = request.getParameter("gmt_modify");
 

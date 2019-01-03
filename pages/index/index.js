@@ -50,8 +50,28 @@ Page({
     else if (res.data.role_type != null) {
       wx.setStorageSync('role_type', res.data.role_type);
       wx.setStorageSync('company_id', res.data.company_id);
+      //获取角色对应的tabBar（实体）
+      data.getEntityOfRole(this.setEntityOfRole);
+      //跳转页面
       this.goTo(res.data.role_type);
     }
+  },
+
+  // 设置TabBar--------------------------
+  setEntityOfRole: function(res) {
+    var data = res.data,
+      len = data.length;
+    console.log("setEntityOfRole...res.data = ", data);
+    var myList = [];
+    for (var i = 1; i <= len; i++) {
+      var index = i - 1;
+      if (data[index].serial_number == i) {
+        var listItem = app.globalData.getTabBarListItem(data[index]);
+        myList[index] = listItem;
+      }
+    }
+    app.globalData.tabBar.list = myList;
+    console.log("app.globalData.tabBar = ", app.globalData.tabBar);
   },
 
   //（废弃）长按motto，用于测试
@@ -163,36 +183,26 @@ Page({
 
   //根据身份不同，跳转页面----------------------------
   goTo: function(s) {
-    if (s == "02") { //销售
-      wx.redirectTo({
-        url: '/pages/recpt/input'
-      })
+    var url = '';
+    if (s == "301") { //市场
+      url = '/pages/friends/roleSale/manage';
+    } else if (s == "02") { //销售
+      url = '/pages/recpt/input'
     } else if (s == "01") { //管理员
-      wx.redirectTo({
-        url: '/pages/friends/manage'
-      })
+      url = '/pages/friends/manage'
     } else if (parseInt(s) > 100 && parseInt(s) < 200) { //不同工种的工人
-      wx.redirectTo({
-        url: '/pages/operate/operate'
-      })
+      url = '/pages/operate/operate'
     } else {
-      wx.redirectTo({
-        url: '/pages/inquiry/inquiry'
-      })
+      url = '/pages/inquiry/inquiry'
     }
+    wx.redirectTo({
+      url: url
+    });
   },
 
   //* 转发********************************************
   onShareAppMessage: function(res) {
-    if (res.from === 'button') { //如果来自页面内转发按钮
-      console.log(res.target)
-    }
-    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&company_type=' + wx.getStorageSync('company_type');
-    console.log("onShareAppMessage, path =", path);
-    return {
-      title: '生产管理小程序',
-      path: path,
-    }
+    app.globalData.shareApp(res);
   }
 
 })

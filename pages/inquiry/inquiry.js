@@ -18,7 +18,7 @@ Page({
     index: 0,
     receipt: [],
     isAdmin: false,
-    isLoading:false,
+    isLoading: false,
     status: "0", //0表示未完成，1表示已完成
   },
 
@@ -34,7 +34,7 @@ Page({
     });
     this.setData({
       receipt: [],
-      isLoading:true
+      isLoading: true
     });
     if (name == "未完成") {
       this.changeTitWXSS(1)
@@ -125,7 +125,7 @@ Page({
     }
     this.setData({
       receipt: old_data,
-      isLoading:false,
+      isLoading: false,
     });
     wx.hideLoading();
     if (real_i > old_len) {
@@ -155,7 +155,7 @@ Page({
   //////////////////////////////////////////////////////////////
 
   //* 点击“More”按钮*****************************************
-  catchTapMore: function (e) {
+  catchTapMore: function(e) {
     if (this.data.isLoading)
       return;
     var index = e.currentTarget.dataset.id,
@@ -167,7 +167,7 @@ Page({
   },
 
   //* 输入评论******************************
-  bindCommentInput: function (e) {
+  bindCommentInput: function(e) {
     var str = "receipt[" + e.currentTarget.dataset.id + "].comment";
     this.setData({
       [str]: e.detail.value
@@ -175,7 +175,7 @@ Page({
   },
 
   //* 确认评论******************************
-  catchTapComment: function (e) {
+  catchTapComment: function(e) {
     var index = e.currentTarget.dataset.id,
       receipt = this.data.receipt[index];
     if (receipt.comment) {
@@ -202,7 +202,7 @@ Page({
   },
 
   //* 点赞**********************************
-  catchTapPraise: function (e) {
+  catchTapPraise: function(e) {
     var index = e.currentTarget.dataset.id,
       receipt = this.data.receipt[index],
       str1 = "receipt[" + index + "].hasPraise",
@@ -227,12 +227,12 @@ Page({
   },
 
   // 成功点赞--------------------
-  successPraise: function (res) {
+  successPraise: function(res) {
     console.log('successPraise...res.data = ', res.data);
   },
 
   // 成功评论--------------------
-  successComment: function (res) {
+  successComment: function(res) {
     console.log('successComment...res.data = ', res.data);
   },
 
@@ -242,20 +242,19 @@ Page({
 
   //* 监听页面显示***********************************
   onShow: function() {
-    //判断用户身份是否为管理员
-    var value = wx.getStorageSync('role_type')
-    if (value == "01") { //是管理员
-      //设置tabBar
-      var myTabBar = getApp().globalData.tabBar
-      myTabBar.list[0].active = false
-      myTabBar.list[1].active = false
-      myTabBar.list[2].active = true
-      myTabBar.list[3].active = false
-      this.setData({
-        tabBar: myTabBar,
-        isAdmin: true
-      })
+    //设置tabBar
+    var myTabBar = getApp().globalData.tabBar,
+      len = myTabBar.list.length;
+    for (var i = 0; i < len; i++) {
+      if (myTabBar.list[i].text == "订单")
+        myTabBar.list[i].active = true;
+      else
+        myTabBar.list[i].active = false;
     }
+    this.setData({
+      tabBar: myTabBar,
+      isAdmin: true
+    })
   },
 
   //* 生命周期函数--监听页面加载************************************
@@ -264,7 +263,7 @@ Page({
       title: '加载中',
     });
     this.setData({
-      isLoading:true
+      isLoading: true
     });
     wx.setStorageSync('gmt_modify', '');
     data.getRecptData(this.data.status, "00000", this.setRecptData);

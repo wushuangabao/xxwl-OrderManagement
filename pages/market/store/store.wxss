@@ -1,0 +1,2 @@
+/* pages/market/store/store.wxss */
+@import "/utils/tabBar.wxss";

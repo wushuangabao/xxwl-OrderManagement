@@ -53,46 +53,73 @@ App({
     wantRegisterCompany: true,
     userInfo: null,
     industry: null, //行业类型数据，从服务器拉取
+    shareApp: function(res) {
+      if (res.from === 'button') { //如果来自页面内转发按钮
+        console.log(res.target)
+      }
+      var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&company_type=' + wx.getStorageSync('company_type'); //+ '&role_type=' + wx.getStorageSync('role_type');
+      console.log("onShareAppMessage, path =", path);
+      return {
+        title: '生产管理小程序',
+        path: path,
+      }
+    },
     tabBar: {
       "color": "#9E9E9E",
       "selectedColor": "#f00",
       "backgroundColor": "#fff",
       "borderStyle": "#ccc",
       "list": [{
-          "pagePath": "/pages/friends/manage",
-          "text": "我的商群",
-          "iconPath": "/imgs/mine.png",
-          "selectedIconPath": "/imgs/mine_fill.png",
-          "selectedColor": "#1aad19",
-          active: false
-        },
-        {
-          "pagePath": "/pages/recpt/input",
-          "text": "录入订单",
-          "iconPath": "/imgs/barrage.png",
-          "selectedIconPath": "/imgs/barrage_fill.png",
-          "selectedColor": "#1aad19",
-          active: false
-        },
-        {
-          "pagePath": "/pages/inquiry/inquiry",
-          "text": "我的订单",
-          "iconPath": "/imgs/browse.png",
-          "selectedIconPath": "/imgs/browse_fill.png",
-          "selectedColor": "#1aad19",
-          active: false
-        },
-        {
-          "pagePath": "/pages/operate/operate",
-          "text": "我的工单",
-          "iconPath": "/imgs/brush.png",
-          "selectedIconPath": "/imgs/brush_fill.png",
-          "selectedColor": "#1aad19",
-          active: false
-        }
-      ],
+        "pagePath": "/pages/recpt/input",
+        "text": "订单录入",
+        "iconPath": "/imgs/barrage.png",
+        "selectedIconPath": "/imgs/barrage_fill.png",
+        "selectedColor": "#1aad19",
+        active: false
+      }, ],
       "position": "bottom"
-    }
+    },
+    getTabBarListItem: function(data) {
+      var entity_code = data.entity_code,
+        img_name="";
+      var listItem = {
+        pagePath: "",
+        text: data.entity_name,
+        iconPath: "",
+        selectedIconPath: "",
+        selectedColor: "#1aad19",
+        active: false,
+        //number: parseInt(data.serial_number),
+      };
+      //商群01、工单02、订单03、评价单04、业务单据05、记账凭证06、内容07、钱包08、店铺09、商品10
+      if (entity_code == "01") { //商群
+        var role_type = wx.getStorageSync('role_type');
+        if (role_type == "01") //身份为管理员
+          listItem.pagePath = "/pages/friends/manage";
+        else if (role_type == "301") //身份为market（代理商）
+          listItem.pagePath = "/pages/friends/roleSale/manage";
+        // img_name="mine";
+        img_name="addressbook";
+      } else if (entity_code == "02") { //工单
+        listItem.pagePath = "/pages/operate/operate";
+        img_name ="brush";
+      } else if (entity_code == "03") { //订单
+        listItem.pagePath = "/pages/inquiry/inquiry";
+        img_name ="browse";
+      } else if (entity_code == "07") { //内容
+        listItem.pagePath = "/pages/market/content/list";
+        img_name="barrage";
+      } else if (entity_code == "08") { //钱包
+        listItem.pagePath = "/pages/market/wallet/wallet";
+        img_name="wallet";
+      } else if (entity_code == "09") { //店铺
+        listItem.pagePath = "/pages/market/store/store";
+        img_name="store";
+      }
+      listItem.iconPath = "/imgs/"+img_name+".png";
+      listItem.selectedIconPath = "/imgs/" + img_name +"_fill.png";
+      return listItem;
+    },
   }
 
 })

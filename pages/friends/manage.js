@@ -77,7 +77,7 @@ Page({
     for (var i = 0; i < len; i++) {
       friendsList[i].index = i;
       friendsList[i].role_type_name = this.convertRole(friendsList[i].role_type);
-      if (!friendsList[i].image_address)
+      if (!friendsList[i].image_address || friendsList[i].image_address == 0)
         friendsList[i].image_address = "/imgs/image.png"; //无头像时顶替用
     }
     this.setData({
@@ -233,7 +233,7 @@ Page({
       }
       data_.multiIndex[1] = 0;
     }
-    this.setData(data_);
+    this.setData(data_); //设置mutiArray和multiIndex
   },
 
   // 根据服务器拉取的数据，设置员工的角色类型表-------------------------
@@ -263,13 +263,17 @@ Page({
 
   onShow: function() {
     //设置tabBar
-    var myTabBar = getApp().globalData.tabBar
-    myTabBar.list[0].active = true
-    myTabBar.list[1].active = false
-    myTabBar.list[2].active = false
-    myTabBar.list[3].active = false
+    var myTabBar = getApp().globalData.tabBar,
+      len = myTabBar.list.length;
+    for (var i = 0; i < len; i++) {
+      if (myTabBar.list[i].text == "商群")
+        myTabBar.list[i].active = true;
+      else
+        myTabBar.list[i].active = false;
+    }
     this.setData({
       tabBar: myTabBar,
+      isAdmin: true
     })
   },
 
@@ -303,14 +307,6 @@ Page({
 
   //* 转发********************************************
   onShareAppMessage: function(res) {
-    if (res.from === 'button') { //如果来自页面内转发按钮
-      console.log(res.target)
-    }
-    var path = '/pages/index/index?company_id=' + wx.getStorageSync('company_id') + '&user_id=' + wx.getStorageSync('user_id') + '&company_type=' + wx.getStorageSync('company_type');
-    console.log("onShareAppMessage, path =", path)
-    return {
-      title: '生产管理小程序',
-      path: path,
-    }
+    app.globalData.shareApp(res);
   }
 })

@@ -1,0 +1,31 @@
+/* pages/market/content/list.wxss */
+@import "/utils/tabBar.wxss";
+
+.con-item{
+  display: flex;
+  border-bottom: 1px solid lightgrey;
+  padding: 15rpx;
+}
+
+.con-left{
+  width: 520rpx;
+  height: 184rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.con-title{
+  font-size: 16px;
+  font-weight: bolder;
+  line-height: 54rpx;
+}
+
+.con-content{
+  font-size: 14px;
+  height: 130rpx;
+}
+
+.con-img{
+  width: 200rpx;
+  height: 184rpx;
+}

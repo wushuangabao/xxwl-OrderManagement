@@ -1,0 +1,70 @@
+/* pages/market/wallet/wallet.wxss */
+@import "/utils/tabBar.wxss";
+
+.top {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 110rpx;
+  /* border-bottom: 1rpx solid gray; */
+  background: rgb(241, 241, 241);
+  padding: 20rpx;
+  padding-left: 60rpx;
+}
+
+.top-text {
+  font-size: 28rpx;
+}
+
+.top-number {
+  font-size: 62rpx;
+}
+
+.list {
+  margin-top: 150rpx;
+  margin-bottom: 120rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  border-bottom: 1px solid lightgrey;
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx;
+  padding-bottom: 25rpx;
+}
+
+.item-left {
+  width: 400rpx;
+  font-size: 28rpx;
+  line-height: 35rpx;
+}
+
+.item-right {
+  width: 300rpx;
+  font-size: 30rpx;
+  line-height: 35rpx;
+  text-align: right;
+}
+
+.item-left-up {
+  font-size:34rpx;
+}
+
+.item-left-down {
+  margin-top: 20rpx;
+}
+
+.item-right-up {
+  color:gray;
+}
+
+.item-right-down {
+  margin-top: 20rpx;
+  font-size:35rpx;
+}

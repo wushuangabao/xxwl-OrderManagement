@@ -1,0 +1,36 @@
+/* pages/market/order/order.wxss */
+
+page {
+  height: 80%;
+}
+
+.recpt-whole {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.recpt-item {
+  display: flex;
+  padding: 15rpx;
+}
+
+.recpt-item-left {
+  display: flex;
+  flex-direction: column;
+  width: 220rpx;
+  text-align: right;
+}
+
+.recpt-item-right {
+  width: 500rpx;
+  padding-right: 50rpx;
+}
+
+.button-order {
+  margin-top: 100rpx;
+  width: 720rpx;
+}

@@ -11,7 +11,13 @@
     "pages/operate/create",
     "pages/recpt/info",
     "pages/progress/info",
-    "pages/operate/more/input"
+    "pages/operate/more/input",
+    "pages/friends/roleSale/manage",
+    "pages/market/order/order",
+    "pages/market/content/content",
+    "pages/market/content/list",
+    "pages/market/store/store",
+    "pages/market/wallet/wallet"
   ],
   "networkTimeout": {
     "request": 10000,

@@ -1,0 +1,19 @@
+<!--pages/market/wallet/wallet.wxml-->
+<view class="top">
+  <view class="top-text">账户余额（元）</view>
+  <view class="top-number">{{numberInWallet}}</view>
+</view>
+<view class="list">
+  <view wx:for="{{accLogs}}" wx:key="" class="item" bindtap="goToContent">
+    <view class="item-left">
+      <view class="item-left-up">{{item.remark}}</view>
+      <view class="item-left-down">余额：{{item.balance}}</view>
+    </view>
+    <view class="item-right">
+      <view class="item-right-up">{{item.simpTime}}</view>
+      <view class="item-right-down">{{item.amount}}</view>
+    </view>
+  </view>
+</view>
+<import src="../../../utils/tabBar.wxml" />
+<template is="tabBar" data="{{tabBar: tabBar}}" />
