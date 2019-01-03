@@ -16,8 +16,9 @@
     "pages/market/order/order",
     "pages/market/content/content",
     "pages/market/content/list",
-    "pages/market/store/store",
-    "pages/market/wallet/wallet"
+    "pages/market/shop/list",
+    "pages/market/wallet/wallet",
+    "pages/market/shop/shop"
   ],
   "networkTimeout": {
     "request": 10000,

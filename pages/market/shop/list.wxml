@@ -1,0 +1,14 @@
+<!--pages/market/store/store.wxml-->
+<!-- 该页面与content/list页面的结构完全一样 -->
+<view class="list">
+  <view wx:for="{{shopList}}" wx:key="" class="con-item" bindtap="goToShop" data-id="{{item.index}}">
+    <view class="con-left">
+      <view class="con-title">{{item.shop_name}}</view>
+      <view class="con-content">{{item.shop_address}}</view>
+    </view>
+    <image src='{{item.img_path}}' class="con-img" mode='aspectFit'></image>
+  </view>
+
+  <import src="../../../utils/tabBar.wxml" />
+  <template is="tabBar" data="{{tabBar: tabBar}}" />
+</view>

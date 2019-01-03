@@ -50,10 +50,8 @@ Page({
     else if (res.data.role_type != null) {
       wx.setStorageSync('role_type', res.data.role_type);
       wx.setStorageSync('company_id', res.data.company_id);
-      //获取角色对应的tabBar（实体）
+      //获取角色对应的tabBar（实体）,在回调函数中跳转页面
       data.getEntityOfRole(this.setEntityOfRole);
-      //跳转页面
-      this.goTo(res.data.role_type);
     }
   },
 
@@ -71,7 +69,7 @@ Page({
       }
     }
     app.globalData.tabBar.list = myList;
-    console.log("app.globalData.tabBar = ", app.globalData.tabBar);
+    this.goTo(wx.getStorageSync('role_type'));    //跳转页面
   },
 
   //（废弃）长按motto，用于测试

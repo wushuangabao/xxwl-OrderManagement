@@ -1,5 +1,5 @@
 <!--pages/market/content/list.wxml-->
-<view>
+<view class="list">
   <view wx:for="{{contents}}" wx:key="" class="con-item" bindtap="goToContent">
     <view class="con-left">
       <view class="con-title">{{item.content_name}}</view>

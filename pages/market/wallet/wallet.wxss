@@ -8,12 +8,12 @@
   top: 0;
   left: 0;
   z-index: 100;
-  width: 100%;
+  width: 710rpx;
   height: 110rpx;
   /* border-bottom: 1rpx solid gray; */
   background: rgb(241, 241, 241);
   padding: 20rpx;
-  padding-left: 60rpx;
+  text-align: right;
 }
 
 .top-text {
@@ -22,6 +22,7 @@
 
 .top-number {
   font-size: 62rpx;
+  padding-right: 6rpx;
 }
 
 .list {
@@ -53,7 +54,7 @@
 }
 
 .item-left-up {
-  font-size:34rpx;
+  font-size: 34rpx;
 }
 
 .item-left-down {
@@ -61,10 +62,10 @@
 }
 
 .item-right-up {
-  color:gray;
+  color: gray;
 }
 
 .item-right-down {
   margin-top: 20rpx;
-  font-size:35rpx;
+  font-size: 35rpx;
 }

@@ -37,6 +37,9 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   // 商群-点击某个用户后获取对应的列表
   API_ENTPARAM = URL_BASE + "EntityParamServlet",
   //---------------------------------------------
+  // 商铺-查询
+  API_SHOPQRY = URL_BASE + "ShopQueryServlet",
+  //---------------------------------------------
   // 工序设置-模板查询接口
   API_CORPQRY = URL_BASE + "CorparamQueryServlet",
   // 工序设置-增减工序接口
@@ -459,13 +462,38 @@ function getAccLog(param,func){
     their_associate_type: param.their_associate_type,
     their_associate_number: param.their_associate_number,
     their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code, //所选的主体。钱包为“08”
+    other_associate_code: param.other_associate_code, //所选的主体。钱包为“08”，店铺为“09”
     other_associate_type: param.other_associate_type,
     other_associate_number: param.other_associate_number,
     other_associate_name: param.other_associate_name,
     gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
   };
   wxRequest(API_ACCLOGQRY, data, func);
+}
+
+// 商铺-查询******************************************************
+function getShopList(param,func){
+  var gmt_modify = wx.getStorageSync('gmt_modify');
+  if (gmt_modify == '')
+    gmt_modify = '9999-08-25 20:44:28';
+  console.log('getAccLog...gmt_modify =', gmt_modify);
+  var data={
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    work_status: '',
+    company_id: wx.getStorageSync('company_id'),
+    their_associate_code: param.their_associate_code,
+    their_associate_type: param.their_associate_type,
+    their_associate_number: param.their_associate_number,
+    their_associate_name: param.their_associate_name,
+    other_associate_code: param.other_associate_code,
+    other_associate_type: param.other_associate_type,
+    other_associate_number: param.other_associate_number,
+    other_associate_name: param.other_associate_name,
+    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+  };
+  wxRequest(API_SHOPQRY,data,func);
 }
 
 
@@ -571,6 +599,7 @@ module.exports = {
   getParamsByEntity: getParamsByEntity,
   getContent: getContent,
   getAccLog: getAccLog,
+  getShopList: getShopList,
 
   getParam: getParam,
   getIndustry: getIndustry,

@@ -1,6 +1,12 @@
 /* pages/market/content/list.wxss */
 @import "/utils/tabBar.wxss";
 
+.list {
+  margin-bottom: 120rpx;
+  display: flex;
+  flex-direction: column;
+}
+
 .con-item{
   display: flex;
   border-bottom: 1px solid lightgrey;
@@ -21,6 +27,7 @@
 }
 
 .con-content{
+  margin-top:10rpx;
   font-size: 14px;
   height: 130rpx;
 }

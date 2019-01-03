@@ -10,7 +10,7 @@
       <view class="item-left-down">余额：{{item.balance}}</view>
     </view>
     <view class="item-right">
-      <view class="item-right-up">{{item.simpTime}}</view>
+      <view class="item-right-up">{{item.accounting_date}}</view>
       <view class="item-right-down">{{item.amount}}</view>
     </view>
   </view>

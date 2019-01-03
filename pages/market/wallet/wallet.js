@@ -7,18 +7,21 @@ Page({
     accLogs: [],
   },
 
-  // time字符串处理--------------------------
-  simpTime: function (time) {
-    console.log(time);
-    return time.slice(0, 10);
+  // accounting_date字符串处理----------------------
+  formatTime: function (time) {
+    return time.slice(0, 4) + '-' + time.slice(4, 6) + '-' + time.slice(6, 8);
   },
 
-  // 设置accLogs-----------------------
+  // 设置accLogs----------------------------------------
   setAccLog: function(res) {
     var data_ = res.data,
       len = data_.length;
     for(var i=0;i<len;i++){
-      data_[i].simpTime = this.simpTime(data_[i].createTime);
+      data_[i].accounting_date = this.formatTime(data_[i].accounting_date);
+      if(data_[i].event_code=="1")//支出
+        data_[i].amount = "-" + data_[i].amount;
+      else if (data_[i].event_code == "2")//收入
+        data_[i].amount = "+" + data_[i].amount;
     }
     console.log("setAccLog...res.data = ", data_);
     this.setData({

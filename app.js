@@ -81,7 +81,7 @@ App({
     },
     getTabBarListItem: function(data) {
       var entity_code = data.entity_code,
-        img_name="";
+        img_name = "";
       var listItem = {
         pagePath: "",
         text: data.entity_name,
@@ -99,25 +99,25 @@ App({
         else if (role_type == "301") //身份为market（代理商）
           listItem.pagePath = "/pages/friends/roleSale/manage";
         // img_name="mine";
-        img_name="addressbook";
+        img_name = "addressbook";
       } else if (entity_code == "02") { //工单
         listItem.pagePath = "/pages/operate/operate";
-        img_name ="brush";
+        img_name = "brush";
       } else if (entity_code == "03") { //订单
         listItem.pagePath = "/pages/inquiry/inquiry";
-        img_name ="browse";
+        img_name = "browse";
       } else if (entity_code == "07") { //内容
         listItem.pagePath = "/pages/market/content/list";
-        img_name="barrage";
+        img_name = "barrage";
       } else if (entity_code == "08") { //钱包
         listItem.pagePath = "/pages/market/wallet/wallet";
-        img_name="wallet";
+        img_name = "wallet";
       } else if (entity_code == "09") { //店铺
-        listItem.pagePath = "/pages/market/store/store";
-        img_name="store";
+        listItem.pagePath = "/pages/market/shop/list";
+        img_name = "store";
       }
-      listItem.iconPath = "/imgs/"+img_name+".png";
-      listItem.selectedIconPath = "/imgs/" + img_name +"_fill.png";
+      listItem.iconPath = "/imgs/" + img_name + ".png";
+      listItem.selectedIconPath = "/imgs/" + img_name + "_fill.png";
       return listItem;
     },
   }
