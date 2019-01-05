@@ -38,7 +38,6 @@ Page({
       ['客户', '员工', '伙伴', '朋友'],
       ['']
     ],
-    worker: [],
     multiIndex: [0, 0],
     infoReady: null,
   },
@@ -76,6 +75,7 @@ Page({
     console.log("setFriendsInfo:", friendsList)
     for (var i = 0; i < len; i++) {
       friendsList[i].index = i;
+      console.log("role_type=", friendsList[i].role_type);
       friendsList[i].role_type_name = this.convertRole(friendsList[i].role_type);
       if (!friendsList[i].image_address || friendsList[i].image_address == 0)
         friendsList[i].image_address = "/imgs/image.png"; //无头像时顶替用
@@ -89,18 +89,14 @@ Page({
   convertRole: function(obj) {
     if (obj === "100")
       return "客户"
-    else if (obj === "300")
-      return "伙伴"
     else if (obj == "000")
       return "朋友";
     if (obj === "客户")
       return "100"
-    else if (obj === "伙伴")
-      return "300"
     else if (obj === "朋友")
       return "000";
-    var name_list = this.data.worker,
-      code_list = this.data.worker_code,
+    var name_list = this.data.role_type_name,
+      code_list = this.data.role_type_code,
       len = name_list.length;
     for (var i = 0; i < len; i++) {
       if (obj === name_list[i])
@@ -132,6 +128,17 @@ Page({
     }
   },
 
+  //* 点击某条用户的信息***********************************************
+  onTapItem:function(e){
+    var id = e.currentTarget.dataset.id,
+      friend=this.data.friendsInfo[id];
+    if(friend.role_type=="301"){ //代理商
+      wx.navigateTo({
+        url: 'roleSale/manage'
+      });
+    }
+  },
+
   //* 点击MultiPicker的确定按钮****************************************
   bindMultiPickerChange: function(e) {
     var id = e.currentTarget.dataset.id,
@@ -143,12 +150,15 @@ Page({
       str3 = 'friendsInfo[' + id + '].role_type',
       user_type = this.convertType(user_type_name),
       friend = this.data.friendsInfo[id];
-    if (user_type != '2') {
+    if (user_type_name == '员工') {
+      role_type_name = this.data.multiArray[1][this.data.multiIndex[1]];
+      role_type = this.convertRole(role_type_name);
+    } else if (user_type_name == '伙伴'){
+      role_type_name = this.data.multiArray[1][this.data.multiIndex[1]];
+      role_type = this.convertRole(role_type_name);
+    } else {
       role_type_name = user_type_name;
       role_type = this.convertRole(role_type_name);
-    } else { //是员工
-      role_type_name = this.data.multiArray[1][this.data.multiIndex[1]];
-      role_type = this.data.worker_code[this.data.multiIndex[1]];
     }
     data.changeFriendInfo(friend.user_id, user_type, role_type, friend.user_type, friend.role_type, this.finishChange);
     wx.showLoading({
@@ -173,6 +183,7 @@ Page({
   // 修改朋友信息的回调函数------------------------------------------
   finishChange: function(res) {
     wx.hideLoading();
+    console.log("修改角色类型回调...res.data = ",res.data);
     if (res.data.code == 1) { //成功
       if (this.data.removeId == -1) {
         var info_str = this.data.infoReady.str,
@@ -225,7 +236,7 @@ Page({
           data_.multiArray[1] = this.data.worker;
           break;
         case '伙伴':
-          data_.multiArray[1] = [''];
+          data_.multiArray[1] = this.data.partner;
           break;
         case '朋友':
           data_.multiArray[1] = [''];
@@ -238,17 +249,28 @@ Page({
 
   // 根据服务器拉取的数据，设置员工的角色类型表-------------------------
   setSelector: function(res) {
-    console.log("setSelector(初始化员工的类型表)...res =", res)
+    console.log("setSelector(初始化角色类型表)...res.data =", res.data);
     var len = res.data.length,
-      worker_code = new Array(len),
-      worker = new Array(len);
+      role_type_code = new Array(len),
+      role_type_name = new Array(len),
+      worker = [],
+      partner = [];
     for (var i = 0; i < len; i++) {
-      worker[i] = res.data[i].type_name;
-      worker_code[i] = res.data[i].entity_type;
+      var name = res.data[i].type_name,
+        code = res.data[i].entity_type,
+        firstChar = code.slice(0, 1);
+      role_type_name[i] = name;
+      role_type_code[i] = code;
+      if (firstChar == "3") //code以“3”开头属于伙伴
+        partner.push(name);
+      else if (firstChar == "1")
+        worker.push(name);
     }
     this.setData({
+      role_type_name: role_type_name,
+      role_type_code: role_type_code,
       worker: worker,
-      worker_code: worker_code,
+      partner: partner,
     })
   },
 

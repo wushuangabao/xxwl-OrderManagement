@@ -13,13 +13,11 @@ Page({
 
   //* 生命周期函数--监听页面加载************
   onLoad: function(options) {
-    //从缓存中读取图片地址、产品信息------
     var imgUrls = [],
       index = 0,
       productInfos = [],
       productTexts = wx.getStorageSync('product'),
       len = productTexts.length;
-    productTexts[0] ="2018年3月7日 - 微信小程序中使用的逻辑文件 ,本质上还是.js 文件,脚本中的很多东西进行了二次封装,本质上可以在外部调试中,查看 逻辑层(App Service) 小程序开发框架2018年3月7日 - 微信小程序中使用的逻辑文件 ,本质上还是.js 文件,脚本中的很多东西进行了二次封装,本质上可以在外部调试中,查看 逻辑层(App Service) 小程序开发框架2018年3月7日 - 微信小程序中使用的逻辑文件 ,本质上还是.js 文件,脚本中的很多东西进行了二次封装,本质上可以在外部调试中,查看 逻辑层(App Service) 小程序开发框架..."
     for (var i = 0; i < 4; i++) {
       var url = wx.getStorageSync('imgUrl_' + (i + 1).toString());
       if (url.length > 5) { //判断是否为合法的图片地址
@@ -46,7 +44,7 @@ Page({
       remark: options.remark,
       shop_name: options.name,
       shop_address: options.address,
-    })
+    });
   },
 
   //* 生命周期函数--监听页面显示***************

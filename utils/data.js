@@ -32,9 +32,9 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   // 通讯录-调整用户role接口
   API_USERDEAL = URL_BASE + "UserDealServlet",
   //---------------------------------------------
-  // 商群-某级别用户列表查询接口
+  // 商群（market）-某级别用户列表查询接口
   API_USERLVQRY = URL_BASE + "userLevelQueryServlet",
-  // 商群-点击某个用户后获取对应的列表
+  // 商群（管理员）-点击某个用户后获取对应的列表
   API_ENTPARAM = URL_BASE + "EntityParamServlet",
   //---------------------------------------------
   // 商铺-查询
@@ -62,6 +62,8 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   //----------------------------------------------
   // market角色-内容list查询
   API_CONTQRY = URL_BASE + "ContentQueryServlet",
+  // market角色-订单查询
+  API_BILLQRY2 = URL_BASE + "BillQuery2Servlet",
   // market角色-钱包-明细查询
   API_ACCLOGQRY = URL_BASE + "AccountLogServlet";
 
@@ -283,6 +285,7 @@ function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_typ
     role_type0: role_type0, //调整前的角色类型
   }
   wxRequest(API_USERDEAL, data, func)
+  console.log("changeFriendInfo...上传数据data = ",data);
 }
 
 // 商群：某级别的用户列表查询******************************************
@@ -426,6 +429,31 @@ function ratingQuery(param, func) {
   wxRequest(API_RATINGQRY, data, func);
 }
 
+// market角色-订单-查询*************************************
+function getRecptData2(param, func) {
+  var gmt_modify = wx.getStorageSync('gmt_modify');
+  if (gmt_modify == '')
+    gmt_modify = '9999-08-25 20:44:28';
+  console.log('getAccLog...gmt_modify =', gmt_modify);
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    work_status: '',
+    company_id: wx.getStorageSync('company_id'),
+    their_associate_code: param.their_associate_code, //主体。用户为“01”
+    their_associate_type: param.their_associate_type,
+    their_associate_number: param.their_associate_number,
+    their_associate_name: param.their_associate_name,
+    other_associate_code: param.other_associate_code, //所选的主体。订单为“09”。（todo：根据app.js储存的表来识别代码）
+    other_associate_type: param.other_associate_type,
+    other_associate_number: param.other_associate_number,
+    other_associate_name: param.other_associate_name,
+    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+  };
+  wxRequest(API_BILLQRY2, data, func);
+}
+
 // market角色-内容list查询*********************************************
 function getContent(param,func){
   var data={
@@ -462,7 +490,7 @@ function getAccLog(param,func){
     their_associate_type: param.their_associate_type,
     their_associate_number: param.their_associate_number,
     their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code, //所选的主体。钱包为“08”，店铺为“09”
+    other_associate_code: param.other_associate_code,
     other_associate_type: param.other_associate_type,
     other_associate_number: param.other_associate_number,
     other_associate_name: param.other_associate_name,
@@ -600,6 +628,7 @@ module.exports = {
   getContent: getContent,
   getAccLog: getAccLog,
   getShopList: getShopList,
+  getRecptData2: getRecptData2,
 
   getParam: getParam,
   getIndustry: getIndustry,

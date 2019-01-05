@@ -1,5 +1,5 @@
 <!--pages/market/content/content.wxml-->
-<web-view src="https://mp.weixin.qq.com/s/abRwUo2_mtm8w-c_B5ER_w" style='z-index:1;'></web-view>
+<web-view src="{{url}}" style='z-index:1;'></web-view>
 
 <!-- <button class='button-order' bindtap='goToOrder'>预订</button> -->
 <!-- 这个按钮被覆盖了 -->

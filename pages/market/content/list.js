@@ -17,9 +17,11 @@ Page({
   },
 
   // 跳转到内容详情页面************************
-  goToContent: function() {
+  goToContent: function(e) {
+    var index = e.currentTarget.dataset.id,
+      content = this.data.contents[index];
     wx.navigateTo({
-      url: 'content',
+      url: 'content?content_id=' + content.content_number + '&content_name=' + content.content_name + '&content_type=' + content.content_type,
     })
   },
 
@@ -30,6 +32,7 @@ Page({
     for (var i = 0; i < len; i++) {
       // data[i].img_path = data[i].image_1;
       data[i].img_path = "/imgs/image.png";
+      data[i].index = i;
     }
     this.setData({
       contents: data

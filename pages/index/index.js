@@ -183,7 +183,8 @@ Page({
   goTo: function(s) {
     var url = '';
     if (s == "301") { //市场
-      url = '/pages/friends/roleSale/manage';
+      // url = '/pages/friends/roleSale/manage';
+      url = '/pages/friends/manage';
     } else if (s == "02") { //销售
       url = '/pages/recpt/input'
     } else if (s == "01") { //管理员
@@ -191,7 +192,8 @@ Page({
     } else if (parseInt(s) > 100 && parseInt(s) < 200) { //不同工种的工人
       url = '/pages/operate/operate'
     } else {
-      url = '/pages/inquiry/inquiry'
+      // url = '/pages/inquiry/inquiry';
+      url = '/pages/friends/manage';
     }
     wx.redirectTo({
       url: url

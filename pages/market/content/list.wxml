@@ -1,6 +1,6 @@
 <!--pages/market/content/list.wxml-->
 <view class="list">
-  <view wx:for="{{contents}}" wx:key="" class="con-item" bindtap="goToContent">
+  <view wx:for="{{contents}}" wx:key="" class="con-item" bindtap="goToContent" data-id="{{item.index}}">
     <view class="con-left">
       <view class="con-title">{{item.content_name}}</view>
       <view class="con-content">{{item.remark}}</view>

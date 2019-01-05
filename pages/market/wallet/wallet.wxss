@@ -38,6 +38,7 @@
   justify-content: space-between;
   padding: 20rpx;
   padding-bottom: 25rpx;
+  background-color: #fff;
 }
 
 .item-left {

@@ -16,7 +16,7 @@
     <block wx:for="{{friendsInfo}}" wx:key="key">
       <view class="list-item">
         <image src="{{item.image_address}}" class="img" mode="aspectFit" />
-        <text class="text-mid">{{item.nickname}}</text>
+        <text class="text-mid" bindtap='onTapItem' data-id='{{item.index}}'>{{item.nickname}}</text>
         <view class="selector">
           <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}" data-id='{{item.index}}'>
             {{item.role_type_name}}

@@ -266,7 +266,24 @@ Page({
       isLoading: true
     });
     wx.setStorageSync('gmt_modify', '');
-    data.getRecptData(this.data.status, "00000", this.setRecptData);
+    var role_type = wx.getStorageSync('role_type');
+    if (role_type == "01") { //管理员
+      data.getRecptData(this.data.status, "00000", this.setRecptData);
+      console.log("你的身份是管理员。");
+    } else if (role_type == "301") { //市场
+      var param = {
+        their_associate_code: "01", //主体。用户为“01”
+        their_associate_type: "000",
+        their_associate_number: "",
+        their_associate_name: "",
+        other_associate_code: "03", //所选的主体。订单为"03"
+        other_associate_type: "000",
+        other_associate_number: "00000",
+        other_associate_name: "",
+      };
+      console.log("你的身份是市场/代理。");
+      data.getRecptData2({}, this.setRecptData);
+    }
     this.changeTitWXSS(1) //切换到"未完成"页
   },
 

@@ -46,9 +46,11 @@
 
 .text-mid{
   line-height: 90rpx;
-  width: 300rpx;
+  width: 400rpx;
 }
 .selector{
   line-height: 90rpx;
-  width: 300rpx;
+  width: 200rpx;
+  font-size:14px;
+  color: blue;
 }

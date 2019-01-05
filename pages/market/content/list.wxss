@@ -11,6 +11,7 @@
   display: flex;
   border-bottom: 1px solid lightgrey;
   padding: 15rpx;
+  background-color: #fff;
 }
 
 .con-left{

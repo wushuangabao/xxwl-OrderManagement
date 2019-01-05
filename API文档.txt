@@ -505,3 +505,60 @@ shop_address:"http:dddsddsddd"
 shop_name:"淘宝店铺"
 shop_number:"001"
 shop_type:"01"},{"company_id":"54385","gmt_create":"1990-01-01","gmt_modify":"1990-01-01 00:00:00.0","id":"2","image_1":"11","image_2":"12","image_3":"13","image_4":"14","product_1":"产品说明1","product_2":"产品说明1","product_3":"产品说明1","product_4":"产品说明1","remark":"奶茶妹妹店","shop_address":"http:dddsddddddd","shop_name":"京东店铺","shop_number":"002","shop_type":"01"}]
+
+---------------------------------------------
+EntityRelCreateServlet
+
+String User_id = request.getParameter("user_id");   //录单操作ID
+String User_name = request.getParameter("user_name");
+
+String Role_type = request.getParameter("role_type");
+
+String Work_status = request.getParameter("work_status");
+
+String Company_id = request.getParameter("company_id");
+	
+String their_associate_code  = request.getParameter("their_associate_code");
+String their_associate_type = request.getParameter("their_associate_type");
+
+String their_associate_number = request.getParameter("their_associate_number");
+
+String their_associate_name = request.getParameter("their_associate_name");
+String other_associate_code  = request.getParameter("other_associate_code");
+
+String other_associate_type = request.getParameter("other_associate_type");
+String other_associate_number = request.getParameter("other_associate_number");
+String other_associate_name = request.getParameter("other_associate_name");
+
+String Gmt_modify = request.getParameter("gmt_modify");
+
+
+Comm_dto.setCompany_id("58414");
+
+Comm_dto.setUser_id("oh1zH5ahMZbYh36lYGLce-7wFPWM");
+
+Comm_dto.setUser_name("安仔");
+
+Comm_dto.setRole_type("02"); //管理员
+Work_status = "0";
+
+other_associate_number="00000";
+	
+Gmt_modify = "9999-08-25 20:44:28";
+
+Comm_dto.setUser_name("安仔");
+		// Receipt_type ="703";
+
+their_associate_code = "01";  用户
+
+their_associate_type = "301";  代理商
+
+their_associate_number = "oh1zH5ahMZbYh36lYGLce-7wFPWM";   用户ID
+
+their_associate_name = "xpa1";   用户名称
+other_associate_code = "01";    对方关联用户
+other_associate_type = "301";    关联对方用户类型
+
+other_associate_number = "oh1zH5ahMZbYh36lYGLce-7wFPWM22";    关联对方用户ID
+
+other_associate_name = "xpa的代理商";  关联对方用户名称
