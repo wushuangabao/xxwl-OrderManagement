@@ -508,7 +508,7 @@ shop_type:"01"},{"company_id":"54385","gmt_create":"1990-01-01","gmt_modify":"19
 
 ---------------------------------------------
 EntityRelCreateServlet
-
+实体间建立关系
 String User_id = request.getParameter("user_id");   //录单操作ID
 String User_name = request.getParameter("user_name");
 
@@ -562,3 +562,6 @@ other_associate_type = "301";    关联对方用户类型
 other_associate_number = "oh1zH5ahMZbYh36lYGLce-7wFPWM22";    关联对方用户ID
 
 other_associate_name = "xpa的代理商";  关联对方用户名称
+
+EntityRelCreateServlet2----------------------------
+把分享当事主体与分享内容赋值

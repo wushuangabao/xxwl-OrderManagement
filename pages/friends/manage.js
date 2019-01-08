@@ -75,7 +75,7 @@ Page({
     console.log("setFriendsInfo:", friendsList)
     for (var i = 0; i < len; i++) {
       friendsList[i].index = i;
-      console.log("role_type=", friendsList[i].role_type);
+      // console.log("role_type=", friendsList[i].role_type);
       friendsList[i].role_type_name = this.convertRole(friendsList[i].role_type);
       if (!friendsList[i].image_address || friendsList[i].image_address == 0)
         friendsList[i].image_address = "/imgs/image.png"; //无头像时顶替用

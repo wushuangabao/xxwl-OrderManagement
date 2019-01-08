@@ -11,6 +11,19 @@ Page({
     duration: 1000,
   },
 
+  // 设置url中的参数字符串-----------------------------
+  strAfterURL: function(role_type, user_id, user_name, content_type, content_number, content_name) {
+    var their_associate_code = "01", //主体。用户为“01”。
+      their_associate_type = role_type,
+      their_associate_number = user_id,
+      their_associate_name = user_name,
+      other_associate_code = "09", //所选的主体。todo:不能写死
+      other_associate_type = content_type,
+      other_associate_number = content_number,
+      other_associate_name = content_name;
+    return '?their_associate_code=' + their_associate_code + '&their_associate_type=' + their_associate_type + '&their_associate_number=' + their_associate_number + '&their_associate_name=' + their_associate_name + '&other_associate_name=' + other_associate_name + '&other_associate_code=' + other_associate_code + '&other_associate_number=' + other_associate_number + '&other_associate_type=' + other_associate_type;
+  },
+
   //* 生命周期函数--监听页面加载************
   onLoad: function(options) {
     var imgUrls = [],
@@ -42,9 +55,19 @@ Page({
     this.setData({
       productInfos: productInfos,
       remark: options.remark,
-      shop_name: options.name,
+      shop_name: options.shop_name,
       shop_address: options.address,
     });
+    this.setData({
+      strAfterURL: this.strAfterURL(
+        wx.getStorageSync('role_type'),
+        wx.getStorageSync('user_id'),
+        getApp().globalData.userInfo.nickName,
+        options.shop_type,
+        options.shop_number,
+        options.shop_name,
+      )
+    })
   },
 
   //* 生命周期函数--监听页面显示***************
@@ -84,6 +107,14 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function() {
-
+    var path = '/pages/market/shop/list';
+    if (this.data.strAfterURL) {
+      path = path + this.data.strAfterURL;
+    }
+    console.log("onShareAppMessage, path =", path);
+    return {
+      title: this.data.shop_name,
+      path: path,
+    }
   }
 })

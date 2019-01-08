@@ -1,6 +1,7 @@
 // pages/inquiry/inquiry.js
 
-const data = require('../../utils/data.js');
+const data = require('../../utils/data.js'),
+app=getApp();
 
 Page({
   data: {
@@ -269,20 +270,18 @@ Page({
     var role_type = wx.getStorageSync('role_type');
     if (role_type == "01") { //管理员
       data.getRecptData(this.data.status, "00000", this.setRecptData);
-      console.log("你的身份是管理员。");
-    } else if (role_type == "301") { //市场
+    } else{ //if (role_type == "301") {
       var param = {
         their_associate_code: "01", //主体。用户为“01”
-        their_associate_type: "000",
-        their_associate_number: "",
-        their_associate_name: "",
+        their_associate_type: wx.getStorageSync('role_type'),
+        their_associate_number: wx.getStorageSync('user_id'),
+        their_associate_name: app.globalData.userInfo.nickName,
         other_associate_code: "03", //所选的主体。订单为"03"
         other_associate_type: "000",
         other_associate_number: "00000",
         other_associate_name: "",
       };
-      console.log("你的身份是市场/代理。");
-      data.getRecptData2({}, this.setRecptData);
+      data.getRecptData2(param, this.setRecptData);
     }
     this.changeTitWXSS(1) //切换到"未完成"页
   },

@@ -1,5 +1,5 @@
 // pages/market/content/list.js
-const data = require('../../../utils/data.js')
+const data = require('../../../utils/data.js');
 
 Page({
   data: {
@@ -16,15 +16,16 @@ Page({
     ]
   },
 
-  // 跳转到内容详情页面************************
+  //* 跳转到内容详情页面************************
   goToContent: function(e) {
     var index = e.currentTarget.dataset.id,
       content = this.data.contents[index];
     wx.navigateTo({
-      url: 'content?content_id=' + content.content_number + '&content_name=' + content.content_name + '&content_type=' + content.content_type,
-    })
+      url: 'content?content_id=' + content.content_number + '&content_name=' + content.content_name + '&content_type=' + content.content_type + '&url=' + content.content_ip,
+    });
   },
 
+  // 设置内容列表----------------------------------
   setContents: function(res) {
     var data = res.data,
       len = data.length;
@@ -38,15 +39,79 @@ Page({
       contents: data
     })
   },
+  // 设置内容列表并跳转到指定content_number的内容页面------
+  setContentsAndGo: function(res) {
+    var data = res.data,
+      len = data.length,
+      idToGo = -1;
+    console.log("setContent...res.data = ", data);
+    for (var i = 0; i < len; i++) {
+      // data[i].img_path = data[i].image_1;
+      data[i].img_path = "/imgs/image.png";
+      data[i].index = i;
+      if (data[i].content_number == this.data.content_number)
+        idToGo = i;
+    }
+    this.setData({
+      contents: data
+    });
+    if (idToGo != -1) {
+      var content = this.data.contents[idToGo],
+        url = this.data.url;
+      wx.navigateTo({
+        url: 'content?content_id=' + content.content_number + '&content_name=' + content.content_name + '&content_type=' + content.content_type + '&url=' + url,
+      });
+    }
+  },
 
+  //* 监听页面加载**********************************
   onLoad: function(options) {
-    data.getContent({}, this.setContents);
+    if (options.signal == "07") { //表示由转发的小程序进入本页（之前已经去过首页）
+      var options = wx.getStorageSync('options'),
+        their_associate_code = options.their_associate_code,
+        their_associate_type = options.their_associate_type,
+        their_associate_number = options.their_associate_number,
+        their_associate_name = options.their_associate_name,
+        other_associate_code = options.other_associate_code,
+        other_associate_type = options.other_associate_type,
+        other_associate_number = options.other_associate_number,
+        other_associate_name = options.other_associate_name;
+      var url = options.url + '?their_associate_code=' + their_associate_code + '&their_associate_type=' + their_associate_type + '&their_associate_number=' + their_associate_number + '&their_associate_name=' + their_associate_name + '&other_associate_name=' + other_associate_name + '&other_associate_code=' + other_associate_code + '&other_associate_number=' + other_associate_number + '&other_associate_type=' + other_associate_type;
+      this.setData({
+        url: url,
+        content_number: other_associate_number
+      });
+      var entity1 = {
+          code: their_associate_code,
+          type: their_associate_type,
+          number: their_associate_number,
+          name: their_associate_name
+        },
+        entity2 = {
+          code: other_associate_code,
+          type: other_associate_type,
+          number: other_associate_number,
+          name: other_associate_name
+        },
+        that = this;
+      data.createRelation(entity1, entity2, function(res) {
+        console.log('根据内容分享建立关系...res.data = ', res.data);
+        data.getContent({
+          their_associate_type: wx.getStorageSync('role_type'),
+          their_associate_number: wx.getStorageSync('user_id'),
+          their_associate_name: getApp().globalData.userInfo.nickName,
+        }, that.setContentsAndGo);
+      });
+    } else { //表示不是由别人的转发进入的
+      data.getContent({
+        their_associate_type: wx.getStorageSync('role_type'),
+        their_associate_number: wx.getStorageSync('user_id'),
+        their_associate_name: getApp().globalData.userInfo.nickName,
+      }, this.setContents);
+    }
   },
 
-  onReady: function() {
-
-  },
-
+  //* 监听页面显示****************************
   onShow: function() {
     //设置tabBar
     var myTabBar = getApp().globalData.tabBar,

@@ -70,12 +70,12 @@ App({
       "backgroundColor": "#fff",
       "borderStyle": "#ccc",
       "list": [{
-        "pagePath": "/pages/recpt/input",
-        "text": "订单录入",
-        "iconPath": "/imgs/barrage.png",
-        "selectedIconPath": "/imgs/barrage_fill.png",
-        "selectedColor": "#1aad19",
-        active: false
+        // "pagePath": "/pages/recpt/input",
+        // "text": "订单录入",
+        // "iconPath": "/imgs/barrage.png",
+        // "selectedIconPath": "/imgs/barrage_fill.png",
+        // "selectedColor": "#1aad19",
+        // active: false
       }, ],
       "position": "bottom"
     },
@@ -94,10 +94,11 @@ App({
       //商群01、工单02、订单03、评价单04、业务单据05、记账凭证06、内容07、钱包08、店铺09、商品10
       if (entity_code == "01") { //商群
         var role_type = wx.getStorageSync('role_type');
-        if (role_type == "01") //身份为管理员
-          listItem.pagePath = "/pages/friends/manage";
-        else if (role_type == "301") //身份为market（代理商）
-          listItem.pagePath = "/pages/friends/roleSale/manage";
+        listItem.pagePath = "/pages/friends/manage";
+        // if (role_type == "01") //身份为管理员
+        //   listItem.pagePath = "/pages/friends/manage";
+        // else if (role_type == "301") //身份为market（代理商）
+          //listItem.pagePath = "/pages/friends/roleSale/manage";
         // img_name="mine";
         img_name = "addressbook";
       } else if (entity_code == "02") { //工单
