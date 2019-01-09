@@ -35,7 +35,7 @@ Page({
       if (data_[i].image_1.length > 10)
         data_[i].img_path = data_[i].image_1;
       else
-        data_[i].img_path = "/imgs/image.png";
+        data_[i].img_path = data.Img_Url+'shop_img_'+i+'.png';
     }
     this.setData({
       shopList: data_
@@ -51,7 +51,7 @@ Page({
       if (data_[i].image_1.length > 10)
         data_[i].img_path = data_[i].image_1;
       else
-        data_[i].img_path = "/imgs/image.png";
+        data_[i].img_path = data.Img_Url + 'shop_img_' + i + '.png';
       if (data_[i].shop_number == this.data.shop_number)
         idToGo = i;
     }

@@ -18,8 +18,11 @@ Page({
 
   //* 跳转到内容详情页面************************
   goToContent: function(e) {
-    var index = e.currentTarget.dataset.id,
-      content = this.data.contents[index];
+    var index = e.currentTarget.dataset.id;
+    this.goToContentById(index);
+  },
+  goToContentById: function(id) {
+    var content = this.data.contents[id];
     wx.navigateTo({
       url: 'content?content_id=' + content.content_number + '&content_name=' + content.content_name + '&content_type=' + content.content_type + '&url=' + content.content_ip,
     });
@@ -55,13 +58,8 @@ Page({
     this.setData({
       contents: data
     });
-    if (idToGo != -1) {
-      var content = this.data.contents[idToGo],
-        url = this.data.url;
-      wx.navigateTo({
-        url: 'content?content_id=' + content.content_number + '&content_name=' + content.content_name + '&content_type=' + content.content_type + '&url=' + url,
-      });
-    }
+    if (idToGo != -1)
+      this.goToContentById(idToGo);
   },
 
   //* 监听页面加载**********************************
@@ -76,9 +74,9 @@ Page({
         other_associate_type = options.other_associate_type,
         other_associate_number = options.other_associate_number,
         other_associate_name = options.other_associate_name;
-      var url = options.url + '?their_associate_code=' + their_associate_code + '&their_associate_type=' + their_associate_type + '&their_associate_number=' + their_associate_number + '&their_associate_name=' + their_associate_name + '&other_associate_name=' + other_associate_name + '&other_associate_code=' + other_associate_code + '&other_associate_number=' + other_associate_number + '&other_associate_type=' + other_associate_type;
+      // var url = options.url + '?their_associate_code=' + their_associate_code + '&their_associate_type=' + their_associate_type + '&their_associate_number=' + their_associate_number + '&their_associate_name=' + their_associate_name + '&other_associate_name=' + other_associate_name + '&other_associate_code=' + other_associate_code + '&other_associate_number=' + other_associate_number + '&other_associate_type=' + other_associate_type;
       this.setData({
-        url: url,
+        // url: url,
         content_number: other_associate_number
       });
       var entity1 = {

@@ -4,6 +4,7 @@
 
 const URL_BASE = "https://www.xiangxun1.com/day07/", // http://140.143.154.96
   Img_Url = 'https://www.gongnang.com/uploads/files/',
+  Img_Upload = 'https://www.gongnang.com/home/file/upload',
   app = getApp();
 
 // 用户-授权
@@ -673,6 +674,7 @@ module.exports = {
   simplfStr: simplfStr,
 
   Img_Url: Img_Url,
+  Img_Upload: Img_Upload,
   API_IMGUP: API_IMGUP,
   API_IMGDOWN: API_IMGDOWN,
   URL_BASE: URL_BASE,

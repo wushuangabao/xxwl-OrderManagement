@@ -110,7 +110,7 @@ Page({
     // if (!e.signal) //这段代码用于测试，模拟收到内容的分享
     // {
     //   wx.redirectTo({
-    //     url: "/pages/market/content/content?their_associate_code=01&their_associate_type=301&their_associate_number=oh1zH5QdEhZG_k44r-VEKO8uhCPw&their_associate_name=无双BaOY_WHA&other_associate_name=财务喜讯&other_associate_code=07&other_associate_number=002&other_associate_type=01&url=https://www.xiangxun1.com/day07/index.jsp"
+    //     url: "/pages/market/content/content?their_associate_code=01&their_associate_type=301&their_associate_number=oh1zH5QdEhZG_k44r-VEKO8uhCPw&their_associate_name=分享者用户名&other_associate_name=财务喜讯&other_associate_code=07&other_associate_number=002&other_associate_type=01&url=https://www.xiangxun1.com/day07/index.jsp"
     //   })
     //   return
     // }

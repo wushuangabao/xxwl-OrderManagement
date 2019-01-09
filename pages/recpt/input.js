@@ -120,7 +120,7 @@ Page({
     if (len > 0)
       for (var i = 0; i < len; i++)
         wx.uploadFile({
-          url: 'https://www.gongnang.com/home/file/upload',
+          url: data.Img_Upload,
           filePath: img_path[i],
           name: 'file',
           formData: {
