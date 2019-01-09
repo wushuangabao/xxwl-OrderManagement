@@ -34,9 +34,9 @@ Page({
     wx.setStorageSync('gmt_modify', '9999-08-25 20:44:28');
     var param = {
       their_associate_code: "01", //主体。用户为“01”
-      their_associate_type: "000",
-      their_associate_number: "",
-      their_associate_name: "",
+      their_associate_type: wx.getStorageSync('role_type'),
+      their_associate_number: wx.getStorageSync('user_id'),
+      their_associate_name: getApp().globalData.userInfo.nickName,
       other_associate_code: "08", //所选的主体。钱包为“08”
       other_associate_type: "000",
       other_associate_number: "00000",
