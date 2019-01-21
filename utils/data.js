@@ -67,6 +67,8 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   API_BILLQRY2 = URL_BASE + "BillQuery2Servlet",
   // market角色-钱包-明细查询
   API_ACCLOGQRY = URL_BASE + "AccountLogServlet",
+  // market角色-钱包-余额查询
+  API_ACCQRY = URL_BASE + "AccountQueryServlet",
   // ----------------------------------------------
   // 实体间关系的创建
   API_ENTRELCRT = URL_BASE + "EntityRelCreateServlet",
@@ -313,12 +315,12 @@ function getParamsByEntity(param, func) {
     role_type: wx.getStorageSync('role_type'),
     company_id: wx.getStorageSync('company_id'),
     company_name: "null",
-    their_scene_code: "01", //表示用户
-    their_scene_type: "301", //role_type，小程序进入的模式。为测试暂时写死为“代理商”模式
-    their_scene_name: "商群",
-    their_associate_code: "01",
-    their_associate_type: "301",
-    their_associate_name: "null",
+    their_scene_code: param.their_scene_code,
+    their_scene_type: param.their_scene_type,
+    their_scene_name: param.their_scene_name,
+    their_associate_code: param.their_associate_code,
+    their_associate_type: param.their_associate_type,
+    their_associate_name: param.their_associate_name
   }
   wxRequest(API_ENTPARAM, data, func);
 }
@@ -372,13 +374,14 @@ function getParam(code, func) {
   var company_type = wx.getStorageSync('company_type');
   if (!company_type || company_type == 'null')
     company_type = wx.getStorageSync('friend_company_type');
-  if (!company_type || company_type == 'null')
+  if (!company_type || company_type == 'null' || company_type.length<5)
     company_type = '00000';
   wxRequest(API_PARAQRY, {
     industry_code: company_type.slice(0, 2), //行业代码
     industry_type: company_type.slice(2), //行业类型
     entity_code: code, //实体代码 "01"角色类型 "02"工单类型 "03"订单类型
   }, func)
+  // console.log("industry_code=", company_type.slice(0, 2), "industry_type", company_type.slice(2))
 }
 
 // 行业类型 查询**********************************************
@@ -446,7 +449,7 @@ function getRecptData2(param, func) {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
     role_type: wx.getStorageSync('role_type'),
-    work_status: '',
+    work_status: param.work_status,
     company_id: wx.getStorageSync('company_id'),
     their_associate_code: param.their_associate_code, //主体。用户为“01”
     their_associate_type: param.their_associate_type,
@@ -504,6 +507,30 @@ function getAccLog(param, func) {
     gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
   };
   wxRequest(API_ACCLOGQRY, data, func);
+}
+// market角色-钱包-余额查询*************************************
+function getAcc(param, func) {
+  var gmt_modify = wx.getStorageSync('gmt_modify');
+  if (gmt_modify == '')
+    gmt_modify = '9999-08-25 20:44:28';
+  console.log('getAccLog...gmt_modify =', gmt_modify);
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    work_status: '',
+    company_id: wx.getStorageSync('company_id'),
+    their_associate_code: param.their_associate_code, //主体。用户为“01”
+    their_associate_type: param.their_associate_type,
+    their_associate_number: param.their_associate_number,
+    their_associate_name: param.their_associate_name,
+    other_associate_code: param.other_associate_code,
+    other_associate_type: param.other_associate_type,
+    other_associate_number: param.other_associate_number,
+    other_associate_name: param.other_associate_name,
+    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+  };
+  wxRequest(API_ACCQRY, data, func);
 }
 
 // 商铺-查询******************************************************
@@ -659,6 +686,7 @@ module.exports = {
   getParamsByEntity: getParamsByEntity,
   getContent: getContent,
   getAccLog: getAccLog,
+  getAcc:getAcc,
   getShopList: getShopList,
   getRecptData2: getRecptData2,
   createRelation: createRelation,

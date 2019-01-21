@@ -1,7 +1,7 @@
 // pages/inquiry/inquiry.js
 
 const data = require('../../utils/data.js'),
-app=getApp();
+  app = getApp();
 
 Page({
   data: {
@@ -20,7 +20,7 @@ Page({
     receipt: [],
     isAdmin: false,
     isLoading: false,
-    status: "0", //0表示未完成，1表示已完成
+    status: "0", //0表示未完成，2表示已完成
   },
 
   //* 点击“已完成”或“未完成”**********************************
@@ -38,11 +38,11 @@ Page({
       isLoading: true
     });
     if (name == "未完成") {
-      this.changeTitWXSS(1)
-      data.getRecptData("0", "00000", this.setRecptData)
+      this.changeTitWXSS(1);
+      this.getRecptData("0");
     } else if (name == "已完成") {
-      this.changeTitWXSS(0)
-      data.getRecptData("2", "00000", this.setRecptData)
+      this.changeTitWXSS(0);
+      this.getRecptData("2");
     }
   },
 
@@ -83,7 +83,7 @@ Page({
       str2 = 'titles[' + old_i + '].color_f';
       var s;
       if (i == 0)
-        s = "1";
+        s = "2";
       else
         s = "0";
       that.setData({
@@ -151,6 +151,25 @@ Page({
     })
   },
 
+  getRecptData: function(status) {
+    if (wx.getStorageSync('role_type') == "01") { //管理员
+      data.getRecptData(status, "00000", this.setRecptData);
+    } else { //if (role_type == "301") {
+      var param = {
+        their_associate_code: "01", //主体。用户为“01”
+        their_associate_type: wx.getStorageSync('role_type'),
+        their_associate_number: wx.getStorageSync('user_id'),
+        their_associate_name: app.globalData.userInfo.nickName,
+        other_associate_code: "03", //所选的主体。订单为"03"
+        other_associate_type: "000",
+        other_associate_number: "00000",
+        other_associate_name: "",
+        work_status: status,
+      };
+      data.getRecptData2(param, this.setRecptData);
+    }
+  },
+
   //////////////////////////////////////////////////////////////
   // 点赞、评论
   //////////////////////////////////////////////////////////////
@@ -209,9 +228,14 @@ Page({
       str1 = "receipt[" + index + "].hasPraise",
       str2 = "receipt[" + index + "].rating_101";
     if (!receipt.hasPraise) {
+      var str_rating_101;
+      if (receipt.rating_101)
+        str_rating_101 = (parseInt(receipt.rating_101) + 1).toString();
+      else
+        str_rating_101 = "1";
       this.setData({
         [str1]: true,
-        [str2]: (parseInt(receipt.rating_101) + 1).toString()
+        [str2]: str_rating_101
       });
       var param = {
         entity_code: '03', //02表示工单，03表示订单
@@ -267,22 +291,7 @@ Page({
       isLoading: true
     });
     wx.setStorageSync('gmt_modify', '');
-    var role_type = wx.getStorageSync('role_type');
-    if (role_type == "01") { //管理员
-      data.getRecptData(this.data.status, "00000", this.setRecptData);
-    } else{ //if (role_type == "301") {
-      var param = {
-        their_associate_code: "01", //主体。用户为“01”
-        their_associate_type: wx.getStorageSync('role_type'),
-        their_associate_number: wx.getStorageSync('user_id'),
-        their_associate_name: app.globalData.userInfo.nickName,
-        other_associate_code: "03", //所选的主体。订单为"03"
-        other_associate_type: "000",
-        other_associate_number: "00000",
-        other_associate_name: "",
-      };
-      data.getRecptData2(param, this.setRecptData);
-    }
+    this.getRecptData(this.data.status);
     this.changeTitWXSS(1) //切换到"未完成"页
   },
 
@@ -296,7 +305,7 @@ Page({
     this.setData({
       isLoading: true
     });
-    data.getRecptData(this.data.status, "00000", this.setRecptData)
+    this.getRecptData(this.data.status);
   },
 
   //* 转发********************************************

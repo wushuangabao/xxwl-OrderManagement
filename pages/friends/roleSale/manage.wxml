@@ -14,12 +14,10 @@
   <view class="list">
     <!--item-->
     <block wx:for="{{friendsInfo}}" wx:key="key">
-      <view class="list-item">
+      <view class="list-item" bindtap='showMoreInfo'>
         <image src="{{item.image_address}}" class="img" mode="aspectFit" />
         <view class="selector">
-          <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}" data-id='{{item.index}}'>
             {{item.nickname}}
-          </picker>
         </view>
       </view>
     </block>

@@ -8,7 +8,7 @@ Page({
   },
 
   // accounting_date字符串处理----------------------
-  formatTime: function (time) {
+  formatTime: function(time) {
     return time.slice(0, 4) + '-' + time.slice(4, 6) + '-' + time.slice(6, 8);
   },
 
@@ -16,17 +16,37 @@ Page({
   setAccLog: function(res) {
     var data_ = res.data,
       len = data_.length;
-    for(var i=0;i<len;i++){
+    for (var i = 0; i < len; i++) {
       data_[i].accounting_date = this.formatTime(data_[i].accounting_date);
-      if(data_[i].event_code=="1")//支出
+      if (data_[i].event_code == "1") //支出
         data_[i].amount = "-" + data_[i].amount;
-      else if (data_[i].event_code == "2")//收入
+      else if (data_[i].event_code == "2") //收入
         data_[i].amount = "+" + data_[i].amount;
     }
     console.log("setAccLog...res.data = ", data_);
     this.setData({
       accLogs: data_
     })
+  },
+  setAcc: function(res) {
+    var data_ = res.data[0],
+      balance = data_.balance,
+      str = "",
+      zheng = Math.floor(balance);
+    console.log("setAcc..res.data=", data_);
+    if (balance > zheng) { //说明有小数位
+      var balance10 = balance * 10;
+      zheng = Math.floor(balance10);
+      if (balance10 > zheng) //balance精确到0.01
+        str = balance.toString();
+      else //balance精确到0.1
+        str = balance.toString() + "0";
+    } else { //没有小数位
+      str = balance.toString() + ".00";
+    }
+    this.setData({
+      numberInWallet: str
+    });
   },
 
   // 监听页面加载************************************
@@ -43,6 +63,7 @@ Page({
       other_associate_name: "",
     };
     data.getAccLog(param, this.setAccLog);
+    data.getAcc(param, this.setAcc);
   },
 
   // 监听页面显示***************************************

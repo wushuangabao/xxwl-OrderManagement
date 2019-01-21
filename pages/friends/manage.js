@@ -40,6 +40,7 @@ Page({
     ],
     multiIndex: [0, 0],
     infoReady: null,
+    selectorArray:null,
   },
 
   // 中文转化为数字---------------------------------------------------
@@ -65,7 +66,22 @@ Page({
     var id = event.currentTarget.dataset.id,
       user_type = this.convertTitType(id);
     this.changeTitWXSS(id)
-    data.getFriendsList(user_type, this.setFriendsInfo)
+    data.getFriendsList(user_type, this.setFriendsInfo);
+    //设置selector--------
+    this.setData({
+      selectorArray: null
+    });
+    var param = {
+      their_scene_code: "01", //表示用户
+      their_scene_type: "301", //role_type，小程序进入的模式。为测试暂时写死为“代理商”模式
+      their_scene_name: "商群",
+      their_associate_code: "01",
+      their_associate_type: user_type,
+      their_associate_name: this.data.titles[id].name,
+    };
+    data.getParamsByEntity(param, this.setParamsByEntity);
+    param.their_scene_type = "000";
+    data.getParamsByEntity(param, this.setParamsByEntity);
   },
 
   // 设置FriendsInfo数组数据-----------------------------------------
@@ -82,6 +98,50 @@ Page({
     }
     this.setData({
       friendsInfo: friendsList
+    })
+  },
+
+  // 设置MoreInfo的selector-------------
+  setParamsByEntity: function(res) {
+    if (this.data.selectorArray)
+      return;
+    var data = res.data,
+      len = data.length,
+      array = new Array(len);
+    console.log("setParamsByEntity...res.data = ", data);
+    if (len != 0) {
+      for (var i = 0; i < len; i++) {
+        array[i] = data[i].other_associate_name;
+      }
+      this.setData({
+        selectorArray: array
+      });
+    }
+  },
+
+  //* 显示更多朋友的有关信息*********************************
+  showMoreInfo: function() {
+    var that = this,
+      url = "";
+    wx.showActionSheet({
+      itemList: that.data.selectorArray,
+      success(res) {
+        var value = that.data.selectorArray[res.tapIndex];
+        switch (value) {
+          case "内容":
+            url = "/pages/market/content/list";
+            break;
+          case "订单":
+            url = "/pages/inquiry/inquiry";
+            break;
+        }
+        wx.navigateTo({
+          url: url,
+        });
+      },
+      fail(res) {
+        console.log(res.errMsg)
+      }
     })
   },
 
@@ -129,10 +189,10 @@ Page({
   },
 
   //* 点击某条用户的信息***********************************************
-  onTapItem:function(e){
+  onTapItem: function(e) {
     var id = e.currentTarget.dataset.id,
-      friend=this.data.friendsInfo[id];
-    if(friend.role_type=="301"){ //代理商
+      friend = this.data.friendsInfo[id];
+    if (friend.role_type == "301") { //代理商
       wx.navigateTo({
         url: 'roleSale/manage'
       });
@@ -153,7 +213,7 @@ Page({
     if (user_type_name == '员工') {
       role_type_name = this.data.multiArray[1][this.data.multiIndex[1]];
       role_type = this.convertRole(role_type_name);
-    } else if (user_type_name == '伙伴'){
+    } else if (user_type_name == '伙伴') {
       role_type_name = this.data.multiArray[1][this.data.multiIndex[1]];
       role_type = this.convertRole(role_type_name);
     } else {
@@ -183,7 +243,7 @@ Page({
   // 修改朋友信息的回调函数------------------------------------------
   finishChange: function(res) {
     wx.hideLoading();
-    console.log("修改角色类型回调...res.data = ",res.data);
+    console.log("修改角色类型回调...res.data = ", res.data);
     if (res.data.code == 1) { //成功
       if (this.data.removeId == -1) {
         var info_str = this.data.infoReady.str,
@@ -276,13 +336,23 @@ Page({
 
   //* 生命周期函数--监听页面加载*************************************
   onLoad: function(options) {
-    this.changeTitWXSS(3)
-    data.getFriendsList("1", this.setFriendsInfo)
-    data.getParam("01", this.setSelector)
+    this.changeTitWXSS(3);
+    data.getFriendsList("1", this.setFriendsInfo);
+    data.getParam("01", this.setSelector);
+    var param = {
+      their_scene_code: "01", //表示用户
+      their_scene_type: "301", //role_type，小程序进入的模式。为测试暂时写死为“代理商”模式
+      their_scene_name: "商群",
+      their_associate_code: "01",
+      their_associate_type: "1",
+      their_associate_name: "客户",
+    };
+    data.getParamsByEntity(param, this.setParamsByEntity);
+    param.their_scene_type = "000";
+    data.getParamsByEntity(param, this.setParamsByEntity);
   },
 
   //* 生命周期函数--监听页面显示*************************************
-
   onShow: function() {
     //设置tabBar
     var myTabBar = getApp().globalData.tabBar,

@@ -29,12 +29,8 @@ Page({
         color_f: '#9E9E9E'
       },
     ],
-    index: 3,
+    index: 0,
     friendsInfo: [],
-    multiArray: [
-      [''],
-      ['']
-    ],
     // worker: [],
     multiIndex: [0, 0],
     // infoReady: null,
@@ -62,21 +58,65 @@ Page({
       friendsInfo: friendsList
     })
     //设置selector--------
-    var param = {};
+    this.setData({
+      selectorArray: null
+    });
+    var param = {
+      their_scene_code: "01", //表示用户
+      their_scene_type: "301", //role_type，小程序进入的模式。为测试暂时写死为“代理商”模式
+      their_scene_name: "商群",
+      their_associate_code: "01",
+      their_associate_type: "301",
+      their_associate_name: "代理商",
+    };
+    data.getParamsByEntity(param, this.setParamsByEntity);
+    data.getParamsByEntity(param, this.setParamsByEntity);
+    param.their_scene_type = "000";
     data.getParamsByEntity(param, this.setParamsByEntity);
   },
 
   // 设置selector-------------
   setParamsByEntity: function(res) {
+    if (this.data.selectorArray)
+      return;
     var data = res.data,
-      len = data.length;
+      len = data.length,
+      array = new Array(len);
     console.log("setParamsByEntity...res.data = ", data);
-    for(var i=0;i<len;i++){
-      var str = "multiArray[0][" + i.toString() + "]";
+    if (len > 0) {
+      for (var i = 0; i < len; i++) {
+        array[i] = data[i].other_associate_name;
+      }
       this.setData({
-        [str]: data[i].other_associate_name,
+        selectorArray: array
       });
     }
+  },
+
+  //* 显示更多朋友的有关信息*********************************
+  showMoreInfo: function() {
+    var that = this,
+      url = "";
+    wx.showActionSheet({
+      itemList: that.data.selectorArray,
+      success(res) {
+        var value = that.data.selectorArray[res.tapIndex];
+        switch (value) {
+          case "内容":
+            url = "/pages/market/content/list";
+            break;
+          case "订单":
+            url = "/pages/inquiry/inquiry";
+            break;
+        }
+        wx.navigateTo({
+          url: url,
+        });
+      },
+      fail(res) {
+        console.log(res.errMsg)
+      }
+    })
   },
 
   // 改变titles数据的WXML标签样式-----------------------------------
@@ -98,34 +138,6 @@ Page({
         index: i,
       })
     }
-  },
-
-  //* 点击MultiPicker的确定按钮****************************************
-  bindMultiPickerChange: function(e) {
-    var id = e.currentTarget.dataset.id,
-      friend = this.data.friendsInfo[id]; //获取所选friend的信息
-    var value = this.data.multiArray[0][this.data.multiIndex[0]],
-      url="";
-    console.log("选择的value = ",value);
-    switch(value){
-      case "内容":
-      url="/pages/market/content/list";
-    }
-    wx.redirectTo({
-      url: url,
-    });
-  },
-
-  //* 滚动MultiPicker********************************************
-  bindMultiPickerColumnChange: function(e) {
-    // console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
-    var data_ = {
-        multiArray: this.data.multiArray,
-        multiIndex: this.data.multiIndex
-      },
-      id = e.currentTarget.dataset.id;
-    data_.multiIndex[e.detail.column] = e.detail.value;
-    this.setData(data_); //修改this.data.multiIndex
   },
 
   //* 生命周期函数--监听页面加载*************************************

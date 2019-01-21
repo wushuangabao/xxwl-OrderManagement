@@ -187,7 +187,7 @@ Page({
   //根据role_type跳转页面----------------------------
   goTo: function(s) {
     var url = '';
-    if (s == "301") { //市场
+    if (s == "301" || s == "100") { //市场（代理商）或客户
       // url = '/pages/friends/roleSale/manage';
       url = '/pages/friends/manage';
     } else if (s == "02") { //销售
@@ -198,7 +198,8 @@ Page({
       url = '/pages/operate/operate'
     } else {
       // url = '/pages/inquiry/inquiry';
-      url = '/pages/friends/manage';
+      url = '/pages/market/content/content?content_id=00000&content_name=咨询页面&content_type=00&url=https://www.xiangxun1.com/day07/index.jsp';
+      // url = '/pages/register/company/company';
     }
     wx.redirectTo({
       url: url
