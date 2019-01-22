@@ -112,45 +112,44 @@ App({
     },
     setMenuObject: function(res, args) {
       var data = res.data,
-        l = data.length,
-        array = new Array(l);
+        l = data.length;
       console.log("setMenu...res.data = ", data, "args=", args);
       if (l > 0) {
-        for (var j = 0; j < l; j++) {
-          array[j] = data[j].other_associate_name;
-        }
         args[1].setData({
-          [args[0]]: array
+          [args[0]]: data
         })
       }
     },
 
     //* 显示更多内容（显示路由菜单）*******************************************
-    showMoreInfo: function (that, index, content_type, goByIdFunc) {
-      var url = "",
-        menuList = that.data.menuObject[content_type];
+    showMoreInfo: function(that, index, content_type, goByIdFunc) {
+      var self = this,
+        menuList = that.data.menuObject[content_type],
+        itemList = [];
+        console.log("menuList=",menuList)
       if (menuList.length <= 1) {
         goByIdFunc(index);
         return;
       }
+      for (var i = 0; i < menuList.length; i++)
+        itemList.push(menuList[i].other_associate_name);
       wx.showActionSheet({
-        itemList: menuList,
+        itemList: itemList,
         success(res) {
-          var value = menuList[res.tapIndex];
-          switch (value) {
-            case "店铺":
-              url = "/pages/market/shop/list";
-              break;
-            case "订单":
-              url = "/pages/inquiry/inquiry";
-              break;
-            case "详情":
-              goByIdFunc(index);
-              return;
-          }
-          wx.navigateTo({
-            url: url,
-          });
+          var value = menuList[res.tapIndex].other_associate_code,
+            name = menuList[res.tapIndex].other_associate_name;
+          if (name == "详情")//此处用other_associate_code判断的话，会跳转到list页面而非详情页面
+            goByIdFunc(index);
+          else if (name == "代理商")
+            wx.navigateTo({
+              url: "/pages/friends/roleSale/manage"
+            });
+          else
+            wx.navigateTo({
+              url: self.getUrlByCode(value),
+            });
+          //设置接下来：从朋友这边跳转到页面时，屏蔽tabBar，且查询所用参数为该朋友的
+          
         }
       })
     },
@@ -163,20 +162,12 @@ App({
       "selectedColor": "#f00",
       "backgroundColor": "#fff",
       "borderStyle": "#ccc",
-      "list": [{
-        // "pagePath": "/pages/recpt/input",
-        // "text": "订单录入",
-        // "iconPath": "/imgs/barrage.png",
-        // "selectedIconPath": "/imgs/barrage_fill.png",
-        // "selectedColor": "#1aad19",
-        // active: false
-      }, ],
+      "list": [],
       "position": "bottom"
     },
 
     getTabBarListItem: function(data) {
-      var entity_code = data.entity_code,
-        img_name = "";
+      var entity_code = data.entity_code; //商群01、工单02、订单03、评价单04、业务单据05、记账凭证06、内容07、钱包08、店铺09、商品10
       var listItem = {
         pagePath: "",
         text: data.entity_name,
@@ -186,34 +177,9 @@ App({
         active: false,
         //number: parseInt(data.serial_number),
       };
-      //商群01、工单02、订单03、评价单04、业务单据05、记账凭证06、内容07、钱包08、店铺09、商品10
-      if (entity_code == "01") { //商群
-        var role_type = wx.getStorageSync('role_type');
-        listItem.pagePath = "/pages/friends/manage";
-        // if (role_type == "01") //身份为管理员
-        //   listItem.pagePath = "/pages/friends/manage";
-        // else if (role_type == "301") //身份为market（代理商）
-        //listItem.pagePath = "/pages/friends/roleSale/manage";
-        // img_name="mine";
-        img_name = "addressbook";
-      } else if (entity_code == "02") { //工单
-        listItem.pagePath = "/pages/operate/operate";
-        img_name = "brush";
-      } else if (entity_code == "03") { //订单
-        listItem.pagePath = "/pages/inquiry/inquiry";
-        img_name = "browse";
-      } else if (entity_code == "07") { //内容
-        listItem.pagePath = "/pages/market/content/list";
-        img_name = "barrage";
-      } else if (entity_code == "08") { //钱包
-        listItem.pagePath = "/pages/market/wallet/wallet";
-        img_name = "wallet";
-      } else if (entity_code == "09") { //店铺
-        listItem.pagePath = "/pages/market/shop/list";
-        img_name = "store";
-      }
-      listItem.iconPath = "/imgs/" + img_name + ".png";
-      listItem.selectedIconPath = "/imgs/" + img_name + "_fill.png";
+      listItem.pagePath = this.getUrlByCode(entity_code);
+      listItem.iconPath = "/imgs/" + entity_code + ".png";
+      listItem.selectedIconPath = "/imgs/" + entity_code + "_fill.png";
       return listItem;
     },
 
@@ -243,6 +209,49 @@ App({
           break;
         case "09":
           str = "店铺";
+          break;
+        case "10":
+          str = "商品";
+          break;
+        case "11":
+          str = "CLASS";
+          break;
+        case "90":
+          str = "报表";
+          break;
+        case "98":
+          str = "系统";
+          break;
+      }
+      return str;
+    },
+
+    getUrlByCode: function(code) {
+      var str = "";
+      switch (code) {
+        case "01":
+          str = "/pages/friends/manage";
+          break;
+        case "02":
+          str = "/pages/operate/operate";
+          break;
+        case "03":
+          str = "/pages/inquiry/inquiry";
+          break;
+        case "05":
+          str = "业务单据";
+          break;
+        case "06":
+          str = "记账凭证";
+          break;
+        case "07":
+          str = "/pages/market/content/list";
+          break;
+        case "08":
+          str = "/pages/market/wallet/wallet";
+          break;
+        case "09":
+          str = "/pages/market/shop/list";
           break;
         case "10":
           str = "商品";

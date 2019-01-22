@@ -1,6 +1,7 @@
 // pages/friends/manage.js
 
-const data = require('../../utils/data.js')
+const data = require('../../utils/data.js'),
+app=getApp();
 
 Page({
   /**
@@ -40,7 +41,7 @@ Page({
     ],
     multiIndex: [0, 0],
     infoReady: null,
-    selectorArray:null,
+    menuObject:null,
   },
 
   // 中文转化为数字---------------------------------------------------
@@ -69,7 +70,7 @@ Page({
     data.getFriendsList(user_type, this.setFriendsInfo);
     //设置selector--------
     this.setData({
-      selectorArray: null
+      menuObject: null
     });
     var param = {
       their_scene_code: "01", //表示用户
@@ -79,9 +80,7 @@ Page({
       their_associate_type: user_type,
       their_associate_name: this.data.titles[id].name,
     };
-    data.getParamsByEntity(param, this.setParamsByEntity);
-    param.their_scene_type = "000";
-    data.getParamsByEntity(param, this.setParamsByEntity);
+    data.getParamsByEntity(param, this.setMenu);
   },
 
   // 设置FriendsInfo数组数据-----------------------------------------
@@ -101,48 +100,24 @@ Page({
     })
   },
 
-  // 设置MoreInfo的selector-------------
-  setParamsByEntity: function(res) {
-    if (this.data.selectorArray)
-      return;
+  // 设置MoreInfo menu（路由菜单）的内容-------------
+  setMenu: function(res) {
     var data = res.data,
       len = data.length,
-      array = new Array(len);
-    console.log("setParamsByEntity...res.data = ", data);
+      type = this.convertTitType(this.data.index);
+    console.log("setMenu...res.data =", data);
     if (len != 0) {
-      for (var i = 0; i < len; i++) {
-        array[i] = data[i].other_associate_name;
-      }
       this.setData({
-        selectorArray: array
+        [('menuObject.'+type)]:data
       });
     }
   },
 
   //* 显示更多朋友的有关信息*********************************
-  showMoreInfo: function() {
-    var that = this,
-      url = "";
-    wx.showActionSheet({
-      itemList: that.data.selectorArray,
-      success(res) {
-        var value = that.data.selectorArray[res.tapIndex];
-        switch (value) {
-          case "内容":
-            url = "/pages/market/content/list";
-            break;
-          case "订单":
-            url = "/pages/inquiry/inquiry";
-            break;
-        }
-        wx.navigateTo({
-          url: url,
-        });
-      },
-      fail(res) {
-        console.log(res.errMsg)
-      }
-    })
+  showMoreInfo: function(e) {
+    var type = this.convertTitType(this.data.index),
+    index=e.currentTarget.dataset.id;
+    app.globalData.showMoreInfo(this, index, type,console.log);
   },
 
   // 转换role_type的格式---------------------
@@ -347,15 +322,13 @@ Page({
       their_associate_type: "1",
       their_associate_name: "客户",
     };
-    data.getParamsByEntity(param, this.setParamsByEntity);
-    param.their_scene_type = "000";
-    data.getParamsByEntity(param, this.setParamsByEntity);
+    data.getParamsByEntity(param, this.setMenu);
   },
 
   //* 生命周期函数--监听页面显示*************************************
   onShow: function() {
     //设置tabBar
-    var myTabBar = getApp().globalData.tabBar,
+    var myTabBar = app.globalData.tabBar,
       len = myTabBar.list.length;
     for (var i = 0; i < len; i++) {
       if (myTabBar.list[i].text == "商群")

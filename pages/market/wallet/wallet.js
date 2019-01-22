@@ -20,9 +20,9 @@ Page({
     for (var i = 0; i < len; i++) {
       data_[i].accounting_date = this.formatTime(data_[i].accounting_date);
       data_[i].index = i;
-      if (data_[i].event_code == "1") //支出
+      if (data_[i].event_code == "2") //支出
         data_[i].amount = "-" + data_[i].amount;
-      else if (data_[i].event_code == "2") //收入
+      else if (data_[i].event_code == "1") //收入
         data_[i].amount = "+" + data_[i].amount;
     }
     console.log("setAccLog...res.data = ", data_);
