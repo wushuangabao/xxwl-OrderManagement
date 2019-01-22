@@ -56,23 +56,7 @@ Page({
     }
     this.setData({
       friendsInfo: friendsList
-    })
-    //设置selector--------
-    this.setData({
-      selectorArray: null
     });
-    var param = {
-      their_scene_code: "01", //表示用户
-      their_scene_type: "301", //role_type，小程序进入的模式。为测试暂时写死为“代理商”模式
-      their_scene_name: "商群",
-      their_associate_code: "01",
-      their_associate_type: "301",
-      their_associate_name: "代理商",
-    };
-    data.getParamsByEntity(param, this.setParamsByEntity);
-    data.getParamsByEntity(param, this.setParamsByEntity);
-    param.their_scene_type = "000";
-    data.getParamsByEntity(param, this.setParamsByEntity);
   },
 
   // 设置selector-------------
@@ -145,6 +129,21 @@ Page({
     this.changeTitWXSS(0)
     data.getUsersByLevel("01", this.setFriendsInfo)
     // data.getParam("01", this.setSelector)
+    //设置MoreInfo的selector内容--------
+    this.setData({
+      selectorArray: null
+    });
+    var param = {
+      their_scene_code: "01", //表示用户
+      their_scene_type: "301", //role_type，小程序进入的模式。为测试暂时写死为“代理商”模式
+      their_scene_name: "商群",
+      their_associate_code: "01",
+      their_associate_type: "301",
+      their_associate_name: "代理商",
+    };
+    data.getParamsByEntity(param, this.setParamsByEntity);
+    param.their_scene_type = "000";
+    data.getParamsByEntity(param, this.setParamsByEntity);
   },
 
   //* 生命周期函数--监听页面显示*************************************

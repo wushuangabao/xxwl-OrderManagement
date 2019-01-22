@@ -318,8 +318,8 @@ String their_scene_code = request.getParameter("their_scene_code");
 String their_scene_type = request.getParameter("their_scene_type");
 
 String their_scene_name = request.getParameter("their_scene_code");
-		   
-		  String their_associate_code  = request.getParameter("their_associate_code");
+
+String their_associate_code  = request.getParameter("their_associate_code");
 String their_associate_type = request.getParameter("their_associate_type");
 String their_associate_name = request.getParameter("their_associate_name");
 参考： their_scene_code = "01"; 表示用户
@@ -328,10 +328,15 @@ their_scene_type = "301";   表示该小程序进入的代理商模式
 
 their_associate_code ="01";  表示用户
 
-their_associate_type = "301"; 表示当前的选择代理商
+their_associate_type = "301"; 表示当前选择的类型为代理商
 输出:
 [{"code":1,"other_associate_code":"01","other_associate_name":"详情","other_associate_type":"000"},{"code":1,"other_associate_code":"01","other_associate_name":"代理商","other_associate_type":"301"},{"code":1,"other_associate_code":"03","other_associate_name":"订单","other_associate_type":"000"}]
 
+注意：
+当返回结果为空时，尝试将their_associate_type改为"000"（其他参数不变）再次查询。
+当返回的结果还是空时，尝试将their_scene_code改为"000"（其他参数不变）再次查询。
+当返回的结果还是空时，尝试将their_scene_code、their_associate_type都改为"000"（其他参数不变）再次查询。
+若返回的结果仍是空，说明没有可查询的内容。
 
 ------------------------------------------------------------------------------------
 内容项的查询接口：ContentQueryServlet
