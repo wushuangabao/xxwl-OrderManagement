@@ -1,5 +1,6 @@
 // pages/market/content/list.js
-const data = require('../../../utils/data.js');
+const data = require('../../../utils/data.js'),
+  app = getApp();
 
 Page({
   data: {
@@ -31,29 +32,9 @@ Page({
 
   //* 显示moreInfo menu************************
   showMoreInfo: function(e) {
-    var that = this,
-      url = "", index = e.currentTarget.dataset.id,
+    var index = e.currentTarget.dataset.id,
       content_type = this.data.contents[index].content_type;
-    wx.showActionSheet({
-      itemList: that.data.menuObject[content_type],
-      success(res) {
-        var value = that.data.menuObject[content_type][res.tapIndex];
-        switch (value) {
-          case "店铺":
-            url = "/pages/market/shop/list";
-            break;
-          case "订单":
-            url = "/pages/inquiry/inquiry";
-            break;
-          case "详情":
-            that.goToContentById(index);
-            return;
-        }
-        wx.navigateTo({
-          url: url,
-        });
-      }
-    })
+    app.globalData.showMoreInfo(this, index, content_type, this.goToContentById);
   },
 
   // 设置内容列表----------------------------------
@@ -94,73 +75,7 @@ Page({
 
   // 设置moreInfo菜单的内容--------------------------
   setMenu: function() {
-    //遍历contents数组中的content_type属性，将它们添加到数组content_types中
-    var contents = this.data.contents,
-      len = contents.length;
-    if (len == 0)
-      return;
-    var content_types = [contents[0].content_type];
-    for (var i = 1; i < len; i++) {
-      var n = content_types.length,
-        type = contents[i].content_type,
-        b = false;
-      for (var j = 0; j < n; j++) {
-        if (type === content_types[j]) {
-          b = true;
-          break;
-        }
-      }
-      if (!b) {
-        content_types.push(type);
-      }
-    }
-    this.setData({
-      content_types: content_types
-    });
-    //根据不同的content_types，查询若干个路由菜单列表，以content_type为key将这些列表放入menuObject
-    len = content_types.length;
-    for (var i = 0; i < len; i++) {
-      this.setData({
-        string: 'menuObject.' + content_types[i]
-      })
-      //first
-      var param = {
-        their_scene_code: "01",
-        their_scene_type: wx.getStorageSync('role_type'),
-        their_scene_name: "用户",
-        their_associate_code: "07",
-        their_associate_type: content_types[i],
-        their_associate_name: "内容",
-      };
-      data.getParamsByEntity(param, this.setMenuObject);
-      //second
-      param.their_associate_type = "000";
-      data.getParamsByEntity(param, this.setMenuObject);
-      //third
-      param.their_associate_type = content_types[i];
-      param.their_scene_type = "000";
-      data.getParamsByEntity(param, this.setMenuObject);
-      //fourth
-      param.their_associate_type = "000";
-      data.getParamsByEntity(param, this.setMenuObject);
-      //等待回调函数执行完再进入下一轮循环
-    }
-  },
-
-  setMenuObject: function(res) {
-    var data = res.data,
-      l = data.length,
-      array = new Array(l);
-    console.log("setMenu...res.data = ", data);
-    if (l > 0) {
-      for (var j = 0; j < l; j++) {
-        array[j] = data[j].other_associate_name;
-      }
-      var string = this.data.string;
-      this.setData({
-        [string]: array
-      })
-    }
+    app.globalData.setMenu(this, this.data.contents, "content_type","07");
   },
 
   //* 监听页面加载**********************************
@@ -198,14 +113,14 @@ Page({
         data.getContent({
           their_associate_type: wx.getStorageSync('role_type'),
           their_associate_number: wx.getStorageSync('user_id'),
-          their_associate_name: getApp().globalData.userInfo.nickName,
+          their_associate_name: app.globalData.userInfo.nickName,
         }, that.setContentsAndGo);
       });
     } else { //表示不是由别人的转发进入的
       data.getContent({
         their_associate_type: wx.getStorageSync('role_type'),
         their_associate_number: wx.getStorageSync('user_id'),
-        their_associate_name: getApp().globalData.userInfo.nickName,
+        their_associate_name: app.globalData.userInfo.nickName,
       }, this.setContents);
     }
   },
@@ -213,7 +128,7 @@ Page({
   //* 监听页面显示****************************
   onShow: function() {
     //设置tabBar
-    var myTabBar = getApp().globalData.tabBar,
+    var myTabBar = app.globalData.tabBar,
       len = myTabBar.list.length;
     for (var i = 0; i < len; i++) {
       if (myTabBar.list[i].text == "内容")

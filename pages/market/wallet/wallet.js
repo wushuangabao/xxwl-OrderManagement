@@ -1,5 +1,6 @@
 // pages/market/wallet/wallet.js
-const data = require('../../../utils/data.js')
+const data = require('../../../utils/data.js'),
+  app = getApp();
 
 Page({
   data: {
@@ -18,6 +19,7 @@ Page({
       len = data_.length;
     for (var i = 0; i < len; i++) {
       data_[i].accounting_date = this.formatTime(data_[i].accounting_date);
+      data_[i].index = i;
       if (data_[i].event_code == "1") //支出
         data_[i].amount = "-" + data_[i].amount;
       else if (data_[i].event_code == "2") //收入
@@ -26,7 +28,8 @@ Page({
     console.log("setAccLog...res.data = ", data_);
     this.setData({
       accLogs: data_
-    })
+    });
+    this.setMenu();
   },
   setAcc: function(res) {
     var data_ = res.data[0],
@@ -47,6 +50,22 @@ Page({
     this.setData({
       numberInWallet: str
     });
+  },
+
+  // 跳转到明细的详情页面（todo）-----------------------
+  goToAccLogById: function() {},
+
+  ////////////////////////////////////////////////
+  // moreInfo menu 路由菜单
+  ////////////////////////////////////////////////
+  showMoreInfo: function(e) {
+    var index = e.currentTarget.dataset.id,
+      type = this.data.accLogs[index].accountType;
+    app.globalData.showMoreInfo(this, index, type, this.goToAccLogById);
+  },
+
+  setMenu: function() {
+    app.globalData.setMenu(this, this.data.accLogs, "accountType", "08");
   },
 
   // 监听页面加载************************************

@@ -19,7 +19,7 @@
       <import src="../../utils/commentLayer.wxml" />
       <template wx:if="{{item.moreLayer}}" is="commentLayer" data="{{...item}}" />
 
-      <view class="receipt" bindtap='inquiryRecpt' data-num='{{item.receipt_number}}' data-id='{{item.index}}'>
+      <view class="receipt" bindtap='showMoreInfo' data-num='{{item.receipt_number}}' data-id='{{item.index}}'>
         <!--虚拟按钮-->
         <view class="progress-button" catchtap="inquiry" data-num="{{item.receipt_number}}" data-type="{{item.receipt_type}}" />
         <!--左侧图片-->

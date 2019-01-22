@@ -40,6 +40,7 @@ Page({
     this.setData({
       shopList: data_
     });
+    this.setMenu();
   },
   setShopListAndGoToShop: function(res) {
     var data_ = res.data,
@@ -58,8 +59,21 @@ Page({
     this.setData({
       shopList: data_
     });
+    this.setMenu();
     if (idToGo != -1)
       this.goToShopById(idToGo);
+  },
+
+  //* 显示moreInfo menu************************
+  showMoreInfo: function (e) {
+    var index = e.currentTarget.dataset.id,
+      shop_type = this.data.shopList[index].shop_type;
+    app.globalData.showMoreInfo(this, index, shop_type, this.goToShopById);
+  },
+
+  // 设置moreInfo菜单的内容--------------------------
+  setMenu: function () {
+    app.globalData.setMenu(this,this.data.shopList,"shop_type","09");
   },
 
   //* 生命周期函数--监听页面加载***************************************
@@ -123,7 +137,7 @@ Page({
   //* 生命周期函数--监听页面显示**********************************
   onShow: function() {
     //设置tabBar
-    var myTabBar = getApp().globalData.tabBar,
+    var myTabBar = app.globalData.tabBar,
       len = myTabBar.list.length;
     for (var i = 0; i < len; i++) {
       if (myTabBar.list[i].text == "店铺")

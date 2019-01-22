@@ -4,7 +4,7 @@
   <view class="top-number">{{numberInWallet}}</view>
 </view>
 <view class="list">
-  <view wx:for="{{accLogs}}" wx:key="" class="item" bindtap="goToContent">
+  <view wx:for="{{accLogs}}" wx:key="" class="item" bindtap="showMoreInfo" data-id='{{item.index}}'>
     <view class="item-left">
       <view class="item-left-up">{{item.remark}}</view>
       <view class="item-left-down">余额：{{item.balance}}</view>

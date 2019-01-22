@@ -48,15 +48,19 @@ Page({
 
   //* 点击某条订单-->查询订单详情*************************************
   inquiryRecpt: function(event) {
-    var r_number = event.currentTarget.dataset.num,
-      index = event.currentTarget.dataset.id,
-      path1 = this.data.receipt[index].r_img;
+    var index = event.currentTarget.dataset.id;
+    this.inquiryRecptById(index);
+  },
+  inquiryRecptById:function(index){
+    var receipt = this.data.receipt[index],
+      r_number = receipt.receipt_number,
+      path1 = receipt.r_img;
     wx.setStorageSync('imgUrl_1', path1);
-    wx.setStorageSync('imgUrl_2', this.data.receipt[index].image_2);
-    wx.setStorageSync('imgUrl_3', this.data.receipt[index].image_3);
-    wx.setStorageSync('imgUrl_4', this.data.receipt[index].image_4);
+    wx.setStorageSync('imgUrl_2', receipt.image_2);
+    wx.setStorageSync('imgUrl_3', receipt.image_3);
+    wx.setStorageSync('imgUrl_4', receipt.image_4);
     wx.setStorageSync('r_number', r_number);
-    if (this.data.index == 1) {
+    if (receipt.state === "未完成") {
       wx.navigateTo({
         url: '/pages/recpt/info?done=' + '0'
       })
@@ -128,6 +132,7 @@ Page({
       receipt: old_data,
       isLoading: false,
     });
+    this.setMenu(); //设置路由菜单
     wx.hideLoading();
     if (real_i > old_len) {
       wx.setStorageSync('gmt_modify', old_data[real_i - 1].gmt_modify);
@@ -136,7 +141,7 @@ Page({
         title: '没有更多的了',
         icon: 'none',
         duration: 900
-      })
+      });
     }
   },
 
@@ -259,6 +264,19 @@ Page({
   // 成功评论--------------------
   successComment: function(res) {
     console.log('successComment...res.data = ', res.data);
+  },
+
+  ////////////////////////////////////////////////////////////////
+  // moreInfo menu 路由菜单
+  ////////////////////////////////////////////////////////////////
+  setMenu: function() {
+    app.globalData.setMenu(this, this.data.receipt, "receipt_type", "03");
+  },
+
+  showMoreInfo: function(e) {
+    var index = e.currentTarget.dataset.id,
+      type = this.data.receipt[index].receipt_type;
+    app.globalData.showMoreInfo(this, index, type, this.inquiryRecptById);
   },
 
   ////////////////////////////////////////////////////////////////

@@ -75,7 +75,7 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   API_ENTRELCRT2 = URL_BASE + "EntityRelCreateServlet2";
 
 // wx.request 封装-----------------------------------
-function wxRequest(url, data, resolve) {
+function wxRequest(url, data, resolve,args) {
   wx.request({
     url: url,
     data: { ...data
@@ -84,7 +84,7 @@ function wxRequest(url, data, resolve) {
     header: {
       'content-type': 'application/x-www-form-urlencoded;charset=utf-8', //'application/json', //application/x-www-form-urlencoded
     },
-    success: (data) => resolve(data),
+    success: (data) => resolve(data,args),
     fail: (err) => console.log(err) //可以加入第四个参数reject方法
   })
 }
@@ -308,7 +308,7 @@ function getUsersByLevel(user_level, func) {
 }
 
 // 商群：点击某个用户后，获取对应的列表*******************************
-function getParamsByEntity(param, func) {
+function getParamsByEntity(param, func,args) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
@@ -322,7 +322,7 @@ function getParamsByEntity(param, func) {
     their_associate_type: param.their_associate_type,
     their_associate_name: param.their_associate_name
   }
-  wxRequest(API_ENTPARAM, data, func);
+  wxRequest(API_ENTPARAM, data, func,args);
 }
 
 // 工序设置：查询模板**********************************************
