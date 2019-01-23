@@ -6,14 +6,15 @@ Page({
   data: {
     shopList: [],
     hasTabBar: true,
+    isLoading: false,
   },
 
-  // 跳转到店铺详情页面************************
+  //* 跳转到店铺详情页面************************
   goToShop: function(event) {
     var index = event.currentTarget.dataset.id;
     this.goToShopById(index);
   },
-  // 跳转到店铺详情页面（根据id）---------------
+  //* 跳转到店铺详情页面（根据id）**************
   goToShopById: function(index) {
     var shop = this.data.shopList[index];
     wx.setStorageSync('imgUrl_1', shop.img_path);
@@ -31,23 +32,37 @@ Page({
     var data_ = res.data,
       len = data_.length;
     console.log("setShopList...res.data = ", data_);
-    for (var i = 0; i < len; i++) {
-      data_[i].index = i;
-      if (data_[i].image_1.length > 10)
-        data_[i].img_path = data_[i].image_1;
-      else
-        data_[i].img_path = data.Img_Url + 'shop_img_' + i + '.png';
+    if (len > 0) {
+      var shopList = this.data.shopList;
+      for (var i = 0; i < len; i++) {
+        data_[i].index = i;
+        if (data_[i].image_1.length > 10)
+          data_[i].img_path = data_[i].image_1;
+        else
+          data_[i].img_path = data.Img_Url + 'shop_img_' + i + '.png';
+        shopList.push(data_[i]);
+      }
+      wx.setStorageSync('gmt_modify', data_[len - 1].gmt_modify);
+      this.setData({
+        shopList: shopList
+      });
+      this.setMenu();
+      this.setLoading(false);
+    } else {
+      this.setLoading(false);
+      wx.showToast({
+        title: '没有更多的了',
+        icon: 'none',
+        duration: 1000
+      });
     }
-    this.setData({
-      shopList: data_
-    });
-    this.setMenu();
   },
+  // 设置shopList，并根据指定的shop_number跳转-----------------
   setShopListAndGoToShop: function(res) {
     var data_ = res.data,
       len = data_.length,
       idToGo = -1;
-    console.log("setShopList...res.data = ", data_);
+    console.log("setShopListAndGoToShop...res.data = ", data_);
     for (var i = 0; i < len; i++) {
       data_[i].index = i;
       if (data_[i].image_1.length > 10)
@@ -60,15 +75,24 @@ Page({
     this.setData({
       shopList: data_
     });
+    wx.setStorageSync('gmt_modify', data_[len - 1].gmt_modify);
+    this.setLoading(false);
     this.setMenu();
     if (idToGo != -1)
       this.goToShopById(idToGo);
   },
 
+  ///////////////////////////////////////////////////////
+  // morInfo menu
+  // 路由菜单
+  ///////////////////////////////////////////////////////
+
   //* 显示moreInfo menu************************
   showMoreInfo: function(e) {
     var index = e.currentTarget.dataset.id,
-      shop_type = this.data.shopList[index].shop_type;
+      shop_type = this.data.shopList[index].shop_type,
+      shop_number = this.data.shopList[index].shop_number;
+    app.globalData.setTheirInfo("09", shop_type, shop_number);
     app.globalData.showMoreInfo(this, index, shop_type, this.goToShopById);
   },
 
@@ -77,35 +101,30 @@ Page({
     app.globalData.setMenu(this, this.data.shopList, "shop_type", "09");
   },
 
+  ///////////////////////////////////////////////////////
+  // 生命周期函数
+  ///////////////////////////////////////////////////////
+
   //* 生命周期函数--监听页面加载***************************************
   onLoad: function(options) {
-    if (options.hasTabBar == "false")
+    var param, user_name;
+    if (options.hasTabBar == "false") {
       this.setData({
         hasTabBar: false
       });
-    wx.setStorageSync('gmt_modify', '9999-08-25 20:44:28');
-    var user_name;
-    if (app.globalData.userInfo) {
-      user_name = app.globalData.userInfo.nickName;
-    } else {
-      user_name = "00000";
-      console.log("无法获取user_name,赋值为00000");
-    }
-    console.log("user_name=", user_name);
-    var param;
-    if (this.data.hasTabBar)
-      param = {
-        their_associate_code: "01", //主体。用户为“01”
-        their_associate_type: "000",
-        their_associate_number: wx.getStorageSync('user_id'),
-        their_associate_name: user_name,
-        other_associate_code: "09", //所选的主体。店铺为“09”
-        other_associate_type: "000",
-        other_associate_number: "00000",
-        other_associate_name: "",
-      };
-    else
       param = app.globalData.param;
+    } else param = {
+      their_associate_code: "01", //主体。用户为“01”
+      their_associate_type: "000",
+      their_associate_number: wx.getStorageSync('user_id'),
+      their_associate_name: user_name,
+      other_associate_code: "09", //所选的主体。店铺为“09”
+      other_associate_type: "000",
+      other_associate_number: "00000",
+      other_associate_name: "",
+    };
+    this.setLoading(true);
+    wx.setStorageSync('gmt_modify', '');
     if (options.their_associate_code || options.signal) { //如果是他人分享的
       var options_ = options,
         options = null;
@@ -162,33 +181,44 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {
-
-  },
+  onHide: function() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
-
-  },
+  onUnload: function() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function() {},
 
+  //* 页面上拉触底事件的处理函数***************************
+  onReachBottom: function() {
+    if (this.data.isLoading)
+      return;
+    var param = this.data.param;
+    this.setLoading(true);
+    data.getShopList(param, this.setShopList);
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function() {
-
+  // 让用户进入、退出等待状态---------
+  setLoading: function(b) {
+    if (b) {
+      wx.showLoading({
+        title: '加载中',
+      });
+      this.setData({
+        isLoading: true
+      });
+    } else {
+      wx.hideLoading();
+      this.setData({
+        isLoading: false
+      });
+    }
   },
 
   //* 用户点击右上角分享***************************
-  onShareAppMessage: function() {
-
-  }
+  onShareAppMessage: function() {}
 })

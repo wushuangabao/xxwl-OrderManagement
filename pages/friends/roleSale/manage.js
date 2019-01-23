@@ -74,7 +74,9 @@ Page({
 
   //* 显示更多朋友的有关信息*********************************
   showMoreInfo: function(e) {
-    var index = e.currentTarget.dataset.id;
+    var index = e.currentTarget.dataset.id,
+      friend = this.data.friendsInfo[index];
+    app.globalData.setTheirInfo("01", friend.role_type, friend.user_id);
     app.globalData.showMoreInfo(this, index, '301', console.log); //这里console.log暂时替代goToFriendById函数
   },
 

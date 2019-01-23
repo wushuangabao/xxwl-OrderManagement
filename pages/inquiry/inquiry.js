@@ -280,7 +280,9 @@ Page({
 
   showMoreInfo: function(e) {
     var index = e.currentTarget.dataset.id,
-      type = this.data.receipt[index].receipt_type;
+      type = this.data.receipt[index].receipt_type,
+      number = this.data.receipt[index].receipt_number;
+    app.globalData.setTheirInfo("03", type, number);
     app.globalData.showMoreInfo(this, index, type, this.inquiryRecptById);
   },
 

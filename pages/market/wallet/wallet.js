@@ -7,6 +7,7 @@ Page({
     numberInWallet: "0.00",
     accLogs: [],
     hasTabBar: true,
+    isLoading: false,
   },
 
   // accounting_date字符串处理----------------------
@@ -18,20 +19,36 @@ Page({
   setAccLog: function(res) {
     var data_ = res.data,
       len = data_.length;
-    for (var i = 0; i < len; i++) {
-      data_[i].accounting_date = this.formatTime(data_[i].accounting_date);
-      data_[i].index = i;
-      if (data_[i].event_code == "2") //支出
-        data_[i].amount = "-" + data_[i].amount;
-      else if (data_[i].event_code == "1") //收入
-        data_[i].amount = "+" + data_[i].amount;
-    }
     console.log("setAccLog...res.data = ", data_);
-    this.setData({
-      accLogs: data_
-    });
-    this.setMenu();
+    if (len > 0) {
+      for (var i = 0; i < len; i++) {
+        data_[i].accounting_date = this.formatTime(data_[i].accounting_date);
+        data_[i].index = i;
+        if (data_[i].event_code == "2") //支出
+          data_[i].amount = "-" + data_[i].amount;
+        else if (data_[i].event_code == "1") //收入
+          data_[i].amount = "+" + data_[i].amount;
+      }
+      wx.setStorageSync('gmt_modify', data_[len - 1].createTime);
+      var accLogs = this.data.accLogs;
+      for (var i = 0; i < len; i++)
+        accLogs.push(data_[i]);
+      this.setData({
+        accLogs: accLogs
+      });
+      this.setMenu();
+      this.setLoading(false);
+    }else{
+      this.setLoading(false);
+      wx.showToast({
+        title: '没有更多的了',
+        icon: 'none',
+        duration: 1000
+      });
+    }
   },
+
+  // 设置acc(余额)
   setAcc: function(res) {
     var data_ = res.data[0],
       balance = data_.balance,
@@ -61,7 +78,9 @@ Page({
   ////////////////////////////////////////////////
   showMoreInfo: function(e) {
     var index = e.currentTarget.dataset.id,
-      type = this.data.accLogs[index].accountType;
+      type = this.data.accLogs[index].accountType,
+      number = this.data.accLogs[index].accountNo;
+    app.globalData.setTheirInfo("08", type, number);
     app.globalData.showMoreInfo(this, index, type, this.goToAccLogById);
   },
 
@@ -87,7 +106,11 @@ Page({
       other_associate_number: "00000",
       other_associate_name: "",
     };
-    wx.setStorageSync('gmt_modify', '9999-08-25 20:44:28');
+    this.setData({
+      param: param
+    });
+    wx.setStorageSync('gmt_modify', '');
+    this.setLoading(true);
     data.getAccLog(param, this.setAccLog);
     data.getAcc(param, this.setAcc);
   },
@@ -129,16 +152,34 @@ Page({
 
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
+  //* 页面上拉触底事件的处理函数***************************
   onReachBottom: function() {
-
+    if (this.data.isLoading)
+      return;
+    var param = this.data.param;
+    this.setLoading(true);
+    data.getAccLog(param, this.setAccLog);
+    data.getAcc(param, this.setAcc);
   },
 
-  /**
-   * 用户点击右上角分享
-   */
+  // 让用户进入、退出等待状态---------
+  setLoading: function(b) {
+    if (b) {
+      wx.showLoading({
+        title: '加载中',
+      });
+      this.setData({
+        isLoading: true
+      });
+    } else {
+      wx.hideLoading();
+      this.setData({
+        isLoading: false
+      });
+    }
+  },
+
+  //* 用户点击右上角分享******************
   onShareAppMessage: function() {
 
   }

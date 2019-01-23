@@ -444,7 +444,7 @@ function getRecptData2(param, func) {
   var gmt_modify = wx.getStorageSync('gmt_modify');
   if (gmt_modify == '')
     gmt_modify = '9999-08-25 20:44:28';
-  console.log('getAccLog...gmt_modify =', gmt_modify);
+  console.log('getRecptData...gmt_modify =', gmt_modify);
   var data = {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
@@ -455,11 +455,11 @@ function getRecptData2(param, func) {
     their_associate_type: param.their_associate_type,
     their_associate_number: param.their_associate_number,
     their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code, //所选的主体。订单为“09”。（todo：根据app.js储存的表来识别代码）
+    other_associate_code: param.other_associate_code, //所选的主体。订单为“09”。
     other_associate_type: param.other_associate_type,
     other_associate_number: param.other_associate_number,
     other_associate_name: param.other_associate_name,
-    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+    gmt_modify: gmt_modify
   };
   wxRequest(API_BILLQRY2, data, func);
 }
@@ -486,7 +486,7 @@ function getContent(param, func) {
 
 // market角色-钱包-明细查询*************************************
 function getAccLog(param, func) {
-  var gmt_modify = wx.getStorageSync('gmt_modify');
+  var gmt_modify = wx.getStorageSync('gmt_modify'); //其他页面中使用到同名缓存变量不通用，每次重新加载页面时会清除为空
   if (gmt_modify == '')
     gmt_modify = '9999-08-25 20:44:28';
   console.log('getAccLog...gmt_modify =', gmt_modify);
@@ -504,7 +504,7 @@ function getAccLog(param, func) {
     other_associate_type: param.other_associate_type,
     other_associate_number: param.other_associate_number,
     other_associate_name: param.other_associate_name,
-    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+    gmt_modify: gmt_modify
   };
   wxRequest(API_ACCLOGQRY, data, func);
 }
@@ -513,7 +513,7 @@ function getAcc(param, func) {
   var gmt_modify = wx.getStorageSync('gmt_modify');
   if (gmt_modify == '')
     gmt_modify = '9999-08-25 20:44:28';
-  console.log('getAccLog...gmt_modify =', gmt_modify);
+  console.log('getAcc...gmt_modify =', gmt_modify);
   var data = {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
@@ -528,7 +528,7 @@ function getAcc(param, func) {
     other_associate_type: param.other_associate_type,
     other_associate_number: param.other_associate_number,
     other_associate_name: param.other_associate_name,
-    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+    gmt_modify: gmt_modify
   };
   wxRequest(API_ACCQRY, data, func);
 }
@@ -538,7 +538,7 @@ function getShopList(param, func) {
   var gmt_modify = wx.getStorageSync('gmt_modify');
   if (gmt_modify == '')
     gmt_modify = '9999-08-25 20:44:28';
-  console.log('getAccLog...gmt_modify =', gmt_modify);
+  console.log('getShopList...gmt_modify =', gmt_modify);
   var data = {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
@@ -553,7 +553,7 @@ function getShopList(param, func) {
     other_associate_type: param.other_associate_type,
     other_associate_number: param.other_associate_number,
     other_associate_name: param.other_associate_name,
-    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+    gmt_modify: gmt_modify
   };
   wxRequest(API_SHOPQRY, data, func);
 }
@@ -578,7 +578,7 @@ function createRelation(entity1, entity2, func) {
     other_associate_type: entity2.type,
     other_associate_number: entity2.number,
     other_associate_name: entity2.name,
-    gmt_modify: gmt_modify //inquiry页面中使用到的，两者同名，不知道是否通用？
+    gmt_modify: gmt_modify //目前其实是无用参数
   };
   wxRequest(API_ENTRELCRT2, data, func);
 }

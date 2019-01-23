@@ -4,19 +4,10 @@ const data = require('../../../utils/data.js'),
 
 Page({
   data: {
-    contents: [{
-        content_name: "",
-        remark: "",
-        img_path: ""
-      },
-      {
-        content_name: "",
-        remark: "",
-        img_path: ""
-      },
-    ],
+    contents: [],
     menuObject: {},
     hasTabBar: true,
+    isLoading: false,
   },
 
   //* 跳转到内容详情页面************************
@@ -24,6 +15,7 @@ Page({
     var index = e.currentTarget.dataset.id;
     this.goToContentById(index);
   },
+  //* 跳转到内容详情页面ById************************
   goToContentById: function(id) {
     var content = this.data.contents[id];
     wx.navigateTo({
@@ -31,29 +23,35 @@ Page({
     });
   },
 
-  //* 显示moreInfo menu************************
-  showMoreInfo: function(e) {
-    var index = e.currentTarget.dataset.id,
-      content_type = this.data.contents[index].content_type;
-    app.globalData.showMoreInfo(this, index, content_type, this.goToContentById);
-  },
-
   // 设置内容列表----------------------------------
   setContents: function(res) {
     var data = res.data,
       len = data.length;
     console.log("setContent...res.data = ", data);
-    for (var i = 0; i < len; i++) {
-      // data[i].img_path = data[i].image_1;
-      data[i].img_path = "/imgs/image.png";
-      data[i].index = i;
+    if (len != 0) {
+      var contents = this.data.contents;
+      for (var i = 0; i < len; i++) {
+        // data[i].img_path = data[i].image_1;
+        data[i].img_path = "/imgs/image.png";
+        data[i].index = i;
+        contents.push(data[i]);
+      }
+      wx.setStorageSync('gmt_modify', data[len - 1].gmt_modify);
+      this.setData({
+        contents: contents
+      });
+      this.setMenu();
+      this.setLoading(false);
+    } else {
+      this.setLoading(false);
+      wx.showToast({
+        title: '没有更多的了',
+        icon: 'none',
+        duration: 1000
+      });
     }
-    this.setData({
-      contents: data
-    });
-    this.setMenu();
   },
-  // 设置内容列表并跳转到指定content_number的内容页面------
+  // 设置内容列表，并跳转到指定content_number的内容页面------
   setContentsAndGo: function(res) {
     var data = res.data,
       len = data.length,
@@ -69,31 +67,55 @@ Page({
     this.setData({
       contents: data
     });
+    wx.setStorageSync('gmt_modify', data[len - 1].gmt_modify);
+    this.setLoading(false);
     this.setMenu();
     if (idToGo != -1)
       this.goToContentById(idToGo);
   },
+
+  ///////////////////////////////////////////////////////
+  // morInfo menu
+  // 路由菜单
+  ///////////////////////////////////////////////////////
 
   // 设置moreInfo菜单的内容--------------------------
   setMenu: function() {
     app.globalData.setMenu(this, this.data.contents, "content_type", "07");
   },
 
+  //* 显示moreInfo menu************************
+  showMoreInfo: function(e) {
+    var index = e.currentTarget.dataset.id,
+      content_type = this.data.contents[index].content_type,
+      content_number = this.data.contents[index].content_number;
+    app.globalData.setTheirInfo("07", content_type, content_number);
+    app.globalData.showMoreInfo(this, index, content_type, this.goToContentById);
+  },
+
+  ///////////////////////////////////////////////////////
+  // 生命周期函数
+  ///////////////////////////////////////////////////////
+
   //* 监听页面加载**********************************
   onLoad: function(options) {
-    if (options.hasTabBar == "false")
+    var param;
+    if (options.hasTabBar == "false") {
       this.setData({
         hasTabBar: false
       });
-    var param;
-    if (this.data.hasTabBar)
+      param = app.globalData.param;
+    } else
       param = {
         their_associate_type: wx.getStorageSync('role_type'),
         their_associate_number: wx.getStorageSync('user_id'),
         their_associate_name: app.globalData.userInfo.nickName,
-      }
-    else
-      param = app.globalData.param;
+      };
+    this.setData({
+      param: param
+    });
+    wx.setStorageSync('gmt_modify', '');
+    this.setLoading(true);
     if (options.signal == "07") { //表示由转发的小程序进入本页（之前已经去过首页）
       var options = wx.getStorageSync('options'),
         their_associate_code = options.their_associate_code,
@@ -150,34 +172,44 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {
-
-  },
+  onHide: function() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
-
-  },
+  onUnload: function() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function() {},
 
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
+  //* 页面上拉触底事件的处理函数***************************
   onReachBottom: function() {
-
+    if (this.data.isLoading)
+      return;
+    this.setLoading(true);
+    data.getContent(this.data.param, this.setContents);
   },
 
-  /**
-   * 用户点击右上角分享
-   */
+  // 让用户进入、退出等待状态---------
+  setLoading: function(b) {
+    if (b) {
+      wx.showLoading({
+        title: '加载中',
+      });
+      this.setData({
+        isLoading: true
+      });
+    } else {
+      wx.hideLoading();
+      this.setData({
+        isLoading: false
+      });
+    }
+  },
+
+  //* 用户点击右上角分享**********************
   onShareAppMessage: function() {
 
   }
