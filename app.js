@@ -67,9 +67,12 @@ App({
       }
     },
 
-    ////////////////////////////////////////////////////
-    // moreInfo menu 路由菜单
-    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    // moreInfo menu
+    // 路由菜单
+    ////////////////////////////////////////////////////////////////
+    param: {},
+
     // 设置moreInfo菜单的内容--------------------------
     setMenu: function(that, contents, str_type, associate_code) {
       //遍历contents数组中的[str_type]属性，将它们添加到数组types中
@@ -99,9 +102,9 @@ App({
       for (var i = 0; i < len; i++) {
         var args = ['menuObject.' + types[i], that];
         var param = {
-          their_scene_code: "01", //暂时写死
+          their_scene_code: "01",
           their_scene_type: wx.getStorageSync('role_type'), //暂时写死
-          their_scene_name: "用户", //暂时写死
+          their_scene_name: this.convertCode("01"),
           their_associate_code: associate_code,
           their_associate_type: types[i],
           their_associate_name: this.convertCode(associate_code),
@@ -126,7 +129,6 @@ App({
       var self = this,
         menuList = that.data.menuObject[content_type],
         itemList = [];
-        console.log("menuList=",menuList)
       if (menuList.length <= 1) {
         goByIdFunc(index);
         return;
@@ -138,25 +140,47 @@ App({
         success(res) {
           var value = menuList[res.tapIndex].other_associate_code,
             name = menuList[res.tapIndex].other_associate_name;
-          if (name == "详情")//此处用other_associate_code判断的话，会跳转到list页面而非详情页面
+          if (name == "详情") //此处用other_associate_code判断的话，会跳转到list页面而非详情页面
             goByIdFunc(index);
           else if (name == "代理商")
             wx.navigateTo({
               url: "/pages/friends/roleSale/manage"
             });
-          else
+          else {
+            //设置：查询数据所用的参数their_associate_xxx...
+            var their_info = wx.getStorageSync('their_info');
+            self.param = {
+              their_associate_code: their_info.code || "01",
+              their_associate_type: their_info.type || wx.getStorageSync('role_type'),
+              their_associate_number: their_info.number || wx.getStorageSync('user_id'),
+              their_associate_name: self.convertCode(their_info.code),
+              other_associate_code: value,
+              other_associate_type: menuList[res.tapIndex].other_associate_type,
+              other_associate_number: "00000",
+              other_associate_name: name,
+            };
+            // wx.removeStorageSync('their_info');
             wx.navigateTo({
-              url: self.getUrlByCode(value),
+              url: self.getUrlByCode(value) + '?hasTabBar=false' //hasTabBar参数的意义：从朋友这边跳转到页面时，屏蔽tabBar
             });
-          //设置接下来：从朋友这边跳转到页面时，屏蔽tabBar，且查询所用参数为该朋友的
-          
+          }
         }
       })
     },
 
-    //////////////////////////////////////////////////////////
+    setTheirInfo: function(code, type, number) {
+      var their_info = {
+        code: code,
+        type: type,
+        number: number
+      };
+      wx.setStorageSync('their_info', their_info);
+    },
+
+    ////////////////////////////////////////////////////////////
     // tabBar
-    //////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+
     tabBar: {
       "color": "#9E9E9E",
       "selectedColor": "#f00",

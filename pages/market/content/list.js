@@ -16,6 +16,7 @@ Page({
       },
     ],
     menuObject: {},
+    hasTabBar: true,
   },
 
   //* 跳转到内容详情页面************************
@@ -75,11 +76,24 @@ Page({
 
   // 设置moreInfo菜单的内容--------------------------
   setMenu: function() {
-    app.globalData.setMenu(this, this.data.contents, "content_type","07");
+    app.globalData.setMenu(this, this.data.contents, "content_type", "07");
   },
 
   //* 监听页面加载**********************************
   onLoad: function(options) {
+    if (options.hasTabBar == "false")
+      this.setData({
+        hasTabBar: false
+      });
+    var param;
+    if (this.data.hasTabBar)
+      param = {
+        their_associate_type: wx.getStorageSync('role_type'),
+        their_associate_number: wx.getStorageSync('user_id'),
+        their_associate_name: app.globalData.userInfo.nickName,
+      }
+    else
+      param = app.globalData.param;
     if (options.signal == "07") { //表示由转发的小程序进入本页（之前已经去过首页）
       var options = wx.getStorageSync('options'),
         their_associate_code = options.their_associate_code,
@@ -110,18 +124,10 @@ Page({
         that = this;
       data.createRelation(entity1, entity2, function(res) {
         console.log('根据内容分享建立关系...res.data = ', res.data);
-        data.getContent({
-          their_associate_type: wx.getStorageSync('role_type'),
-          their_associate_number: wx.getStorageSync('user_id'),
-          their_associate_name: app.globalData.userInfo.nickName,
-        }, that.setContentsAndGo);
+        data.getContent(param, that.setContentsAndGo);
       });
     } else { //表示不是由别人的转发进入的
-      data.getContent({
-        their_associate_type: wx.getStorageSync('role_type'),
-        their_associate_number: wx.getStorageSync('user_id'),
-        their_associate_name: app.globalData.userInfo.nickName,
-      }, this.setContents);
+      data.getContent(param, this.setContents);
     }
   },
 

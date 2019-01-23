@@ -11,7 +11,6 @@ Page({
     index_cif: 0,
     textAreaValue1: '', //备注
     img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
-    isAdmin: false,
   },
 
   //* 查看历史订单*****************************************
@@ -262,7 +261,6 @@ Page({
         myTabBar.list[3].active = false
         this.setData({
           tabBar: myTabBar,
-          isAdmin: true
         })
       }
     } catch (e) {

@@ -476,10 +476,10 @@ function getContent(param, func) {
     their_associate_type: param.their_associate_type,
     their_associate_number: param.their_associate_number,
     their_associate_name: param.their_associate_name,
-    other_associate_code: "07", //所选的主体。内容为“07”
-    other_associate_type: "000",
-    other_associate_number: "00000",
-    other_associate_name: ""
+    other_associate_code: param.other_associate_code||"07", //内容为“07”
+    other_associate_type: param.other_associate_type||"000",
+    other_associate_number: param.other_associate_number ||"00000",
+    other_associate_name: param.other_associate_name ||""
   };
   wxRequest(API_CONTQRY, data, func);
 }

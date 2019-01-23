@@ -6,6 +6,7 @@ Page({
   data: {
     numberInWallet: "0.00",
     accLogs: [],
+    hasTabBar: true,
   },
 
   // accounting_date字符串处理----------------------
@@ -70,8 +71,13 @@ Page({
 
   // 监听页面加载************************************
   onLoad: function(options) {
-    wx.setStorageSync('gmt_modify', '9999-08-25 20:44:28');
-    var param = {
+    var param;
+    if (options.hasTabBar == "false") {
+      this.setData({
+        hasTabBar: false
+      });
+      param = app.globalData.param;
+    } else param = {
       their_associate_code: "01", //主体。用户为“01”
       their_associate_type: wx.getStorageSync('role_type'),
       their_associate_number: wx.getStorageSync('user_id'),
@@ -81,6 +87,7 @@ Page({
       other_associate_number: "00000",
       other_associate_name: "",
     };
+    wx.setStorageSync('gmt_modify', '9999-08-25 20:44:28');
     data.getAccLog(param, this.setAccLog);
     data.getAcc(param, this.setAcc);
   },

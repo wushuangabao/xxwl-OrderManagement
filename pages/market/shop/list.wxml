@@ -10,5 +10,5 @@
   </view>
 
   <import src="../../../utils/tabBar.wxml" />
-  <template is="tabBar" data="{{tabBar: tabBar}}" />
+  <template wx:if="{{hasTabBar}}" is="tabBar" data="{{tabBar: tabBar}}" />
 </view>

@@ -55,4 +55,4 @@
 </view>
 
 <import src="../../utils/tabBar.wxml" />
-<template wx:if="{{isAdmin}}" is="tabBar" data="{{tabBar:tabBar}}" />
+<template wx:if="{{hasTabBar}}" is="tabBar" data="{{tabBar:tabBar}}" />

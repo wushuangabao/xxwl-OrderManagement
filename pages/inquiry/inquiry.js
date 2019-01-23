@@ -18,9 +18,9 @@ Page({
     ],
     index: 0,
     receipt: [],
-    isAdmin: false,
     isLoading: false,
     status: "0", //0表示未完成，2表示已完成
+    hasTabBar:true,
   },
 
   //* 点击“已完成”或“未完成”**********************************
@@ -122,6 +122,9 @@ Page({
       old_data[real_i].state = state;
       old_data[real_i].type = r_type;
       old_data[real_i].index = real_i;
+      // console.log(_data_[i].image_1[0])
+      if(_data_[i].image_1[0]!='.')  // <---貌似没有必要？
+        _data_[i].image_1 = '.'+_data_[i].image_1;
       old_data[real_i].r_img = data.Img_Url + _data_[i].receipt_number + '_0' + _data_[i].image_1;
       old_data[real_i].moreLayer = false;
       old_data[real_i].hasPraise = false;
@@ -157,10 +160,9 @@ Page({
   },
 
   getRecptData: function(status) {
-    if (wx.getStorageSync('role_type') == "01") { //管理员
-      data.getRecptData(status, "00000", this.setRecptData);
-    } else { //if (role_type == "301") {
-      var param = {
+    var param;
+    if (this.data.hasTabBar)
+      param = {
         their_associate_code: "01", //主体。用户为“01”
         their_associate_type: wx.getStorageSync('role_type'),
         their_associate_number: wx.getStorageSync('user_id'),
@@ -171,8 +173,11 @@ Page({
         other_associate_name: "",
         work_status: status,
       };
-      data.getRecptData2(param, this.setRecptData);
+    else{
+      param = app.globalData.param;
+      param.work_status=status;
     }
+      data.getRecptData2(param, this.setRecptData);
   },
 
   //////////////////////////////////////////////////////////////
@@ -296,7 +301,6 @@ Page({
     }
     this.setData({
       tabBar: myTabBar,
-      isAdmin: true
     })
   },
 
@@ -308,6 +312,10 @@ Page({
     this.setData({
       isLoading: true
     });
+    if(options.hasTabBar=="false")
+      this.setData({
+        hasTabBar:false
+      });
     wx.setStorageSync('gmt_modify', '');
     this.getRecptData(this.data.status);
     this.changeTitWXSS(1) //切换到"未完成"页

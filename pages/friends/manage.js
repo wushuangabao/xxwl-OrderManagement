@@ -116,8 +116,10 @@ Page({
   //* 显示更多朋友的有关信息*********************************
   showMoreInfo: function(e) {
     var type = this.convertTitType(this.data.index),
-    index=e.currentTarget.dataset.id;
-    app.globalData.showMoreInfo(this, index, type,console.log);
+    index=e.currentTarget.dataset.id,
+    friend=this.data.friendsInfo[index];
+    app.globalData.setTheirInfo("01",friend.role_type,friend.user_id);
+    app.globalData.showMoreInfo(this, index, type,console.log); //这里console.log暂时替代goToFriendById函数
   },
 
   // 转换role_type的格式---------------------
@@ -160,17 +162,6 @@ Page({
         [str2]: '#9E9E9E',
         index: i,
       })
-    }
-  },
-
-  //* 点击某条用户的信息***********************************************
-  onTapItem: function(e) {
-    var id = e.currentTarget.dataset.id,
-      friend = this.data.friendsInfo[id];
-    if (friend.role_type == "301") { //代理商
-      wx.navigateTo({
-        url: 'roleSale/manage'
-      });
     }
   },
 
@@ -339,7 +330,7 @@ Page({
     this.setData({
       tabBar: myTabBar,
       isAdmin: true
-    })
+    });
   },
 
   /**

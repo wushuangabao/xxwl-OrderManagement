@@ -14,7 +14,7 @@
   <view class="list">
     <!--item-->
     <block wx:for="{{friendsInfo}}" wx:key="key">
-      <view class="list-item" bindtap='showMoreInfo'>
+      <view class="list-item" catchtap='showMoreInfo' data-id='{{item.index}}'>
         <image src="{{item.image_address}}" class="img" mode="aspectFit" />
         <view class="selector">
             {{item.nickname}}

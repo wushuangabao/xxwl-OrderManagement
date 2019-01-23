@@ -63,5 +63,5 @@
 
 <!-- <canvas canvas-id="myCanvas"></canvas> -->
 
-<import src="../../utils/tabBar.wxml" />
-<template wx:if="{{isAdmin}}" is="tabBar" data="{{tabBar: tabBar}}" />
+<!-- <import src="../../utils/tabBar.wxml" />
+<template wx:if="{{}}" is="tabBar" data="{{tabBar: tabBar}}" /> -->

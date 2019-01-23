@@ -1,6 +1,7 @@
 // pages/friends/manage.js
 
-const data = require('../../../utils/data.js')
+const data = require('../../../utils/data.js'),
+  app = getApp();
 
 Page({
   data: {
@@ -59,48 +60,22 @@ Page({
     });
   },
 
-  // 设置selector-------------
-  setParamsByEntity: function(res) {
-    if (this.data.selectorArray)
-      return;
+  // 设置MoreInfo menu（路由菜单）的内容-------------
+  setMenu: function(res) {
     var data = res.data,
-      len = data.length,
-      array = new Array(len);
-    console.log("setParamsByEntity...res.data = ", data);
-    if (len > 0) {
-      for (var i = 0; i < len; i++) {
-        array[i] = data[i].other_associate_name;
-      }
+      len = data.length;
+    console.log("setMenu...res.data =", data);
+    if (len != 0) {
       this.setData({
-        selectorArray: array
+        ['menuObject.301']: data
       });
     }
   },
 
   //* 显示更多朋友的有关信息*********************************
-  showMoreInfo: function() {
-    var that = this,
-      url = "";
-    wx.showActionSheet({
-      itemList: that.data.selectorArray,
-      success(res) {
-        var value = that.data.selectorArray[res.tapIndex];
-        switch (value) {
-          case "内容":
-            url = "/pages/market/content/list";
-            break;
-          case "订单":
-            url = "/pages/inquiry/inquiry";
-            break;
-        }
-        wx.navigateTo({
-          url: url,
-        });
-      },
-      fail(res) {
-        console.log(res.errMsg)
-      }
-    })
+  showMoreInfo: function(e) {
+    var index = e.currentTarget.dataset.id;
+    app.globalData.showMoreInfo(this, index, '301', console.log); //这里console.log暂时替代goToFriendById函数
   },
 
   // 改变titles数据的WXML标签样式-----------------------------------
@@ -128,22 +103,16 @@ Page({
   onLoad: function(options) {
     this.changeTitWXSS(0)
     data.getUsersByLevel("01", this.setFriendsInfo)
-    // data.getParam("01", this.setSelector)
-    //设置MoreInfo的selector内容--------
-    this.setData({
-      selectorArray: null
-    });
+    //设置MoreInfo menu的内容--------
     var param = {
-      their_scene_code: "01", //表示用户
-      their_scene_type: "301", //role_type，小程序进入的模式。为测试暂时写死为“代理商”模式
+      their_scene_code: "01",
+      their_scene_type: "301",
       their_scene_name: "商群",
       their_associate_code: "01",
       their_associate_type: "301",
       their_associate_name: "代理商",
     };
-    data.getParamsByEntity(param, this.setParamsByEntity);
-    param.their_scene_type = "000";
-    data.getParamsByEntity(param, this.setParamsByEntity);
+    data.getParamsByEntity(param, this.setMenu);
   },
 
   //* 生命周期函数--监听页面显示*************************************

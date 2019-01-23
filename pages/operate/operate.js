@@ -29,7 +29,7 @@ Page({
     index: 0,
     operation: [],
     operationId: null, //正在操作中的operation的下标
-    isAdmin: false,
+    hasTabBar:true,
     isLoading: false,
     //isMoving: false,
   },
@@ -310,6 +310,10 @@ Page({
 
   //* 生命周期函数--监听页面加载***********************************************
   onLoad: function(options) {
+    if (options.hasTabBar == "false")
+      this.setData({
+        hasTabBar: false
+      });
     wx.setStorageSync('apply_receive_time', '');
     wx.setStorageSync('info', '');
     this.loading(); //让用户进入等待状态，不要操作
@@ -330,7 +334,6 @@ Page({
       myTabBar.list[3].active = true
       this.setData({
         tabBar: myTabBar,
-        isAdmin: true
       })
     }
     //如果是从完工提交页面navigateBack

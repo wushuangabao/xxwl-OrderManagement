@@ -16,7 +16,7 @@
     <block wx:for="{{friendsInfo}}" wx:key="key">
       <view class="list-item">
         <image src="{{item.image_address}}" class="img" mode="aspectFit" />
-        <text class="text-mid" catchtap='onTapItem' catchlongpress='showMoreInfo' data-id='{{item.index}}'>{{item.nickname}}</text>
+        <text class="text-mid" catchtap='showMoreInfo' data-id='{{item.index}}'>{{item.nickname}}</text>
         <view class="selector">
           <picker mode="multiSelector" catchchange="bindMultiPickerChange" catchcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}" data-id='{{item.index}}'>
             {{item.role_type_name}}

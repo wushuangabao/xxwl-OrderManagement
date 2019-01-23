@@ -5,6 +5,7 @@ const data = require('../../../utils/data.js'),
 Page({
   data: {
     shopList: [],
+    hasTabBar: true,
   },
 
   // 跳转到店铺详情页面************************
@@ -35,7 +36,7 @@ Page({
       if (data_[i].image_1.length > 10)
         data_[i].img_path = data_[i].image_1;
       else
-        data_[i].img_path = data.Img_Url+'shop_img_'+i+'.png';
+        data_[i].img_path = data.Img_Url + 'shop_img_' + i + '.png';
     }
     this.setData({
       shopList: data_
@@ -65,19 +66,23 @@ Page({
   },
 
   //* 显示moreInfo menu************************
-  showMoreInfo: function (e) {
+  showMoreInfo: function(e) {
     var index = e.currentTarget.dataset.id,
       shop_type = this.data.shopList[index].shop_type;
     app.globalData.showMoreInfo(this, index, shop_type, this.goToShopById);
   },
 
   // 设置moreInfo菜单的内容--------------------------
-  setMenu: function () {
-    app.globalData.setMenu(this,this.data.shopList,"shop_type","09");
+  setMenu: function() {
+    app.globalData.setMenu(this, this.data.shopList, "shop_type", "09");
   },
 
   //* 生命周期函数--监听页面加载***************************************
   onLoad: function(options) {
+    if (options.hasTabBar == "false")
+      this.setData({
+        hasTabBar: false
+      });
     wx.setStorageSync('gmt_modify', '9999-08-25 20:44:28');
     var user_name;
     if (app.globalData.userInfo) {
@@ -87,16 +92,20 @@ Page({
       console.log("无法获取user_name,赋值为00000");
     }
     console.log("user_name=", user_name);
-    var param = {
-      their_associate_code: "01", //主体。用户为“01”
-      their_associate_type: "000",
-      their_associate_number: wx.getStorageSync('user_id'),
-      their_associate_name: user_name,
-      other_associate_code: "09", //所选的主体。店铺为“09”
-      other_associate_type: "000",
-      other_associate_number: "00000",
-      other_associate_name: "",
-    };
+    var param;
+    if (this.data.hasTabBar)
+      param = {
+        their_associate_code: "01", //主体。用户为“01”
+        their_associate_type: "000",
+        their_associate_number: wx.getStorageSync('user_id'),
+        their_associate_name: user_name,
+        other_associate_code: "09", //所选的主体。店铺为“09”
+        other_associate_type: "000",
+        other_associate_number: "00000",
+        other_associate_name: "",
+      };
+    else
+      param = app.globalData.param;
     if (options.their_associate_code || options.signal) { //如果是他人分享的
       var options_ = options,
         options = null;
@@ -114,19 +123,19 @@ Page({
       }
       // 建立关系----------------------------
       var entity1 = {
-        code: options.their_associate_code,
-        type: options.their_associate_type,
-        number: options.their_associate_number,
-        name: options.their_associate_name,
-      },
+          code: options.their_associate_code,
+          type: options.their_associate_type,
+          number: options.their_associate_number,
+          name: options.their_associate_name,
+        },
         entity2 = {
           code: options.other_associate_code,
           type: options.other_associate_type,
           number: options.other_associate_number,
           name: options.other_associate_name,
         },
-        that=this;
-      data.createRelation(entity1, entity2, function (res) {
+        that = this;
+      data.createRelation(entity1, entity2, function(res) {
         console.log("基于店铺分享建立关系...res = ", res);
         data.getShopList(param, that.setShopListAndGoToShop);
       });
