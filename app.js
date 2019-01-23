@@ -139,13 +139,16 @@ App({
         itemList: itemList,
         success(res) {
           var value = menuList[res.tapIndex].other_associate_code,
-            name = menuList[res.tapIndex].other_associate_name;
-          if (name == "详情") //此处用other_associate_code判断的话，会跳转到list页面而非详情页面
+            name = menuList[res.tapIndex].other_associate_name,
+            o_type = menuList[res.tapIndex].other_associate_type,
+            url = self.getUrlByCode(value) + '?hasTabBar=false'; //hasTabBar参数的意义：从朋友这边跳转到页面时，屏蔽tabBar
+          if (name == "代理商" || (value == "01" && o_type == "301")) {
+            url = self.getUrlByCode(o_type) + '?hasTabBar=false';
+            // if(!that.data.hasTabBar)
+            //   wx.setStorageSync('level', parseInt(wx.getStorageSync('level')+1));
+          }
+          if (name == "详情" || (o_type == "000" && value == "999")) //todo:999应为对应场景的code
             goByIdFunc(index);
-          else if (name == "代理商")
-            wx.navigateTo({
-              url: "/pages/friends/roleSale/manage"
-            });
           else {
             //设置：查询数据所用的参数their_associate_xxx...
             var their_info = wx.getStorageSync('their_info');
@@ -155,13 +158,13 @@ App({
               their_associate_number: their_info.number || wx.getStorageSync('user_id'),
               their_associate_name: self.convertCode(their_info.code),
               other_associate_code: value,
-              other_associate_type: menuList[res.tapIndex].other_associate_type,
+              other_associate_type: o_type,
               other_associate_number: "00000",
               other_associate_name: name,
             };
             // wx.removeStorageSync('their_info');
             wx.navigateTo({
-              url: self.getUrlByCode(value) + '?hasTabBar=false' //hasTabBar参数的意义：从朋友这边跳转到页面时，屏蔽tabBar
+              url: url
             });
           }
         }
@@ -246,6 +249,9 @@ App({
         case "98":
           str = "系统";
           break;
+        case "301":
+          str = "代理商"
+          break;
       }
       return str;
     },
@@ -288,6 +294,9 @@ App({
           break;
         case "98":
           str = "系统";
+          break;
+        case "301":
+          str = "/pages/friends/roleSale/manage"
           break;
       }
       return str;

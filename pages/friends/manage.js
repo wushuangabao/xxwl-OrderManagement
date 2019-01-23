@@ -318,6 +318,8 @@ Page({
 
   //* 生命周期函数--监听页面显示*************************************
   onShow: function() {
+    wx.setStorageSync('level', -1);
+    app.globalData.setTheirInfo("01",wx.getStorageSync('role_type'), wx.getStorageSync('user_id'));
     //设置tabBar
     var myTabBar = app.globalData.tabBar,
       len = myTabBar.list.length;
@@ -328,8 +330,7 @@ Page({
         myTabBar.list[i].active = false;
     }
     this.setData({
-      tabBar: myTabBar,
-      isAdmin: true
+      tabBar: myTabBar
     });
   },
 

@@ -35,6 +35,7 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   //---------------------------------------------
   // 商群（market）-某级别用户列表查询接口
   API_USERLVQRY = URL_BASE + "userLevelQueryServlet",
+  API_USERLVQRY2 = URL_BASE + "userLevelQueryServlet2",
   // 商群（管理员）-点击某个用户后获取对应的列表
   API_ENTPARAM = URL_BASE + "EntityParamServlet",
   //---------------------------------------------
@@ -75,7 +76,7 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   API_ENTRELCRT2 = URL_BASE + "EntityRelCreateServlet2";
 
 // wx.request 封装-----------------------------------
-function wxRequest(url, data, resolve,args) {
+function wxRequest(url, data, resolve, args) {
   wx.request({
     url: url,
     data: { ...data
@@ -84,7 +85,7 @@ function wxRequest(url, data, resolve,args) {
     header: {
       'content-type': 'application/x-www-form-urlencoded;charset=utf-8', //'application/json', //application/x-www-form-urlencoded
     },
-    success: (data) => resolve(data,args),
+    success: (data) => resolve(data, args),
     fail: (err) => console.log(err) //可以加入第四个参数reject方法
   })
 }
@@ -306,9 +307,28 @@ function getUsersByLevel(user_level, func) {
   }
   wxRequest(API_USERLVQRY, data, func);
 }
+// 商群：某级别的用户列表查询2******************************************
+function getUsersByLevel2(user_level, param, func) {
+  var data = {
+    user_id: wx.getStorageSync('user_id'),
+    user_name: app.globalData.userInfo.nickName,
+    role_type: wx.getStorageSync('role_type'),
+    company_id: wx.getStorageSync('company_id'),
+    user_level: user_level,
+    their_associate_code: param.their_associate_code,
+    their_associate_type: param.their_associate_type,
+    their_associate_number: param.their_associate_number,
+    their_associate_name: param.their_associate_name,
+    other_associate_code: param.other_associate_code,
+    other_associate_type: param.other_associate_type,
+    other_associate_number: param.other_associate_number,
+    other_associate_name: param.other_associate_name,
+  }
+  wxRequest(API_USERLVQRY2, data, func);
+}
 
 // 商群：点击某个用户后，获取对应的列表*******************************
-function getParamsByEntity(param, func,args) {
+function getParamsByEntity(param, func, args) {
   var data = {
     user_id: wx.getStorageSync('user_id'),
     user_name: app.globalData.userInfo.nickName,
@@ -322,7 +342,7 @@ function getParamsByEntity(param, func,args) {
     their_associate_type: param.their_associate_type,
     their_associate_name: param.their_associate_name
   }
-  wxRequest(API_ENTPARAM, data, func,args);
+  wxRequest(API_ENTPARAM, data, func, args);
 }
 
 // 工序设置：查询模板**********************************************
@@ -374,7 +394,7 @@ function getParam(code, func) {
   var company_type = wx.getStorageSync('company_type');
   if (!company_type || company_type == 'null')
     company_type = wx.getStorageSync('friend_company_type');
-  if (!company_type || company_type == 'null' || company_type.length<5)
+  if (!company_type || company_type == 'null' || company_type.length < 5)
     company_type = '00000';
   wxRequest(API_PARAQRY, {
     industry_code: company_type.slice(0, 2), //行业代码
@@ -476,10 +496,10 @@ function getContent(param, func) {
     their_associate_type: param.their_associate_type,
     their_associate_number: param.their_associate_number,
     their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code||"07", //内容为“07”
-    other_associate_type: param.other_associate_type||"000",
-    other_associate_number: param.other_associate_number ||"00000",
-    other_associate_name: param.other_associate_name ||""
+    other_associate_code: param.other_associate_code || "07", //内容为“07”
+    other_associate_type: param.other_associate_type || "000",
+    other_associate_number: param.other_associate_number || "00000",
+    other_associate_name: param.other_associate_name || ""
   };
   wxRequest(API_CONTQRY, data, func);
 }
@@ -683,10 +703,11 @@ module.exports = {
   getCorparam: getCorparam,
   changeCorparam: changeCorparam,
   getUsersByLevel: getUsersByLevel,
+  getUsersByLevel2: getUsersByLevel2,
   getParamsByEntity: getParamsByEntity,
   getContent: getContent,
   getAccLog: getAccLog,
-  getAcc:getAcc,
+  getAcc: getAcc,
   getShopList: getShopList,
   getRecptData2: getRecptData2,
   createRelation: createRelation,

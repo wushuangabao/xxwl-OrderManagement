@@ -28,7 +28,7 @@ Page({
     var data = res.data,
       len = data.length;
     console.log("setContent...res.data = ", data);
-    if (len != 0) {
+    if (len > 0) {
       var contents = this.data.contents;
       for (var i = 0; i < len; i++) {
         // data[i].img_path = data[i].image_1;

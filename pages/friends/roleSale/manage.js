@@ -32,17 +32,17 @@ Page({
     ],
     index: 0,
     friendsInfo: [],
-    // worker: [],
     multiIndex: [0, 0],
-    // infoReady: null,
+    hasTabBar: true,
   },
 
   //* 点击Tit事件*****************************************************
   changeTit: function(event) {
     var id = event.currentTarget.dataset.id;
     this.changeTitWXSS(id);
+    wx.setStorageSync('level', id);
     var level_code = "0" + (id + 1).toString();
-    data.getUsersByLevel(level_code, this.setFriendsInfo)
+    data.getUsersByLevel(level_code, this.setFriendsInfo);
   },
 
   // 设置FriendsInfo数组数据-----------------------------------------
@@ -80,7 +80,7 @@ Page({
     app.globalData.showMoreInfo(this, index, '301', console.log); //这里console.log暂时替代goToFriendById函数
   },
 
-  // 改变titles数据的WXML标签样式-----------------------------------
+  // 改变titles数据的WXML标签样式-----------------------------
   changeTitWXSS: function(i) {
     var str1 = 'titles[' + i + '].color_b',
       str2 = 'titles[' + i + '].color_f',
@@ -103,22 +103,43 @@ Page({
 
   //* 生命周期函数--监听页面加载*************************************
   onLoad: function(options) {
-    this.changeTitWXSS(0)
-    data.getUsersByLevel("01", this.setFriendsInfo)
-    //设置MoreInfo menu的内容--------
-    var param = {
+    var param, level = parseInt(wx.getStorageSync('level')) + 1,
+      level_code = "0" + level.toString();
+    if (options.hasTabBar == "false") {
+      this.setData({
+        hasTabBar: false
+      });
+      param = app.globalData.param;
+    } else {
+      var param = {
+        their_associate_code: "01",
+        their_associate_type: wx.getStorageSync('role_type'),
+        their_associate_number: wx.getStorageSync('user_id'),
+        their_associate_name: app.globalData.userInfo.nickName,
+        their_associate_code: "01",
+        their_associate_type: "301",
+        their_associate_name: "代理商",
+      };
+    }
+    this.setData({
+      param: param
+    });
+    this.changeTitWXSS(level);
+    wx.setStorageSync('level', level);
+    data.getUsersByLevel2(level_code, param, this.setFriendsInfo);
+    data.getParamsByEntity({
       their_scene_code: "01",
       their_scene_type: "301",
       their_scene_name: "商群",
       their_associate_code: "01",
       their_associate_type: "301",
       their_associate_name: "代理商",
-    };
-    data.getParamsByEntity(param, this.setMenu);
+    }, this.setMenu); //设置MoreInfo menu的内容
   },
 
   //* 生命周期函数--监听页面显示*************************************
   onShow: function() {
+    wx.setStorageSync('level', this.data.index);
     //设置tabBar
     var myTabBar = getApp().globalData.tabBar,
       len = myTabBar.list.length;
@@ -136,15 +157,11 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {
+  onHide: function() {},
 
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
+  //* 生命周期函数--监听页面卸载***************
   onUnload: function() {
-
+    wx.setStorageSync('level', wx.getStorageSync('level') - 1);
   },
 
   /**
