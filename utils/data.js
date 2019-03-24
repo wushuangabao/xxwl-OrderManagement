@@ -71,6 +71,14 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   // market角色-钱包-余额查询
   API_ACCQRY = URL_BASE + "AccountQueryServlet",
   // ----------------------------------------------
+  // message-消息查询
+  API_MSGQRY = URL_BASE + "MessageQueryServlet",
+  // message-safe-社保账单
+  API_SAFESUM = URL_BASE + "userSafeAmountSumServlet",
+  API_SAFEQRY = URL_BASE + "userSafelAmountQueryServlet",
+  API_SAFEDEL = URL_BASE + "userSafeDeleteServlet",
+  API_SAFEADD = "https://www.xiangxun1.com/ssm/addEmployeeSafe",
+  // ----------------------------------------------
   // 实体间关系的创建
   API_ENTRELCRT = URL_BASE + "EntityRelCreateServlet",
   API_ENTRELCRT2 = URL_BASE + "EntityRelCreateServlet2";
@@ -578,6 +586,83 @@ function getShopList(param, func) {
   wxRequest(API_SHOPQRY, data, func);
 }
 
+// 消息查询***************************************************
+function getMsgList(param, func) {
+  var data = param;
+  addBasicInfoTo(data);
+  console.log("data=", data);
+  wxRequest(API_MSGQRY, { //此处应写data，为测试先写如下伪数据
+    their_associate_code: "01",
+    their_associate_type: "000",
+    their_associate_number: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
+    other_associate_code: "12",
+    other_associate_type: "000",
+    other_associate_number: "00000",
+    user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
+    role_type: "02",
+    work_status: '0',
+    company_id: '58414',
+    user_name: "安仔"
+  }, func);
+}
+
+// 社保汇总查询********************************************
+function getSafeAmount(param, func) {
+  var data = param;
+  addBasicInfoTo(data);
+  console.log("data=", data);
+  wxRequest(API_SAFESUM, { //此处应写data，为测试先写如下伪数据
+    their_associate_code: "01",
+    their_associate_type: "000",
+    their_associate_number: "12345", //即trader_id
+    other_associate_code: "13", //社保
+    other_associate_type: "201", //企业社保编号
+    other_associate_number: "00000",
+    user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
+    role_type: "02",
+    work_status: '0',
+    company_id: '58414',
+    user_name: "安仔",
+    safe_year: "2018",
+    safe_month: "11",
+    safe_type: "99" //或"00"
+  }, func);
+}
+
+function getUserSafeAmount(param, func) {
+  var data = param;
+  addBasicInfoTo(data);
+  console.log("data=", data);
+  wxRequest(API_SAFEQRY, { //此处应写data，为测试先写如下伪数据
+    their_associate_code: "01",
+    their_associate_type: "000",
+    their_associate_number: "12345", //即trader_id
+    other_associate_code: "01",
+    other_associate_type: "000",
+    other_associate_number: "11111123", //即safe_id
+    user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
+    role_type: "02",
+    work_status: '0',
+    company_id: '58414',
+    user_name: "安仔",
+    safe_year: "2018",
+    safe_month: "11"
+  }, func);
+}
+
+function deleteUserSafe(safe_id, year, month, func) {
+  var data = {
+    safe_number: safe_id,
+    report_date: year + month
+  };
+  addBasicInfoTo(data);
+  wxRequest(API_SAFEDEL, data, func);
+}
+
+function addUserSafe(param,func){
+  wxRequest(API_SAFEADD,param,func);
+}
+
 // 实体间关系的创建*****************************************
 function createRelation(entity1, entity2, func) {
   var gmt_modify = wx.getStorageSync('gmt_modify');
@@ -607,6 +692,19 @@ function createRelation(entity1, entity2, func) {
 ///////////////////////////////////////////////////////
 // 全局data处理
 ///////////////////////////////////////////////////////
+
+// 向data中加入user_id等基本信息-------------------------------
+function addBasicInfoTo(data) {
+  data['user_id'] = wx.getStorageSync('user_id');
+  data['user_name'] = app.globalData.userInfo.nickName;
+  data['role_type'] = wx.getStorageSync('role_type');
+  data['company_id'] = wx.getStorageSync('company_id');
+  data['work_status'] = '0';
+  var gmt_modify = wx.getStorageSync('gmt_modify');
+  if (gmt_modify == '')
+    gmt_modify = '9999-08-25 20:44:28';
+  data['gmt_modify'] = gmt_modify;
+}
 
 // 将行业类型的数组写入app.globalData----------------------------
 function setIndustry(res) {
@@ -711,12 +809,18 @@ module.exports = {
   getShopList: getShopList,
   getRecptData2: getRecptData2,
   createRelation: createRelation,
+  getMsgList: getMsgList,
+  getSafeAmount: getSafeAmount,
+  getUserSafeAmount: getUserSafeAmount,
+  deleteUserSafe: deleteUserSafe,
+  addUserSafe: addUserSafe,
 
   getParam: getParam,
   getIndustry: getIndustry,
   getRecptType: getRecptType,
   ratingCreate: ratingCreate,
   ratingQuery: ratingQuery,
+  addBasicInfoTo: addBasicInfoTo,
 
   convertType: convertType,
   convertRecptNum: convertRecptNum,

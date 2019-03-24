@@ -18,7 +18,11 @@
     "pages/market/content/list",
     "pages/market/shop/list",
     "pages/market/wallet/wallet",
-    "pages/market/shop/shop"
+    "pages/market/shop/shop",
+    "pages/message/list",
+    "pages/message/safe/main",
+    "pages/message/safe/namelist/list",
+    "pages/message/safe/namelist"
   ],
   "networkTimeout": {
     "request": 10000,

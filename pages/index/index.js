@@ -8,6 +8,7 @@ Page({
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     signal: "00",
+    debug: true, //开发者模式
   },
 
   // 根据服务器数据设置role_type等信息-------------------------------------
@@ -80,6 +81,14 @@ Page({
       }
     }
     app.globalData.tabBar.list = myList;
+    //开发者模式：
+    if(this.data.debug)
+    {
+      wx.redirectTo({
+        url: '/pages/message/list', //用于测试的页面
+      })
+      return;
+    }
     //初始化完毕，准备跳转页面----------------
     if (this.data.signal === "00")
       this.goTo(wx.getStorageSync('role_type'));

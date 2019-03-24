@@ -1,0 +1,14 @@
+<!--pages/message/list.wxml-->
+<view class="list">
+  <view wx:for="{{msgList}}" wx:key="" class="con-item" bindtap="showMoreInfo" data-id="{{item.index}}">
+    <view class="con-left">
+      <view class="con-title">{{item.message_name}}</view>
+      <view class="con-date">{{item.entity_year + item.entity_month}}</view>
+      <view class="con-message">{{item.message}}</view>
+    </view>
+    <image src='{{item.image_1}}' class="con-img" mode='aspectFit'></image>
+  </view>
+
+  <import src="../../../utils/tabBar.wxml" />
+  <template wx:if="{{hasTabBar}}" is="tabBar" data="{{tabBar: tabBar}}" />
+</view>
