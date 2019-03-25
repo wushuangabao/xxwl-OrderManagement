@@ -243,6 +243,9 @@ App({
         case "11":
           str = "CLASS";
           break;
+        case "13":
+          str = "社保";
+          break;
         case "90":
           str = "报表";
           break;
@@ -288,6 +291,9 @@ App({
           break;
         case "11":
           str = "CLASS";
+          break;
+        case "13":
+          str = "/pages/message/safe/main";
           break;
         case "90":
           str = "报表";

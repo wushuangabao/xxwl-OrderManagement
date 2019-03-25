@@ -9,6 +9,6 @@
     <image src='{{item.image_1}}' class="con-img" mode='aspectFit'></image>
   </view>
 
-  <import src="../../../utils/tabBar.wxml" />
+  <import src="../../utils/tabBar.wxml" />
   <template wx:if="{{hasTabBar}}" is="tabBar" data="{{tabBar: tabBar}}" />
 </view>

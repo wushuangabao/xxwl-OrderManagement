@@ -1,2 +1,9 @@
 <!--pages/message/safe/main.wxml-->
 <text>pages/message/safe/main.wxml</text>
+<view wx:for="{{listData}}" wx:key="" style="display:flex;flex-direction:column" bindtap="showMoreInfo" data-id="{{item.index}}">
+  <view style="display:flex;flex-direction:column">
+    <text>{{item.name}}</text>
+    <text>企业缴纳{{item.firm_amount}}</text>
+    <text>个人缴纳{{item.person_amount}}</text>
+  </view>
+</view>

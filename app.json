@@ -21,8 +21,8 @@
     "pages/market/shop/shop",
     "pages/message/list",
     "pages/message/safe/main",
-    "pages/message/safe/namelist/list",
-    "pages/message/safe/namelist"
+    "pages/message/safe/namelist",
+    "pages/message/safe/detail"
   ],
   "networkTimeout": {
     "request": 10000,

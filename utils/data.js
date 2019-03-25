@@ -75,7 +75,7 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   API_MSGQRY = URL_BASE + "MessageQueryServlet",
   // message-safe-社保账单
   API_SAFESUM = URL_BASE + "userSafeAmountSumServlet",
-  API_SAFEQRY = URL_BASE + "userSafelAmountQueryServlet",
+  API_SAFEQRY = URL_BASE + "userSafeAmountQueryServlet",
   API_SAFEDEL = URL_BASE + "userSafeDeleteServlet",
   API_SAFEADD = "https://www.xiangxun1.com/ssm/addEmployeeSafe",
   // ----------------------------------------------
@@ -606,7 +606,8 @@ function getMsgList(param, func) {
   }, func);
 }
 
-// 社保汇总查询********************************************
+// 社保API汇总----------------------------
+
 function getSafeAmount(param, func) {
   var data = param;
   addBasicInfoTo(data);
@@ -616,7 +617,7 @@ function getSafeAmount(param, func) {
     their_associate_type: "000",
     their_associate_number: "12345", //即trader_id
     other_associate_code: "13", //社保
-    other_associate_type: "201", //企业社保编号
+    other_associate_type: "201", //entity_type:企业社保
     other_associate_number: "00000",
     user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
     role_type: "02",

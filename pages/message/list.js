@@ -4,7 +4,7 @@ const data = require('../../utils/data.js');
 
 Page({
   data: {
-    msgList: {},
+    msgList: [],
   },
 
   // 设置msgList----------------------------------
@@ -22,8 +22,11 @@ Page({
 
   //* 跳转页面************************************
   showMoreInfo(e) {
-    var index = e.currentTarget.dataset.id;
-    console.log('bindTap, id=', index);
+    var index = e.currentTarget.dataset.id,
+      url = app.globalData.getUrlByCode(this.data.msgList[index].entity_code);
+    wx.navigateTo({
+      url: url + "?trader_id=" + this.data.msgList[index].trader_id + "&entity_type=" + this.data.msgList[index].entity_type + "&year=" + this.data.msgList[index].entity_year + "&month=" + this.data.msgList[index].entity_month
+    });
   },
 
   //* 生命周期函数--监听页面加载****************
