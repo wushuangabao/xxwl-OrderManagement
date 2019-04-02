@@ -1,1 +1,20 @@
 /* pages/message/safe/namelist.wxss */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 20rpx;
+}
+
+.list-item {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10rpx;
+  border-bottom: 1px solid lightgrey;
+  background-color: #fff;
+}
+
+.horizontal {
+  display: flex;
+  justify-content: space-between;
+}

@@ -11,22 +11,20 @@ Page({
   },
 
   setListData: function(res) {
-    var data = res.data,
-      len = data.length;
-    console.log("setListData...data=", data);
-    for (var i = 0; i < len; i++) {
-      data[i]['index'] = i;
-    }
+    var data = res.data;
+    console.log("setListData...res.data=", data);
+    data[0].safeAmount = data[0].person_amount + data[0].firm_amount;
     this.setData({
       listData: data,
     });
   },
 
   //* 页面跳转*********************************
-  showMoreInfo:function(e){
-    var index = e.currentTarget.dataset.id;
+  showNameList: function() {
+    var msg = this.data.listData[0],
+      url = "/pages/message/safe/namelist?trader_id=" + this.data.trader_id + "&entity_type=" + msg.entity_type + "&year=" + msg.entity_year + "&month=" + msg.entity_month;
     wx.navigateTo({
-      url: "detail?trader_id=" + this.data.trader_id + "&year=" + this.data.safe_year + "&month=" + this.data.safe_month + "&safe_id=" +this.data.listData[index].safe_id
+      url: url
     });
   },
 
@@ -37,7 +35,7 @@ Page({
         their_associate_code: "01",
         their_associate_type: "000",
         their_associate_number: options.trader_id,
-        other_associate_code: "13",
+        other_associate_code: options.entity_code,
         other_associate_type: options.entity_type,
         other_associate_number: "00000",
         safe_year: options.year,
@@ -49,6 +47,7 @@ Page({
         trader_id: options.trader_id,
         safe_year: options.year,
         safe_month: options.month,
+        entity_code: options.entity_code,
       });
     }
   },

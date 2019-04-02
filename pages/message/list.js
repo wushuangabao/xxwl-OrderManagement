@@ -25,7 +25,7 @@ Page({
     var index = e.currentTarget.dataset.id,
       url = app.globalData.getUrlByCode(this.data.msgList[index].entity_code);
     wx.navigateTo({
-      url: url + "?trader_id=" + this.data.msgList[index].trader_id + "&entity_type=" + this.data.msgList[index].entity_type + "&year=" + this.data.msgList[index].entity_year + "&month=" + this.data.msgList[index].entity_month
+      url: url + "?trader_id=" + this.data.msgList[index].trader_id + "&entity_type=" + this.data.msgList[index].entity_type + "&entity_code=" + this.data.msgList[index].entity_code + "&year=" + this.data.msgList[index].entity_year + "&month=" + this.data.msgList[index].entity_month
     });
   },
 

@@ -7,7 +7,7 @@ Page({
 
   },
 
-  setListData: function (res) {
+  setListData: function(res) {
     var data = res.data
     //   len = data.length;
     console.log("setListData...data=", data);
@@ -20,7 +20,7 @@ Page({
   },
 
   //* 生命周期函数--监听页面加载************
-  onLoad: function (options) {
+  onLoad: function(options) {
     if (options.trader_id) {
       var param = {
         their_associate_code: "01",
@@ -33,44 +33,48 @@ Page({
         safe_month: options.month
       };
       data.getUserSafeAmount(param, this.setListData);
-      this.setData(options);
+      let pages = getCurrentPages(),
+        prevPage = pages[pages.length - 2]; //-2为上一级页面
+      this.setData({
+        amount: prevPage.data.listData[options.id]
+      });
     }
   },
 
-  onReady: function () {
+  onReady: function() {
 
   },
 
-  onShow: function () {
+  onShow: function() {
 
   },
 
-  onHide: function () {
+  onHide: function() {
 
   },
 
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   }
 })

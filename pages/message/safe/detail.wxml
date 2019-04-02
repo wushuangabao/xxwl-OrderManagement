@@ -1,2 +1,31 @@
 <!--pages/message/safe/detail.wxml-->
-<text>pages/message/safe/detail.wxml</text>
+<!-- company_id:"0402500108993"
+firm_amount:403
+id:"ESA20190312145945713"
+person_amount:248
+person_total:0
+safe_day:"00"
+safe_id:"1732179"
+safe_month:"11"
+safe_type:"0101"
+safe_year:"2018"
+salary_amount:3100
+trader_id:"4404010017564"
+type_name:"基本养老保险" -->
+<view style="display:flex;flex-direction:column">
+  <text>{{amount.name}}</text>
+  <text>社保号{{amount.safe_id}}</text>
+</view>
+<view wx:for="{{listData}}" wx:key="" style="display:flex;flex-direction:column" bindtap="showMoreInfo" data-id="{{item.index}}">
+  <view style="display:flex;flex-direction:column">
+    <text>{{item.type_name}}</text>
+    <text>计费工资{{item.salary_amount}}</text>
+    <text>单位缴费{{item.firm_amount}}</text>
+    <text>个人缴费{{item.person_amount}}</text>
+  </view>
+</view>
+<view style="display:flex;flex-direction:column">
+  <text>单位总计缴费{{amount.firm_amount}}</text>
+  <text>个人总计缴费{{amount.person_amount}}</text>
+  <text>总计缴费{{amount.safeAmount}}</text>
+</view>

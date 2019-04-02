@@ -1,2 +1,25 @@
 <!--pages/message/safe/namelist.wxml-->
-<text>pages/message/safe/namelist.wxml</text>
+<view wx:for="{{listData}}" wx:key="" class="list" bindtap="showMoreInfo" data-id="{{item.index}}">
+  <view class="list-item">
+    <view class='horizontal'>
+      <text>{{item.name}}</text>
+      <view>删除</view>
+    </view>
+    <view class='horizontal'>
+      <text>社保号</text>
+      <text>{{item.safe_id}}</text>
+    </view>
+    <view class='horizontal'>
+      <text>企业缴纳</text>
+      <text>{{item.firm_amount}}</text>
+    </view>
+    <view class='horizontal'>
+      <text>个人缴纳</text>
+      <text>{{item.person_amount}}</text>
+    </view>
+    <view class='horizontal'>
+      <text>总计</text>
+      <text>{{item.safeAmount}}</text>
+    </view>
+  </view>
+</view>

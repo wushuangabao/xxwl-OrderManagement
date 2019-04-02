@@ -615,18 +615,19 @@ function getSafeAmount(param, func) {
   wxRequest(API_SAFESUM, { //此处应写data，为测试先写如下伪数据
     their_associate_code: "01",
     their_associate_type: "000",
-    their_associate_number: "12345", //即trader_id
-    other_associate_code: "13", //社保
-    other_associate_type: "201", //entity_type:企业社保
-    other_associate_number: "00000",
+    their_associate_number: data.their_associate_number, //即trader_id
+    other_associate_code: "01", //公司
+    other_associate_type: "90901", //entity_type:企业社保
+    other_associate_number: "00000", //社保公司编号
     user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
     role_type: "02",
     work_status: '0',
-    company_id: '58414',
+    company_id: '26275',
     user_name: "安仔",
     safe_year: "2018",
     safe_month: "11",
-    safe_type: "99" //或"00"
+    gmt_modify: "9999-08-25 20:44:28",
+    safe_type: data.safe_type //"99"或"00"
   }, func);
 }
 
@@ -637,17 +638,17 @@ function getUserSafeAmount(param, func) {
   wxRequest(API_SAFEQRY, { //此处应写data，为测试先写如下伪数据
     their_associate_code: "01",
     their_associate_type: "000",
-    their_associate_number: "12345", //即trader_id
+    their_associate_number: data.their_associate_number, //"12345", //即trader_id
     other_associate_code: "01",
-    other_associate_type: "000",
-    other_associate_number: "11111123", //即safe_id
+    other_associate_type: "02", //"000",
+    other_associate_number: "1732179", //即safe_id
     user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
     role_type: "02",
     work_status: '0',
     company_id: '58414',
     user_name: "安仔",
     safe_year: "2018",
-    safe_month: "11"
+    safe_month: "00",
   }, func);
 }
 
