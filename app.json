@@ -22,7 +22,8 @@
     "pages/message/list",
     "pages/message/safe/main",
     "pages/message/safe/namelist",
-    "pages/message/safe/detail"
+    "pages/message/safe/detail",
+    "pages/message/safe/add"
   ],
   "networkTimeout": {
     "request": 10000,

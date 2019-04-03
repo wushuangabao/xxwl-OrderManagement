@@ -14,7 +14,6 @@
   <!--item-->
   <block wx:for="{{operation}}" wx:key="id">
     <view class="operation-layers">
-
       <import src="../../utils/commentLayer.wxml" />
       <template wx:if="{{item.moreLayer}}" is="commentLayer" data="{{...item}}" />
 
@@ -48,11 +47,9 @@
           </view>
         </view>
       </view>
-
     </view>
-
   </block>
-</view>
 
-<import src="../../utils/tabBar.wxml" />
-<template wx:if="{{hasTabBar}}" is="tabBar" data="{{tabBar:tabBar}}" />
+  <import src="../../utils/tabBar.wxml" />
+  <template wx:if="{{hasTabBar}}" is="tabBar" data="{{tabBar: tabBar}}" />
+</view>

@@ -164,7 +164,7 @@ Page({
 
   //* 生命周期函数--监听页面显示**********************************
   onShow: function() {
-    //设置tabBar
+    // 设置tabBar
     var myTabBar = app.globalData.tabBar,
       len = myTabBar.list.length;
     for (var i = 0; i < len; i++) {

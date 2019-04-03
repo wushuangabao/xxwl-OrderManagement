@@ -8,28 +8,31 @@ Page({
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     signal: "00",
-    debug: true, //开发者模式
+    debug: false, //开发者模式
   },
 
   // 根据服务器数据设置role_type等信息-------------------------------------
   setRoleType: function(res) {
-    console.log("setRoleType...res.data = ", res.data);
-    if (res.data.sys_modify) {
-      wx.setStorageSync('sys_modify', res.data.sys_modify)
-    } else {
-      console.log("setRoleType...sys_modify读取失败")
-    }
+    console.log("设置角色类型...res.data = ", res.data);
+
+    // 设置缓存
+    if (res.data.sys_modify)
+      wx.setStorageSync('sys_modify', res.data.sys_modify);
+    else
+      console.log("setRoleType...sys_modify读取失败");
     wx.setStorageSync('company_type', res.data.company_type);
-    data.getRecptType(); //拉取订单类型的信息
-    //设置user_id-------------------------------
+
+    // 拉取订单类型
+    data.getRecptType();
+
+    // 设置user_id
     var user_id = wx.getStorageSync('user_id');
     if (user_id == '00000' || !user_id) {
       if (res.data.hasOwnProperty('openid')) {
-        user_id = res.data.openid
+        user_id = res.data.openid;
         wx.setStorageSync('user_id', user_id);
-        console.log('setRoleType...user_id:', user_id);
       } else {
-        console.log('setRoleType...opnenid获取失败，user_id设置失败...2秒后重新登录');
+        console.log('opnenid获取失败，user_id设置失败...2秒后重新登录');
         var that = this;
         setTimeout(function() {
           that.initializeAppData();
@@ -37,6 +40,7 @@ Page({
         return;
       }
     }
+
     //注释掉下面的大段代码后新增-------------
     //为了省去注册公司的环节
     wx.setStorageSync('role_type', res.data.role_type);
@@ -71,7 +75,7 @@ Page({
   setEntityOfRole: function(res) {
     var data = res.data,
       len = data.length;
-    console.log("setEntityOfRole...res.data = ", data);
+    console.log("获取导航栏信息：", data);
     var myList = [];
     for (var i = 1; i <= len; i++) {
       var index = i - 1;
@@ -80,16 +84,18 @@ Page({
         myList[index] = listItem;
       }
     }
+    console.log("myList = ", myList);
     app.globalData.tabBar.list = myList;
-    //开发者模式：
-    if(this.data.debug)
-    {
+
+    // 开发者模式
+    if (this.data.debug) {
       wx.redirectTo({
         url: '/pages/message/list', //用于测试的页面
       })
       return;
     }
-    //初始化完毕，准备跳转页面----------------
+
+    // 跳转页面
     if (this.data.signal === "00")
       this.goTo(wx.getStorageSync('role_type'));
     else {
@@ -159,21 +165,25 @@ Page({
 
     // 获取用户信息----------
     var that = this;
-    if (app.globalData.userInfo) { //若用户信息已存在
+    // 用户信息已存在
+    if (app.globalData.userInfo) {
       this.setData({
         hasUserInfo: true,
         userInfo: app.globalData.userInfo
       });
       that.initializeAppData();
-    } else if (this.data.canIUse) {
+    }
+    // 用户信息不存在，且用户允许获取【这里的代码不理解】
+    else if (this.data.canIUse) {
       app.userInfoReadyCallback = res => {
         this.setData({
           hasUserInfo: true,
           userInfo: app.globalData.userInfo
         });
+        // 0.5秒后初始化
         setTimeout(function() {
           that.initializeAppData();
-        }.bind(this), 1000);
+        }.bind(this), 500);
       }
     }
   },

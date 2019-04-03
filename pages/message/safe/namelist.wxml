@@ -1,9 +1,10 @@
 <!--pages/message/safe/namelist.wxml-->
+<view catchtap="addAmount" >增加</view>
 <view wx:for="{{listData}}" wx:key="" class="list" bindtap="showMoreInfo" data-id="{{item.index}}">
   <view class="list-item">
     <view class='horizontal'>
       <text>{{item.name}}</text>
-      <view>删除</view>
+      <view catchtap="deleteAmount"  data-id="{{item.index}}">删除</view>
     </view>
     <view class='horizontal'>
       <text>社保号</text>

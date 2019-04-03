@@ -323,20 +323,20 @@ Page({
 
   //* 生命周期函数--监听页面显示******************************************
   onShow: function() {
-    //判断用户身份是否为管理员
-    var value = wx.getStorageSync('role_type')
-    if (value == "01") { //是管理员
-      //设置tabBar
-      var myTabBar = app.globalData.tabBar
-      myTabBar.list[0].active = false
-      myTabBar.list[1].active = false
-      myTabBar.list[2].active = false
-      myTabBar.list[3].active = true
-      this.setData({
-        tabBar: myTabBar,
-      })
+    // 设置tabBar
+    var myTabBar = app.globalData.tabBar,
+      len = myTabBar.list.length;
+    for (var i = 0; i < len; i++) {
+      if (myTabBar.list[i].text == "工单")
+        myTabBar.list[i].active = true;
+      else
+        myTabBar.list[i].active = false;
     }
-    //如果是从完工提交页面navigateBack
+    this.setData({
+      tabBar: myTabBar,
+    });
+
+    // 如果是从完工提交页面navigateBack
     if (wx.getStorageSync('info') === 'success') {
       var id = this.data.operationId;
       if (id != null)

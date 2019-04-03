@@ -89,11 +89,12 @@ Page({
       len = img_path.length,
       that = this;
     wx.hideLoading();
-    if (res.data.code == 1) { //如果成功
+    // 如果成功
+    if (res.data.code == 1) {
       if (len > 0)
         for (var i = 0; i < len; i++) //上传图片
           wx.uploadFile({
-            url: 'https://www.gongnang.com/home/file/upload',
+            url: data.Img_Upload,
             filePath: img_path[i],
             name: 'file',
             formData: {
@@ -107,7 +108,9 @@ Page({
       wx.navigateBack({ //回到原来的页面
         delta: 1
       });
-    } else {
+    }
+    // 如果失败
+    else {
       wx.showToast({
         title: res.data.error,
         icon: 'none',

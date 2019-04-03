@@ -10,13 +10,13 @@ Page({
     safe_month: undefined,
   },
 
-  setListData: function (res) {
+  setListData: function(res) {
     var data = res.data,
       len = data.length;
     console.log("setListData...data=", data);
     for (var i = 0; i < len; i++) {
       data[i]['index'] = i;
-      data[i].safeAmount=data[i].person_amount+data[i].firm_amount;
+      data[i].safeAmount = data[i].person_amount + data[i].firm_amount;
     }
     this.setData({
       listData: data,
@@ -24,15 +24,31 @@ Page({
   },
 
   //* 页面跳转*********************************
-  showMoreInfo: function (e) {
+  showMoreInfo: function(e) {
     var index = e.currentTarget.dataset.id;
     wx.navigateTo({
       url: "detail?trader_id=" + this.data.trader_id + "&year=" + this.data.safe_year + "&month=" + this.data.safe_month + "&id=" + index
     });
   },
 
+  //* 删除人员*********************************
+  deleteAmount: function(e) {
+    let index = e.currentTarget.dataset.id,
+      _data = this.data.listData[index];
+    data.deleteUserSafe(_data.safe_id, _data.safe_year, _data.safe_month, function(res) { //这个年、月是前面的？还是数据里的？
+      console.log("deleteAmount...res = ", res);
+    });
+  },
+
+  //* 增加人员********************************
+  addAmount:function(){
+    wx.navigateTo({
+      url:"add"
+    });
+  },
+
   //* 生命周期函数--监听页面加载*****************
-  onLoad: function (options) {
+  onLoad: function(options) {
     if (options.trader_id) {
       var param = {
         their_associate_code: "01",
@@ -54,40 +70,40 @@ Page({
     }
   },
 
-  onReady: function () {
+  onReady: function() {
 
   },
 
-  onShow: function () {
+  onShow: function() {
 
   },
 
-  onHide: function () {
+  onHide: function() {
 
   },
 
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   }
 })

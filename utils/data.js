@@ -2,9 +2,10 @@
 // URL\通用常量
 ///////////////////////////////////////////////////////
 
-const URL_BASE = "https://www.xiangxun1.com/day07/", // http://140.143.154.96
-  Img_Url = 'https://www.gongnang.com/uploads/files/',
-  Img_Upload = 'https://www.gongnang.com/home/file/upload',
+const URL_BASE = "https://www.xiangxun1.com/day07/", // 140.143.154.96
+  URL_BASE2 = "https://www.xiangxun1.com/ssm/",
+  Img_Url = 'https://www.xiangxun1.com/image/',
+  Img_Upload = 'https://www.xiangxun1.com/ssm/file/uploadImage',
   app = getApp();
 
 // 用户-授权
@@ -77,7 +78,7 @@ var API_LOGON = URL_BASE + "logonAuthServlet",
   API_SAFESUM = URL_BASE + "userSafeAmountSumServlet",
   API_SAFEQRY = URL_BASE + "userSafeAmountQueryServlet",
   API_SAFEDEL = URL_BASE + "userSafeDeleteServlet",
-  API_SAFEADD = "https://www.xiangxun1.com/ssm/addEmployeeSafe",
+  API_SAFEADD = URL_BASE2 + "addEmployeeSafe",
   // ----------------------------------------------
   // 实体间关系的创建
   API_ENTRELCRT = URL_BASE + "EntityRelCreateServlet",
@@ -114,9 +115,7 @@ function getRoleType(setRoleType) {
     associate_type = info.associate_type,
     associate_number = info.associate_number,
     associate_name = info.associate_name;
-  if (user_id)
-    console.log("getRoleType...成功读取缓存中的user_id =", user_id)
-  else {
+  if (!user_id){
     console.log("getRoleType...读取缓存中的user_id失败，发送code:", code);
     user_id = '00000';
     wx.setStorageSync('user_id', user_id);
@@ -141,10 +140,10 @@ function getRoleType(setRoleType) {
     their_associate_name: associate_name
   };
   wxRequest(API_LOGON, data, setRoleType)
-  console.log("API_LOGON...upload my userInfo:", data)
+  console.log("发起登录请求...upload my userInfo:", data);
 }
 
-// 查询角色，用于设置tabBar**************************************
+// 获取角色实体，用于设置tabBar**************************************
 function getEntityOfRole(func) {
   var company_id = wx.getStorageSync('company_id');
   if (!company_id)
@@ -156,7 +155,7 @@ function getEntityOfRole(func) {
     company_id: company_id,
     company_name: "null",
   }
-  console.log("getEntityOfRole...my data = ", data);
+  console.log("请求获取EntityOfRole用于设置导航栏，上传数据：", data);
   wxRequest(API_ROLE, data, func);
 }
 
@@ -661,8 +660,8 @@ function deleteUserSafe(safe_id, year, month, func) {
   wxRequest(API_SAFEDEL, data, func);
 }
 
-function addUserSafe(param,func){
-  wxRequest(API_SAFEADD,param,func);
+function addUserSafe(param, func) {
+  wxRequest(API_SAFEADD, param, func);
 }
 
 // 实体间关系的创建*****************************************

@@ -1,0 +1,48 @@
+<!--pages/message/safe/add.wxml-->
+<view class="list">
+  <view class="list-item">
+    <view class='horizontal'>
+      <text>姓名</text>
+    </view>
+  </view>
+
+  <view class="list-item">
+    <view class='horizontal'>
+      <text>证件类型</text>
+
+    </view>
+    <view class='horizontal'>
+      <text>证件号码</text>
+    </view>
+  </view>
+
+  <view class="list-item">
+    <view class='horizontal'>
+      <text>户口类型</text>
+
+    </view>
+    <view class='horizontal'>
+      <text>险种类别</text>
+
+    </view>
+    <view class='horizontal'>
+      <text>购买社保工资</text>
+
+    </view>
+  </view>
+
+  <view class="list-item">
+    <view class='horizontal'>
+      <text>险种类别</text>
+
+    </view>
+    <view class='horizontal'>
+      <text>购买社保工资</text>
+
+    </view>
+  </view>
+
+    <view class="list-item" catchtap="submit">
+    <text>提交</text>
+    </view>
+</view>

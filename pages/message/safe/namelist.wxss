@@ -3,13 +3,13 @@
 .list {
   display: flex;
   flex-direction: column;
-  margin: 20rpx;
 }
 
 .list-item {
   display: flex;
   flex-direction: column;
-  padding-bottom: 10rpx;
+  padding:20rpx;
+  padding-bottom: 30rpx;
   border-bottom: 1px solid lightgrey;
   background-color: #fff;
 }

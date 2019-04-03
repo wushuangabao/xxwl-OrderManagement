@@ -1,5 +1,7 @@
 AppSecret:4b1176fdf52fa6bb86f0969bc2569dbb
 ROOT Xiangpa
+root Xiangpa*123 140.143.154.96
+FileZilla工具
 
 role_type
 000朋友
@@ -9,6 +11,19 @@ role_type
 100 客户
 300 伙伴
 301市场（推广人员）
+
+ 
+图片上传，
+接口地址：https://www.xiangxun1.com/ssm/file/uploadImage
+ 
+目标地址：https://www.xiangxun1.com/image/
+ 
+@param httpServletRequest
+ 
+@param files
+ 
+@return String(success error)
+
 
 
 网上资料：
