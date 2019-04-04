@@ -1,3 +1,8 @@
 /* pages/message/safe/add.wxss */
 
 @import "/pages/message/safe/namelist.wxss";
+
+.list{
+  font-size: 32rpx;
+  color:#333;
+}

@@ -1,0 +1,23 @@
+{
+  "name": "xxwl-ordermanagement",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "lin-ui": "0.0.1-alpha.19"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wushuangabao/xxwl-OrderManagement.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wushuangabao/xxwl-OrderManagement/issues"
+  },
+  "homepage": "https://github.com/wushuangabao/xxwl-OrderManagement#readme"
+}

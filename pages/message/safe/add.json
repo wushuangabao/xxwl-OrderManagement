@@ -1,4 +1,6 @@
 {
-  "usingComponents": {},
-    "navigationBarTitleText": "增添社保人员"
+  "usingComponents": {
+    "l-input": "/miniprogram_npm/lin-ui/input/index"
+  },
+  "navigationBarTitleText": "增添社保人员"
 }

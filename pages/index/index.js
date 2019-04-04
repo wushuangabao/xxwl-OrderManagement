@@ -8,7 +8,7 @@ Page({
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     signal: "00",
-    debug: false, //开发者模式
+    debug: true, //开发者模式
   },
 
   // 根据服务器数据设置role_type等信息-------------------------------------

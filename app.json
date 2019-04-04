@@ -35,5 +35,8 @@
     "navigationBarBackgroundColor": "#e6e6e6",
     "navigationBarTitleText": "流程宝",
     "navigationBarTextStyle": "black"
+  },
+  "usingComponents": {
+    "l-icon": "/miniprogram_npm/lin-ui/icon/index"
   }
 }

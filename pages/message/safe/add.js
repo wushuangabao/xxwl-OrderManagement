@@ -7,31 +7,40 @@ Page({
    * 页面的初始数据
    */
   data: {
+    name:"",
+    idType:'居民身份证',
+    idNum:"",
+    pay:"",
+  },
 
+  selectIdType:function(){
+    console.log('选择证件类型');
+    this.setData({
+      disabled:true
+    });
   },
 
   //* 提交请求****************************
   submit:function(){
-    let param={
+    let pageData=this.data,
+      param={
       /** 客户ID */
       traderId: wx.getStorageSync("user_id"),
       /** 机构ID */
       companyId:wx.getStorageSync("company_id"),
 
-      /** 个人社保号 */
-      afeId:"",
       /** 证件类型 */
       identityType: 6,
       /** 证件号码 */
-      identityId: "331003199410260000",
+      identityId: pageData.idNum,
       /** 姓名 */
-      name: "王宏奥",
+      name: pageData.name,
       /** 性别 */
       sex: "",
       /** 国籍 */
       country: "",
       /** 工资薪金 */
-      pay: "120",
+      pay: pageData.pay,
       /** 出生日期 */
       birthday: "",
       /** 人员类别 */
