@@ -1,0 +1,13 @@
+.float-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  width: 60rpx;
+  height: 60rpx;
+  background: #34bfa3;
+  border-radius: 50%;
+}

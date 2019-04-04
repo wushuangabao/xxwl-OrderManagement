@@ -11,6 +11,11 @@ Component({
   behaviors: ['wx://form-field', rules],
   externalClasses: ['l-class', 'l-label-class','l-error-text'],
   properties: {
+    // 显示/隐藏 input输入框
+    showInput:{
+      type:Boolean,
+      value:true
+    },
     // 表单标题（label）的文本
     label: {
       type: String,
@@ -44,7 +49,7 @@ Component({
     // 是否需要冒号
     colon: {
       type: Boolean,
-      value: false
+      value: true
     },
     // 获取焦点
     focus: {
@@ -69,7 +74,7 @@ Component({
     // 表单项标题部分的宽度，单位rpx
     labelWidth: {
       type: Number,
-      value: 200
+      value: 250
     },
     // label标题的显示位置 left top right
     labelLayout: {

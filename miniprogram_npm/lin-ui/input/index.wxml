@@ -12,7 +12,7 @@
     <slot name="left" />
   </view>
   <!-- 小程序表单组件 -->
-  <input
+  <input wx:if="{{showInput}}"
     class="input"
     value="{{ value }}"
     type="{{type}}"

@@ -1,16 +1,19 @@
 <!--pages/message/safe/add.wxml-->
 <view class="list">
   <view class="list-item">
-    <l-input label="姓名" required="true" placeholder='请输入人员姓名' value='{{name}}'/>
+    <l-input label="姓名" required="true" placeholder='请输入人员姓名' value='{{name}}' />
   </view>
 
   <view class="list-item">
-    <view class='horizontal'>
-      <l-input label="证件类型" required="true" value='{{idType}}' bind:linfocus='selectIdType' disabled='{{disabled}}'>
-        <view slot="right" style='width:300rpx'><l-icon name='pull-down' bindtap='selectIdType' /></view>
-      </l-input>
-    </view>
-    <l-input label="证件号码" required="true" placeholder='请输入证件号码' value='{{idNum}}' />
+
+    <l-input label="证件类型" showInput='{{false}}'>
+      <view slot="right" class='horizontal' style='width:250rpx' bindtap='selectIdType'>
+        {{idType}}
+        <l-icon name='pull-down' bindtap='selectIdType' />
+      </view>
+    </l-input>
+
+    <l-input label="证件号码" required="true" type="idcard" placeholder='请输入证件号码' value='{{idNum}}' />
   </view>
 
   <view class="list-item">
@@ -43,3 +46,5 @@
     <text>提交</text>
   </view>
 </view>
+
+<l-action-sheet/>

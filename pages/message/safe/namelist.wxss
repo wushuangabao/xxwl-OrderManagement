@@ -3,6 +3,8 @@
 .list {
   display: flex;
   flex-direction: column;
+    font-size: 32rpx;
+  color:#333;
 }
 
 .list-item {

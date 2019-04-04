@@ -119,3 +119,16 @@
   display: flex;
   margin-right: 20rpx;
 }
+
+.float-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: fixed;
+  top: 34px;
+  right: 4px;
+  z-index: 100;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgb(6, 59, 6);
+}

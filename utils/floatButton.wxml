@@ -1,0 +1,5 @@
+<template name="floatButton">
+  <view class='float-button'>
+    <l-icon name="add" color='#FFFFFF'> </l-icon>
+  </view>
+</template>

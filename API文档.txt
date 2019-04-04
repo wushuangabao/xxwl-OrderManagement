@@ -1,7 +1,9 @@
 AppSecret:4b1176fdf52fa6bb86f0969bc2569dbb
 ROOT Xiangpa
-root Xiangpa*123 140.143.154.96
+root Xiang*123 140.143.154.96
 FileZilla工具
+
+todo:订单页面加入悬浮按钮，以进入录单操作
 
 role_type
 000朋友

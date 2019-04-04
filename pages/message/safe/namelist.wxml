@@ -1,7 +1,10 @@
 <!--pages/message/safe/namelist.wxml-->
-<view style="display:flex;" catchtap="addAmount">
-  <l-icon name="add" color='#34BFA3'> </l-icon>
-  <view>增添社保人员</view>
+<view style="display:flex;justify-content:space-between;padding:20rpx">
+  <view></view>
+  <view style="display:flex;justify-content:space-between" catchtap="addAmount">
+    <l-icon name="add" color='limegreen' size='30'> </l-icon>
+    <view style='font-size:30rpx;color:#333;margin-left:4rpx'>增添社保人员</view>
+  </view>
 </view>
 <view wx:for="{{listData}}" wx:key="" class="list" bindtap="showMoreInfo" data-id="{{item.index}}">
   <view class="list-item">

@@ -20,7 +20,14 @@ Page({
     receipt: [],
     isLoading: false,
     status: "0", //0表示未完成，2表示已完成
-    hasTabBar:true,
+    hasTabBar: true,
+  },
+
+  //* 跳转到录单页面*********************************
+  addReceipt() {
+    wx.navigateTo({
+      url: "../recpt/input"
+    });
   },
 
   //* 点击“已完成”或“未完成”**********************************
@@ -51,7 +58,7 @@ Page({
     var index = event.currentTarget.dataset.id;
     this.inquiryRecptById(index);
   },
-  inquiryRecptById:function(index){
+  inquiryRecptById: function(index) {
     var receipt = this.data.receipt[index],
       r_number = receipt.receipt_number,
       path1 = receipt.r_img;
@@ -123,8 +130,8 @@ Page({
       old_data[real_i].type = r_type;
       old_data[real_i].index = real_i;
       // console.log(_data_[i].image_1[0])
-      if(_data_[i].image_1[0]!='.')  // <---貌似没有必要？
-        _data_[i].image_1 = '.'+_data_[i].image_1;
+      if (_data_[i].image_1[0] != '.') // <---貌似没有必要？
+        _data_[i].image_1 = '.' + _data_[i].image_1;
       old_data[real_i].r_img = data.Img_Url + _data_[i].receipt_number + '_0' + _data_[i].image_1;
       old_data[real_i].moreLayer = false;
       old_data[real_i].hasPraise = false;
@@ -173,11 +180,11 @@ Page({
         other_associate_name: "",
         work_status: status,
       };
-    else{
+    else {
       param = app.globalData.param;
-      param.work_status=status;
+      param.work_status = status;
     }
-      data.getRecptData2(param, this.setRecptData);
+    data.getRecptData2(param, this.setRecptData);
   },
 
   //////////////////////////////////////////////////////////////
@@ -314,9 +321,9 @@ Page({
     this.setData({
       isLoading: true
     });
-    if(options.hasTabBar=="false")
+    if (options.hasTabBar == "false")
       this.setData({
-        hasTabBar:false
+        hasTabBar: false
       });
     wx.setStorageSync('gmt_modify', '');
     this.getRecptData(this.data.status);
