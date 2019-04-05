@@ -26,7 +26,7 @@
     <l-input label="险种类别" required="true" showInput='{{false}}' showRow='{{false}}' />
 
     <l-checkbox-group bind:linchange="onCheckBoxTap">
-      <l-checkbox wx:for-items="{{itemsSafe}}" wx:key="" value="{{item}}" color='limegreen' l-class="checkbox" l-title-class='checkbox-title'>
+      <l-checkbox wx:for="{{itemsSafe}}" wx:key="" value="{{item}}" color='limegreen' l-class="checkbox" l-title-class='checkbox-title'>
       </l-checkbox>
     </l-checkbox-group>
 

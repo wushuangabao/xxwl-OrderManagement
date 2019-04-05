@@ -1,8 +1,17 @@
 <!--index.wxml-->
 
 <view class="container">
-  <image src='/imgs/app-icon.png' mode='aspectFit' style='border-radius:50%;width:580rpx;height:580rpx;' bindlongpress='bindViewTap'/>
+
+  <image src='/imgs/app-icon.png' mode='aspectFit' style='border-radius:50%;width:580rpx;height:580rpx;' bindlongpress='bindViewTap' />
+
   <view class="userinfo">
     <button wx:if="{{!hasUserInfo && canIUse}}" size="mini" open-type="getUserInfo" bindgetuserinfo="getUserInfo" style='color:#696969'> 微信公开信息授权 </button>
   </view>
+
+  <view wx:if="{{debug}}" wx:for="{{pageDebug}}" wx:key=''>
+    <button bindtap='debugPage' id='{{index}}'>进入页面{{item}}</button>
+  </view>
+
 </view>
+
+<l-message/>

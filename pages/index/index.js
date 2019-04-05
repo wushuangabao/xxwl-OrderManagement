@@ -1,14 +1,17 @@
-//index.js
-//获取应用实例
-const app = getApp()
-const data = require('../../utils/data.js')
+const app = getApp(),
+  data = require('../../utils/data.js');
 
 Page({
   data: {
     hasUserInfo: false,
+    // wx.canIUse判断小程序的API，回调，参数，组件等是否可用。
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     signal: "00",
     debug: true, //开发者模式
+    pageDebug: [
+      "by role_type",
+      "/pages/message/list",
+    ],
   },
 
   // 根据服务器数据设置role_type等信息-------------------------------------
@@ -32,11 +35,15 @@ Page({
         user_id = res.data.openid;
         wx.setStorageSync('user_id', user_id);
       } else {
-        console.log('opnenid获取失败，user_id设置失败...2秒后重新登录');
+        wx.lin.showMessage({
+          type: 'error',
+          duration: 4000,
+          content: '用户id获取失败，稍后将再次尝试登录'
+        });
         var that = this;
         setTimeout(function() {
           that.initializeAppData();
-        }.bind(this), 2000);
+        }.bind(this), 4000);
         return;
       }
     }
@@ -71,7 +78,7 @@ Page({
     //}
   },
 
-  // 设置TabBar--------------------------
+  // 设置TabBar，然后跳转页面--------------------------
   setEntityOfRole: function(res) {
     var data = res.data,
       len = data.length;
@@ -86,19 +93,16 @@ Page({
     }
     console.log("myList = ", myList);
     app.globalData.tabBar.list = myList;
-
-    // 开发者模式
-    if (this.data.debug) {
-      wx.redirectTo({
-        url: '/pages/message/list', //用于测试的页面
-      })
-      return;
-    }
-
-    // 跳转页面
+    //
     if (this.data.signal === "00")
-      this.goTo(wx.getStorageSync('role_type'));
+      if (!this.data.debug)
+        // 跳转页面
+        this.goTo(wx.getStorageSync('role_type'));
+      else
+        // 开发者模式
+        return;
     else {
+      // 跳转到分享的页面
       var url;
       switch (this.data.signal) {
         case "09": //店铺
@@ -130,14 +134,14 @@ Page({
     //   return
     // }
 
-    // 若有转发记号-------------
+    // 若有转发记号
     if (e.hasOwnProperty('signal')) {
       this.setData({
         signal: e.signal
       });
     }
 
-    // 尝试获取url中的参数-------
+    // 尝试获取url中的参数
     console.log("index onLoad, e =", e);
     if (e.company_id)
       wx.setStorageSync('friend_company_id', e.company_id);
@@ -163,27 +167,23 @@ Page({
       wx.setStorageSync('info', info);
     }
 
-    // 获取用户信息----------
+    // 获取用户信息
     var that = this;
     // 用户信息已存在
     if (app.globalData.userInfo) {
       this.setData({
-        hasUserInfo: true,
-        userInfo: app.globalData.userInfo
+        hasUserInfo: true
       });
       that.initializeAppData();
     }
-    // 用户信息不存在，且用户允许获取【这里的代码不理解】
+    // 用户信息不存在
     else if (this.data.canIUse) {
       app.userInfoReadyCallback = res => {
+        console.log("执行app.userInfoReadyCallbackde回调函数，res = ", res);
         this.setData({
-          hasUserInfo: true,
-          userInfo: app.globalData.userInfo
+          hasUserInfo: true
         });
-        // 0.5秒后初始化
-        setTimeout(function() {
-          that.initializeAppData();
-        }.bind(this), 500);
+        that.initializeAppData();
       }
     }
   },
@@ -215,58 +215,29 @@ Page({
       url = '/pages/friends/manage'
     } else if (parseInt(s) > 100 && parseInt(s) < 200) { //不同工种的工人
       url = '/pages/operate/operate'
-    } else {
-      // url = '/pages/inquiry/inquiry';
+    } else { //其他角色
       url = '/pages/market/content/content?content_id=00000&content_name=咨询页面&content_type=00&url=https://www.xiangxun1.com/day07/index.jsp';
-      // url = '/pages/register/company/company';
     }
     wx.redirectTo({
       url: url
     });
   },
 
-  //* 转发********************************************
+  //* debug*********************
+  debugPage: function(e) {
+    var that = this,
+      id = e.currentTarget.id;
+    if (id == 0)
+      this.goTo(wx.getStorageSync('role_type'));
+    else
+      wx.redirectTo({
+        url: that.data.pageDebug[id]
+      });
+  },
+
+  //* 转发************************
   onShareAppMessage: function(res) {
     app.globalData.shareApp(res);
-  }
-
-  //（废弃）长按motto，用于测试
-  // bindViewTap: function() {
-  //   var that = this
-  //   wx.showActionSheet({
-  //     itemList: ['企业注册', '管理通讯录', '重新登录', '创建工序'],
-  //     success: function(res) {
-  //       var i = res.tapIndex
-  //       //注册
-  //       if (i == 0) {
-  //         wx.navigateTo({
-  //           url: '../register/company/company'
-  //         })
-  //       }
-  //       //管理通讯录
-  //       else if (i == 1) {
-  //         wx.navigateTo({
-  //           url: '../friends/manage'
-  //         })
-  //       }
-  //       //调整角色类型（测试用）
-  //       else if (i == 2) {
-  //         that.setData({
-  //           hasUserInfo: false,
-  //         })
-  //         app.globalData.userInfo = null;
-  //       }
-  //       //设置工序（测试用）
-  //       else if (i == 3) {
-  //         wx.navigateTo({
-  //           url: '../operate/create'
-  //         })
-  //       }
-  //     },
-  //     fail: function(res) {
-  //       //console.log(res.errMsg)
-  //     }
-  //   })
-  // },
+  },
 
 })

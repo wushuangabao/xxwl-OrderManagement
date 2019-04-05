@@ -71,7 +71,7 @@ App({
 
     // 设置moreInfo菜单的内容--------------------------
     setMenu: function(that, contents, str_type, associate_code) {
-      //遍历contents数组中的[str_type]属性，将它们添加到数组types中
+      // 遍历contents数组中的[str_type]属性，将它们添加到数组types中
       var len = contents.length;
       if (len == 0)
         return;
@@ -93,7 +93,8 @@ App({
       //   types: types
       // });
       // console.log("types=",types);
-      //根据不同的types，查询若干个路由菜单列表，以type为key将这些列表放入menuObject
+
+      // 根据不同的types，查询若干个路由菜单列表，以type为key将这些列表放入menuObject
       len = types.length;
       for (var i = 0; i < len; i++) {
         var args = ['menuObject.' + types[i], that];
@@ -110,6 +111,7 @@ App({
       }
     },
     
+    // ---------------------------------------
     setMenuObject: function(res, args) {
       var data = res.data,
         l = data.length;
@@ -168,6 +170,7 @@ App({
       })
     },
 
+    //------------------------------------------
     setTheirInfo: function(code, type, number) {
       var their_info = {
         code: code,
