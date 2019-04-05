@@ -1,3 +1,25 @@
 /* pages/message/safe/add.wxss */
-
 @import "/pages/message/safe/namelist.wxss";
+
+.checkbox {
+  margin: 10rpx;
+  margin-left: 150rpx;
+}
+
+.label-right{
+  width:250rpx;
+  display: flex;
+  justify-content:flex-end;
+}
+
+.checkbox-title {
+  font-size: 32rpx !important;
+}
+
+.button {
+  margin-top: 60rpx;
+  width: 360rpx;
+  align-items: center;
+  font-size: 28rpx;
+  margin-bottom: 100rpx;
+}

@@ -9,12 +9,17 @@ Component({
     multipleSlots: true,
   },
   behaviors: ['wx://form-field', rules],
-  externalClasses: ['l-class', 'l-label-class','l-error-text'],
+  externalClasses: ['l-class', 'l-label-class', 'l-error-text'],
   properties: {
     // 显示/隐藏 input输入框
-    showInput:{
-      type:Boolean,
-      value:true
+    showInput: {
+      type: Boolean,
+      value: true
+    },
+    // 显示/隐藏 下划线
+    showRow: {
+      type: Boolean,
+      value: true
     },
     // 表单标题（label）的文本
     label: {
@@ -74,7 +79,7 @@ Component({
     // 表单项标题部分的宽度，单位rpx
     labelWidth: {
       type: Number,
-      value: 250
+      value: 280
     },
     // label标题的显示位置 left top right
     labelLayout: {

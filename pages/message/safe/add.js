@@ -2,23 +2,15 @@
 const data = require('../../../utils/data.js');
 
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
     name: "",
     idType: '居民身份证',
     idTypeNum: 6,
     idNum: "",
     pay: "",
-  },
-
-  ///////////////////////////////////////////
-  // 表单
-  ///////////////////////////////////////////
-  selectIdType: function() {
-    this.showActionSheet([
+    registerType: "",
+    safeType: {},
+    itemsId: [
       "护照",
       "通行证",
       "回乡证",
@@ -28,7 +20,22 @@ Page({
       "军官证",
       "学籍证",
       "其他",
-    ], this.setIdType);
+    ],
+    itemsSafe: [
+      '基本养老保险',
+      '工伤保险',
+      '农民工失业保险',
+      '城镇工失业保险',
+      '基本医疗保险',
+      '生育保险'
+    ]
+  },
+
+  ///////////////////////////////////////////
+  // 表单处理
+  ///////////////////////////////////////////
+  selectIdType: function() {
+    this.showActionSheet(this.data.itemsId, this.setIdType);
   },
 
   setIdType: function(res) {
@@ -38,16 +45,21 @@ Page({
     });
   },
 
+  onCheckBoxTap: function(res) {
+    var current = res.detail.current,
+      value = res.detail.value;
+    this.data.safeType[value] = current ? "1" : "2";
+  },
+
 
   ////////////////////////////////////////
   // 提交请求
   ////////////////////////////////////////
   submit: function() {
     let pageData = this.data,
+      safeType = pageData.safeType,
       param = {
-        /** 客户ID */
         traderId: wx.getStorageSync("user_id"),
-        /** 机构ID */
         companyId: wx.getStorageSync("company_id"),
 
         /** 证件类型 */
@@ -82,17 +94,17 @@ Page({
         /** 手机号码 */
         telNo: "13333333333",
         /** 0101-基本养老保险 */
-        agedSafe: "1", //1:真，2:假
+        agedSafe: safeType['基本养老保险'], //1:真，2:假
         /** 0201-工伤保险 */
-        jobSafe: "",
+        jobSafe: safeType['工伤保险'],
         /** 0301-农民工失业保险 */
-        peasantSafe: "",
+        peasantSafe: safeType['农民工失业保险'],
         /** 0302-城镇工失业保险 */
-        workSafe: "",
+        workSafe: safeType['城镇工失业保险'],
         /** 0401-基本医疗保险 */
-        medicalSafe: "",
+        medicalSafe: safeType['基本医疗保险'],
         /** 0505-生育保险 */
-        birthSafe: "",
+        birthSafe: safeType['生育保险'],
 
       }
     data.addUserSafe(param, function(res) {
@@ -150,7 +162,15 @@ Page({
   // 生命周期函数--监听页面加载
   /////////////////////////////////////////
   onLoad: function(options) {
-
+    // 初始化safeType对象
+    var safeType = this.data.safeType,
+      itemsSafe = this.data.itemsSafe,
+      len = itemsSafe.length;
+    for (var i = 0; i < len; i++)
+      safeType[itemsSafe[i]] = "2";
+    this.setData({
+      safeType: safeType
+    });
   },
 
   onReady: function() {
