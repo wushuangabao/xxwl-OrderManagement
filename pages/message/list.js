@@ -9,20 +9,16 @@ Page({
 
   // 设置msgList----------------------------------
   setMsgList: function(res) {
-    var data = res.data,
-      len = data.length;
+    var data = res.data;
     console.log("setMsgList...res.data=", data);
-    for (var i = 0; i < len; i++) {
-      data[i]['index'] = i;
-    }
     this.setData({
-      msgList: data,
+      msgList: data
     });
   },
 
   //* 跳转页面************************************
   showMoreInfo(e) {
-    var index = e.currentTarget.dataset.id,
+    var index = e.currentTarget.id,
       url = app.globalData.getUrlByCode(this.data.msgList[index].entity_code);
     wx.navigateTo({
       url: url + "?trader_id=" + this.data.msgList[index].trader_id + "&entity_type=" + this.data.msgList[index].entity_type + "&entity_code=" + this.data.msgList[index].entity_code + "&year=" + this.data.msgList[index].entity_year + "&month=" + this.data.msgList[index].entity_month

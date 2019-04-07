@@ -14,7 +14,7 @@ Component({
     full: Boolean,
     position:{
       type:String,
-      value:'left'
+      value:'right'
     },
     type: {
       type: String,

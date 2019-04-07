@@ -39,6 +39,7 @@
   },
   "usingComponents": {
     "l-icon": "/miniprogram_npm/lin-ui/icon/index",
-    "l-message": "/miniprogram_npm/lin-ui/message/index"
+    "l-message": "/miniprogram_npm/lin-ui/message/index",
+    "l-card": "/miniprogram_npm/lin-ui/card/index"
   }
 }
