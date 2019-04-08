@@ -1,0 +1,3 @@
+ <view class='float-button' catchtap='addReceipt'>
+    <l-icon name="add" color='limegreen' size='58'> </l-icon>
+  </view>

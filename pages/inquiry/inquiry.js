@@ -171,8 +171,8 @@ Page({
     if (this.data.hasTabBar)
       param = {
         their_associate_code: "01", //主体。用户为“01”
-        their_associate_type: wx.getStorageSync('role_type'),
-        their_associate_number: wx.getStorageSync('user_id'),
+        their_associate_type: '000', //wx.getStorageSync('role_type'),
+        their_associate_number: '00000', //wx.getStorageSync('user_id'),
         their_associate_name: app.globalData.userInfo.nickName,
         other_associate_code: "03", //所选的主体。订单为"03"
         other_associate_type: "000",

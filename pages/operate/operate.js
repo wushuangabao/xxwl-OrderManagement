@@ -157,9 +157,9 @@ Page({
       my_operation[real_i].hasPraise = false;
       //判断title---------------------
       if (this.data.index == 0) //已完成
-        my_operation[real_i].img_path_1 = data.Img_Url + operation[i].job_number + '_0' + operation[i].image_1;
+        my_operation[real_i].img_path_1 = data.Img_Url + operation[i].job_number + "_0"+operation[i].image_1;
       else {
-        my_operation[real_i].img_path_1 = data.Img_Url + operation[i].receipt_number + '_0' + operation[i].image_1;
+        my_operation[real_i].img_path_1 = data.Img_Url + operation[i].receipt_number + operation[i].image_1;
         if (this.data.index == 1) //未完成
           my_operation[real_i].button = "完工";
         else //待领取

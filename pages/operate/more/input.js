@@ -79,6 +79,9 @@ Page({
       for (var i = len; i < 4; i++) {
         format[i] = '';
       }
+    this.setData({
+      image_format: format
+    });
     return format;
   },
 
@@ -88,6 +91,7 @@ Page({
       img_path = this.hasImg(),
       len = img_path.length,
       that = this;
+    console.log()
     wx.hideLoading();
     // 如果成功
     if (res.data.code == 1) {
@@ -98,10 +102,10 @@ Page({
             filePath: img_path[i],
             name: 'file',
             formData: {
-              'image_id': job_number + '_' + i
+              'image_id': job_number + '_' + i + that.data.image_format[i]
             },
             success: function(res) {
-              console.log('工单图片上传成功，res.data = ', res.data);
+              console.log('工单图片上传成功，res = ', res);
             }
           });
       wx.setStorageSync('info', 'success');

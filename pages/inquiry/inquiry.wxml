@@ -1,4 +1,4 @@
-<!--pages/inquiry/inquiry.wxml-->
+<!--订单查询-->
 <view class="container">
 
   <!--head-->

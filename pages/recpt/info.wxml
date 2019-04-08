@@ -1,4 +1,4 @@
-<!--pages/recpt/info.wxml-->
+<!-- 订单详情 -->
 <view class='container'>
 
   <view class="itemView" style="justify-content: space-around;">

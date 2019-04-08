@@ -93,7 +93,7 @@ Page({
       for (var i = len; i < 4; i++) {
         format[i] = '';
       }
-    console.log('getImgFormat...format =', format);
+    this.data.image_format = format;
     return format;
   },
 
@@ -123,7 +123,7 @@ Page({
           filePath: img_path[i],
           name: 'file',
           formData: {
-            'image_id': receipt_number + '_' + i
+            'image_id': receipt_number + '_' + i + that.data.image_format[i]
           },
           success: function(res) {
             console.log("uploadFile...res.data =", res.data);

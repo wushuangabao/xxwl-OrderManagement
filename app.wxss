@@ -1,6 +1,4 @@
-/**app.wxss**/
-
 page {
   background-color: #F8F8F8;
-  font-size: 15px;
+  font-size: 30rpx;
 }

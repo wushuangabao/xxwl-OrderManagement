@@ -4,7 +4,7 @@
 
 const URL_BASE = "https://www.xiangxun1.com/day07/", // 140.143.154.96
   URL_BASE2 = "https://www.xiangxun1.com/ssm/",
-  Img_Url = 'https://www.xiangxun1.com/image/',
+  Img_Url = 'https://www.xiangxun1.com/image/', //0220190408152609497
   Img_Upload = 'https://www.xiangxun1.com/ssm/file/uploadImage',
   app = getApp();
 
