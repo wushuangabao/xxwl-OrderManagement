@@ -1,7 +1,6 @@
 Component({
-  externalClasses: ['l-class-title', 'l-class-item', 'l-class-cancel'],
   properties: {
-    typr: {
+    type: {
       type: String,
       value: 'add'
     },
@@ -9,17 +8,6 @@ Component({
       type: String,
       value: 'limegreen',
     }
-  },
-  data: {
-    success: '',
-    fail: '',
-    isIphoneX: false
-  },
-  attached() {
-    if (this.data.openApi) {
-      this.initActionSheet();
-    }
-    this.initUIAdapter();
   },
 
   lifetimes: {
