@@ -3,7 +3,7 @@ const app = getApp(),
 
 Page({
   data: {
-    hasUserInfo: false,
+    haspserInfo: false,
     // wx.canIUse判断小程序的API，回调，参数，组件等是否可用。
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     signal: "00",
@@ -13,24 +13,35 @@ Page({
       "/pages/message/list",
     ],
   },
-
-  // 根据服务器数据设置role_type等信息-------------------------------------
+  
+  /////////////////////////////////////////////////
+  /// 根据服务器数据设置role_type等信息
+  /////////////////////////////////////////////////
   setRoleType: function(res) {
     console.log("设置角色类型...res.data = ", res.data);
-
+    if(res.data.code!=1){
+      wx.lin.showMessage({
+        type: 'error',
+        duration: 2000,
+        content: res.data.error
+      });
+      return;
+    }else{
+      wx.lin.showMessage({
+        type: 'success',
+        duration: 2000,
+        content: res.data.error
+      });
+    }
     // 设置缓存
-    if (res.data.sys_modify)
-      wx.setStorageSync('sys_modify', res.data.sys_modify);
-    else
-      console.log("setRoleType...sys_modify读取失败");
+    wx.setStorageSync('sys_modify', res.data.sys_modify);
     wx.setStorageSync('company_type', res.data.company_type);
-
-    // 拉取订单类型
-    data.getRecptType();
-
-    // 设置user_id
+    wx.setStorageSync('company_id', res.data.company_id);
+    // 寻找缓存中的user_id
     var user_id = wx.getStorageSync('user_id');
+    // case:缓存中没有user_id
     if (user_id == '00000' || !user_id) {
+      // 设置user_id
       if (res.data.hasOwnProperty('openid')) {
         user_id = res.data.openid;
         wx.setStorageSync('user_id', user_id);
@@ -46,43 +57,41 @@ Page({
         }.bind(this), 4000);
         return;
       }
+      // 拉取订单类型
+      data.getRecptType();
+      // 拉取行业的信息
+      data.getIndustry();
     }
-
-    //注释掉下面的大段代码后新增-------------
-    //为了省去注册公司的环节
-    wx.setStorageSync('role_type', res.data.role_type);
-    wx.setStorageSync('company_id', res.data.company_id);
-    data.getEntityOfRole(this.setEntityOfRole); //获取角色对应的tabBar（实体）
-    //-------------------------------------
-    //用户是第一次使用小程序，则判断是否有公司id
-    // if (res.data.login_flag == "1") {
-    //   try {
-    //     wx.setStorageSync('company_id', res.data.company_id);
-    //   } catch (e) {}
-    //   wx.redirectTo({
-    //     url: '../register/company/company'
-    //   });
-    // }
-    //用户不是第一次使用，用户是“朋友”（公司id为00000），并且想要注册公司
-    // else if (res.data.company_id == "00000" && app.globalData.wantRegisterCompany) {
-    //   wx.setStorageSync('company_id', "00000");
-    //   wx.redirectTo({
-    //     url: '../register/company/company'
-    //   });
-    // }
-    //用户不是第一次使用，用户有角色类型
-    // else if (res.data.role_type != null) {
-    // wx.setStorageSync('role_type', res.data.role_type);
-    // wx.setStorageSync('company_id', res.data.company_id);
-    // data.getEntityOfRole(this.setEntityOfRole); //获取角色对应的tabBar（实体）
-    //}
+    // case:缓存中已有ueser_id
+    else{
+      // 设置globalData（订单类型、行业信息）
+      app.globalData.receiptType = wx.getStorageSync("receiptType");
+      if (!app.globalData.receiptType || app.globalData.receiptType.length==0) data.getRecptType();
+      app.globalData.industry = wx.getStorageSync("industry");
+      if (!app.globalData.industry || app.globalData.industry.length==0) data.getIndustry();
+    }
+    // 设置role_type和tabBar（Entity）
+    if(wx.getStorageSync("role_type")!=res.data.role_type){
+      // 设置新的role_type
+      wx.setStorageSync('role_type', res.data.role_type);
+      // 获取tabBar（Entity）
+      data.getEntityOfRole(this.setEntityOfRole); 
+    }else {
+      app.globalData.tabBar.list = wx.getStorageSync("myList");
+      if (!app.globalData.tabBar.list || app.globalData.tabBar.list.length==0)
+        data.getEntityOfRole(this.setEntityOfRole);
+      else
+        this.finishInit();
+    }
   },
 
-  // 设置TabBar，然后跳转页面--------------------------
+  /////////////////////////////////////////////
+  /// 设置TabBar 进入后续页面
+  /////////////////////////////////////////////
   setEntityOfRole: function(res) {
     var data = res.data,
       len = data.length;
-    console.log("获取导航栏信息：", data);
+    console.log("获取TabBar信息：", data);
     var myList = [];
     for (var i = 1; i <= len; i++) {
       var index = i - 1;
@@ -91,18 +100,26 @@ Page({
         myList[index] = listItem;
       }
     }
-    console.log("myList = ", myList);
+    console.log("设置TabBar，myList = ", myList);
     app.globalData.tabBar.list = myList;
-    //
+    wx.setStorageSync("myList", myList);
+    // 进入后续页面
+    this.finishInit();
+  },
+
+  //////////////////////////////////////////////
+  /// 完成初始化，进入后续页面
+  //////////////////////////////////////////////
+  finishInit:function(){
     if (this.data.signal === "00")
+      // case:正常跳转
       if (!this.data.debug)
-        // 跳转页面
         this.goTo(wx.getStorageSync('role_type'));
+      // case:开发者模式
       else
-        // 开发者模式
         return;
+    // case:跳转到分享的页面
     else {
-      // 跳转到分享的页面
       var url;
       switch (this.data.signal) {
         case "09": //店铺
@@ -118,7 +135,9 @@ Page({
     }
   },
 
-  //* 页面加载**************************************************
+  ////////////////////////////////////
+  /// 页面加载
+  ////////////////////////////////////
   onLoad: function(e) {
     // if(!e.signal) //这段代码用于测试，模拟收到店铺的分享
     // {wx.redirectTo({
@@ -169,14 +188,14 @@ Page({
 
     // 获取用户信息
     var that = this;
-    // 用户信息已存在
+    // case:用户信息已存在
     if (app.globalData.userInfo) {
       this.setData({
         hasUserInfo: true
       });
       that.initializeAppData();
     }
-    // 用户信息不存在
+    // case:用户信息不存在
     else if (this.data.canIUse) {
       app.userInfoReadyCallback = res => {
         console.log("执行app.userInfoReadyCallbackde回调函数，res = ", res);
@@ -190,8 +209,7 @@ Page({
 
   // 初始化数据---------------------------------
   initializeAppData() {
-    data.getRoleType(this.setRoleType) //调用数据库查询来获取角色信息
-    data.getIndustry() //从服务器拉取行业的信息
+    data.getRoleType(this.setRoleType);
   },
 
   // 获取用户信息-----------------------------------

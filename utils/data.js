@@ -709,14 +709,16 @@ function addBasicInfoTo(data) {
 
 // 将行业类型的数组写入app.globalData----------------------------
 function setIndustry(res) {
-  app.globalData.industry = res.data
-  console.log("setIndustry, industry = ", app.globalData.industry)
+  app.globalData.industry = res.data;
+  wx.setStorageSync("industry", res.data);
+  console.log("设置行业信息列表, industry = ", app.globalData.industry);
 }
 
 // 将订单类型的数据写入app.globalData------------------------------
 function setRecptType(res) {
-  app.globalData.receiptType = res.data
-  console.log("setRecptType, receiptType = ", app.globalData.receiptType)
+  app.globalData.receiptType = res.data;
+  wx.setStorageSync("receiptType", res.data);
+  console.log("设置订单类型列表, receiptType = ", app.globalData.receiptType);
 }
 
 //订单类型列表

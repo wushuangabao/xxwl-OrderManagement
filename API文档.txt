@@ -1,5 +1,5 @@
 todo:
-首页发起的API请求过多。考虑优化，比如查询数据前先检查缓存，看一下数据是否需要更新。
+及时清理缓存，删除不必要的数据。
 code=="1"作为 订单录入/工单 提交成功的条件，不要直接弹出成功的提示。
 将上传图片的接口提取成模块。
 增加“消息”菜单（代码“12”）
@@ -19,11 +19,8 @@ role_type
 接口地址：https://www.xiangxun1.com/ssm/file/uploadImage
  
 目标地址：https://www.xiangxun1.com/image/
- 
 @param httpServletRequest
- 
 @param files
- 
 @return String(success error)
 
 
@@ -359,26 +356,20 @@ their_associate_type = "301"; 表示当前选择的类型为代理商
 内容项的查询接口：ContentQueryServlet
 
 
-输入：String User_id = request.getParameter("user_id");   //录单操作ID
+输入：String User_id = request.getParameter("user_id");
 String User_name = request.getParameter("user_name");
-
 String Role_type = request.getParameter("role_type");
-
 String Work_status = request.getParameter("work_status");
-
 String Company_id = request.getParameter("company_id");
 	
 String their_associate_code  = request.getParameter("their_associate_code");  主体代码 用户为01
-
 String their_associate_type = request.getParameter("their_associate_type");  赋值：000
 String their_associate_number = request.getParameter("their_associate_number");  所选择的主体编号
 String their_associate_name = request.getParameter("their_associate_name");  所选择的主体名称
 
 String other_associate_code  = request.getParameter("other_associate_code"); 所选择的主体代码，内容为07
-
 String other_associate_type = request.getParameter("other_associate_type");  赋值：000
 String other_associate_number = request.getParameter("other_associate_number");      赋值：00000
-
 String other_associate_name = request.getParameter("other_associate_name");   不用赋值
 
 ---------------------------------------------------------------------------------------
@@ -387,28 +378,21 @@ AccountLogServlet
 
 String User_id = request.getParameter("user_id");   //录单操作ID
 String User_name = request.getParameter("user_name");
-
 String Role_type = request.getParameter("role_type");
-
 String Work_status = request.getParameter("work_status");
-
 String Company_id = request.getParameter("company_id");
+
 String their_associate_code  = request.getParameter("their_associate_code");
-
 String their_associate_type = request.getParameter("their_associate_type");
-
 String their_associate_number = request.getParameter("their_associate_number");
-
 String their_associate_name = request.getParameter("their_associate_name");
 
 String other_associate_code  = request.getParameter("other_associate_code");
-
 String other_associate_type = request.getParameter("other_associate_type");
-
 String other_associate_number = request.getParameter("other_associate_number");
 String other_associate_name = request.getParameter("other_associate_name");
-String Gmt_modify = request.getParameter("gmt_modify");
 
+String Gmt_modify = request.getParameter("gmt_modify");
 
 输出：
 
@@ -428,44 +412,32 @@ typeName:"应收帐款"}]
 BillQuery2Servlet
 
 输入：
-String User_id = request.getParameter("user_id");//录单操作ID 
+String User_id = request.getParameter("user_id");
 String User_name = request.getParameter("user_name");
-
 String Role_type = request.getParameter("role_type");
-
 String Work_status = request.getParameter("work_status");
 String Company_id = request.getParameter("company_id");
+
 String their_associate_code  = request.getParameter("their_associate_code");
-	
 String their_associate_type = request.getParameter("their_associate_type");
-
 String their_associate_number = request.getParameter("their_associate_number");
-
 String their_associate_name = request.getParameter("their_associate_name");
 
 String other_associate_code  = request.getParameter("other_associate_code");
-
 String other_associate_type = request.getParameter("other_associate_type");
-
 String other_associate_number = request.getParameter("other_associate_number");
 String other_associate_name = request.getParameter("other_associate_name");
 
 String Gmt_modify = request.getParameter("gmt_modify");
 
 ----------------------------------------------------------------------------------
-:
 商铺查询接口：
 ShopQueryServlet
 
-response.setContentType("text/html;charset=utf-8");
-
-PrintWriter out = response.getWriter();	
-String User_id = request.getParameter("user_id");   //录单操作ID
+String User_id = request.getParameter("user_id");
 String User_name = request.getParameter("user_name");
 String Role_type = request.getParameter("role_type");
-
 String Work_status = request.getParameter("work_status");
-
 String Company_id = request.getParameter("company_id");
 
 String their_associate_code  = request.getParameter("their_associate_code");
@@ -474,38 +446,21 @@ String their_associate_number = request.getParameter("their_associate_number");
 String their_associate_name = request.getParameter("their_associate_name");
 String other_associate_code  = request.getParameter("other_associate_code");
 String other_associate_type = request.getParameter("other_associate_type");
-
 String other_associate_number = request.getParameter("other_associate_number");
 String other_associate_name = request.getParameter("other_associate_name");
-
 String Gmt_modify = request.getParameter("gmt_modify");
 
 ----------------------------------
-comm_dto Comm_dto = new comm_dto();
-Comm_dto.setUser_id(User_id);
-Comm_dto.setUser_name(User_name);
-Comm_dto.setCompany_id(Company_id);
-Comm_dto.setRole_type(Role_type);
-
-Comm_dto.setCompany_id("58414");
-
-Comm_dto.setUser_id("oh1zH5ahMZbYh36lYGLce-7wFPWM");
-Comm_dto.setUser_name("安仔");
-
 Comm_dto.setRole_type("02"); //管理员
 Work_status = "0";
 other_associate_number="00000";
 Gmt_modify = "9999-08-25 20:44:28";
-
 Comm_dto.setUser_name("安仔");
-		// Receipt_type ="703";
 
 their_associate_code = "01";
-
 their_associate_type = "000";
 their_associate_number = "oh1zH5ahMZbYh36lYGLce-7wFPWM";
 other_associate_code = "09";  //店铺
-
 other_associate_type = "000";
 
 
@@ -531,59 +486,24 @@ shop_type:"01"},{"company_id":"54385","gmt_create":"1990-01-01","gmt_modify":"19
 ---------------------------------------------
 EntityRelCreateServlet
 实体间建立关系
-String User_id = request.getParameter("user_id");   //录单操作ID
+
+String User_id = request.getParameter("user_id");
 String User_name = request.getParameter("user_name");
-
 String Role_type = request.getParameter("role_type");
-
-String Work_status = request.getParameter("work_status");
-
 String Company_id = request.getParameter("company_id");
+String Work_status = request.getParameter("work_status");
 	
 String their_associate_code  = request.getParameter("their_associate_code");
 String their_associate_type = request.getParameter("their_associate_type");
-
 String their_associate_number = request.getParameter("their_associate_number");
-
 String their_associate_name = request.getParameter("their_associate_name");
-String other_associate_code  = request.getParameter("other_associate_code");
 
+String other_associate_code  = request.getParameter("other_associate_code");
 String other_associate_type = request.getParameter("other_associate_type");
 String other_associate_number = request.getParameter("other_associate_number");
 String other_associate_name = request.getParameter("other_associate_name");
 
 String Gmt_modify = request.getParameter("gmt_modify");
-
-
-Comm_dto.setCompany_id("58414");
-
-Comm_dto.setUser_id("oh1zH5ahMZbYh36lYGLce-7wFPWM");
-
-Comm_dto.setUser_name("安仔");
-
-Comm_dto.setRole_type("02"); //管理员
-Work_status = "0";
-
-other_associate_number="00000";
-	
-Gmt_modify = "9999-08-25 20:44:28";
-
-Comm_dto.setUser_name("安仔");
-		// Receipt_type ="703";
-
-their_associate_code = "01";  用户
-
-their_associate_type = "301";  代理商
-
-their_associate_number = "oh1zH5ahMZbYh36lYGLce-7wFPWM";   用户ID
-
-their_associate_name = "xpa1";   用户名称
-other_associate_code = "01";    对方关联用户
-other_associate_type = "301";    关联对方用户类型
-
-other_associate_number = "oh1zH5ahMZbYh36lYGLce-7wFPWM22";    关联对方用户ID
-
-other_associate_name = "xpa的代理商";  关联对方用户名称
 
 EntityRelCreateServlet2----------------------------
 把分享当事主体与分享内容赋值
