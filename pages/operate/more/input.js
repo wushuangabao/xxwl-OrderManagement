@@ -1,9 +1,6 @@
-// pages/operate/more/input.js
-
-const data = require('../../../utils/data.js')
+const data = require('../../../utils/data.js');
 
 Page({
-
   data: {
     info: null,
     textAreaValue1: '', //备注

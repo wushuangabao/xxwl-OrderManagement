@@ -100,6 +100,14 @@ Page({
   // 获取订单号之后，上传订单图片，清空表单----------------------------------
   uploadImg: function(res) {
     console.log('upLoadRecpt,res =', res);
+    if(res.data.code!=1){
+      wx.showToast({
+        title: '提交失败!',
+        icon: 'none',
+        duration: 1600
+      });
+      return;
+    }
     var receipt_number = null,
       img_path = this.hasImg(),
       len = img_path.length,
@@ -108,14 +116,13 @@ Page({
       receipt_number = res.data.receipt_number;
     } catch (e) {
       wx.showToast({
-        title: '提交失败!',
+        title: '图片上传失败',
         icon: 'none',
         duration: 1800
       });
       return;
     }
-    console.log("uploadImg...receipt_number = ", receipt_number);
-    console.log('img_path =', img_path);
+    console.log("上传图片...receipt_number = ", receipt_number);
     if (len > 0)
       for (var i = 0; i < len; i++)
         wx.uploadFile({
@@ -126,7 +133,7 @@ Page({
             'image_id': receipt_number + '_' + i + that.data.image_format[i]
           },
           success: function(res) {
-            console.log("uploadFile...res.data =", res.data);
+            console.log("图片上传成功...res.data =", res.data);
           }
         });
     this.finishInput();
@@ -141,7 +148,7 @@ Page({
       img_path: ["/imgs/add.png", "/imgs/add.png", "/imgs/add.png", "/imgs/add.png"],
     })
     wx.hideLoading();
-    wx.showToast({ //bug:并没有把握一定提交成功了
+    wx.showToast({
       title: '提交成功',
       icon: 'success',
       duration: 1000
