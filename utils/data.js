@@ -589,7 +589,7 @@ function getShopList(param, func) {
 function getMsgList(param, func) {
   var data = param;
   addBasicInfoTo(data);
-  console.log("data=", data);
+  // wxRequest(API_MSGQRY, data, func);
   wxRequest(API_MSGQRY, { //此处应写data，为测试先写如下伪数据
     their_associate_code: "01",
     their_associate_type: "000",
@@ -610,7 +610,7 @@ function getMsgList(param, func) {
 function getSafeAmount(param, func) {
   var data = param;
   addBasicInfoTo(data);
-  console.log("data=", data);
+  console.log("API_SAFESUM data = ", data);
   wxRequest(API_SAFESUM, data, func);
   // wxRequest(API_SAFESUM, { //此处应写data，为测试先写如下伪数据
   //   their_associate_code: "01",
@@ -634,22 +634,23 @@ function getSafeAmount(param, func) {
 function getUserSafeAmount(param, func) {
   var data = param;
   addBasicInfoTo(data);
-  console.log("data=", data);
-  wxRequest(API_SAFEQRY, { //此处应写data，为测试先写如下伪数据
-    their_associate_code: "01",
-    their_associate_type: "000",
-    their_associate_number: data.their_associate_number, //"12345", //即trader_id
-    other_associate_code: "01",
-    other_associate_type: "02", //"000",
-    other_associate_number: "1732179", //即safe_id
-    user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
-    role_type: "02",
-    work_status: '0',
-    company_id: '58414',
-    user_name: "安仔",
-    safe_year: "2018",
-    safe_month: "00",
-  }, func);
+  console.log("API_SAFEQRY data=", data);
+  wxRequest(API_SAFEQRY, data, func);
+  // wxRequest(API_SAFEQRY, { //此处应写data，为测试先写如下伪数据
+  //   their_associate_code: "01",
+  //   their_associate_type: "000",
+  //   their_associate_number: data.their_associate_number, //"12345", //即trader_id
+  //   other_associate_code: "01",
+  //   other_associate_type: "02", //"000",
+  //   other_associate_number: "1732179", //即safe_id
+  //   user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
+  //   role_type: "02",
+  //   work_status: '0',
+  //   company_id: '58414',
+  //   user_name: "安仔",
+  //   safe_year: "2018",
+  //   safe_month: "00",
+  // }, func);
 }
 
 function deleteUserSafe(safe_id, year, month, func) {

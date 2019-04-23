@@ -1,1 +1,3 @@
 /* pages/message/safe/main.wxss */
+
+@import "/pages/message/safe/namelist.wxss";
