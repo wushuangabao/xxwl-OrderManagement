@@ -22,7 +22,7 @@ Page({
   //* 页面跳转*********************************
   showNameList: function() {
     var msg = this.data.listData[0],
-      url = "/pages/message/safe/namelist?trader_id=" + this.data.trader_id + "&entity_type=" + msg.entity_type + "&year=" + msg.entity_year + "&month=" + msg.entity_month;
+      url = "/pages/message/safe/namelist?trader_id=" + this.data.trader_id + "&entity_type=" + msg.entity_type + "&year=" + msg.safe_year + "&month=" + msg.safe_month;
     wx.navigateTo({
       url: url
     });
@@ -35,9 +35,9 @@ Page({
         their_associate_code: "01",
         their_associate_type: "000",
         their_associate_number: options.trader_id,
-        other_associate_code: options.entity_code,
-        other_associate_type: options.entity_type,
-        other_associate_number: "00000",
+        other_associate_code: "01", //公司
+        other_associate_type: "90901", //专属社保机构类型
+        other_associate_number: "00000", //社保公司编号
         safe_year: options.year,
         safe_month: options.month,
         safe_type: "99"

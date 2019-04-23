@@ -6,27 +6,18 @@
     <view style='font-size:30rpx;color:#333;margin-left:4rpx'>增添社保人员</view>
   </view>
 </view>
+
 <view wx:for="{{listData}}" wx:key="" class="list" bindtap="showMoreInfo" data-id="{{item.index}}">
   <view class="list-item">
+
     <view class='horizontal'>
       <text>{{item.name}}</text>
-      <view catchtap="deleteAmount" data-id="{{item.index}}">删除</view>
+      <view catchtap="deleteAmount" data-id="{{item.index}}" style='color:red'>删除</view>
     </view>
-    <view class='horizontal'>
-      <text>社保号</text>
-      <text>{{item.safe_id}}</text>
-    </view>
-    <view class='horizontal'>
-      <text>企业缴纳</text>
-      <text>{{item.firm_amount}}</text>
-    </view>
-    <view class='horizontal'>
-      <text>个人缴纳</text>
-      <text>{{item.person_amount}}</text>
-    </view>
-    <view class='horizontal'>
-      <text>总计</text>
-      <text>{{item.safeAmount}}</text>
-    </view>
+      <k-v key="社保号" value="{{item.safe_id}}" labelWidth="{{370}}" />
+      <k-v key="企业缴纳" value="{{item.firm_amount}}" labelWidth="{{370}}" />
+      <k-v key="个人缴纳" value="{{item.person_amount}}" labelWidth="{{370}}" />
+      <k-v key="总计" value="{{item.safeAmount}}" labelWidth="{{370}}" />
+      
   </view>
 </view>

@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    
-  }
+    "k-v": "/miniprogram_npm/my-ui/key-value/index"
+  },
+  "navigationBarTitleText": "社保名单"
 }

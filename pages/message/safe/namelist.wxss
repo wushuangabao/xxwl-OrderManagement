@@ -19,4 +19,7 @@
 .horizontal {
   display: flex;
   justify-content: space-between;
+  padding-left: 15rpx;
+  padding-right: 15rpx;
+  height: 66rpx;
 }

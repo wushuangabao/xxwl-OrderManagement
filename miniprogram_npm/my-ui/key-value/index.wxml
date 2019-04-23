@@ -1,0 +1,15 @@
+<!--  input/input.wxml -->
+<label class='form-item {{disabled? "disabled": ""}} l-class form-item-{{labelLayout}}' style="width:{{width}}rpx">
+
+  <view class='row' wx:if="{{showRow}}"></view>
+
+  <view class='form-label form-label-{{labelLayout}}' style='{{labelLayout !== "top" ? "width:"+ labelWidth+ "rpx;" : "" }} height:{{labelLayout== "top" ? labelWidth + "rpx" : "" }}'>
+      {{key}}
+      <text wx:if="{{colon}}">：</text>
+  </view>
+
+  <view class='form-label' style='width:{{width-labelWidth}}rpx;justify-content:flex-start;'>
+    {{value}}
+  </view>
+
+</label>

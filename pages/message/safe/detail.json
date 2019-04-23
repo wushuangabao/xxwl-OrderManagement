@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "k-v": "/miniprogram_npm/my-ui/key-value/index"
+  },
+  "navigationBarTitleText": "员工社保详情"
 }

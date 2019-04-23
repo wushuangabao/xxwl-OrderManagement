@@ -1,0 +1,39 @@
+.form-item {
+  position: relative;
+  font-size: 32rpx;
+  color: #333;
+  width: 750rpx;
+  height: 66rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: 25rpx;
+  box-sizing: border-box;
+}
+
+.row {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 1rpx;
+  width: 730rpx;
+  background: #f3f3f3;
+}
+
+.form-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 66rpx;
+  padding-left: 25rpx;
+  padding-right: 15rpx;
+  box-sizing: border-box;
+}
+
+.form-label-right {
+  justify-content: flex-end;
+}
+
+.form-label-left {
+  justify-content: flex-start;
+}

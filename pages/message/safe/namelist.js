@@ -54,9 +54,9 @@ Page({
         their_associate_code: "01",
         their_associate_type: "000",
         their_associate_number: options.trader_id,
-        other_associate_code: "13",
-        other_associate_type: options.entity_type,
-        other_associate_number: "00000",
+        other_associate_code: "01",
+        other_associate_type: "90901", //专属社保机构类型
+        other_associate_number: "00000", //社保公司编号
         safe_year: options.year,
         safe_month: options.month,
         safe_type: "00"

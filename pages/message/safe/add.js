@@ -65,15 +65,15 @@ Page({
         /** 证件类型 */
         identityType: pageData.idTypeNum,
         /** 证件号码 */
-        identityId: pageData.idNum,
+        identityId: "555555555555555555", //pageData.idNum,
         /** 姓名 */
-        name: pageData.name,
+        name: "苏伊士",//pageData.name,
         /** 性别 */
         sex: "",
         /** 国籍 */
         country: "",
         /** 工资薪金 */
-        pay: pageData.pay,
+        pay: "5555",//pageData.pay,
         /** 出生日期 */
         birthday: "",
         /** 人员类别 */
@@ -107,6 +107,7 @@ Page({
         birthSafe: safeType['生育保险'],
 
       }
+    console.log("增添社保人员：",param);
     data.addUserSafe(param, function(res) {
       console.log("submit...res = ", res);
     });
