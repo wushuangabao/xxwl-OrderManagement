@@ -11,13 +11,13 @@
   <view class="list-item">
 
     <view class='horizontal'>
-      <text>{{item.name}}</text>
+      <view style='font-weight:bold;font-size:34rpx;'>{{item.name}}</view>
       <view catchtap="deleteAmount" data-id="{{item.index}}" style='color:red'>删除</view>
     </view>
       <k-v key="社保号" value="{{item.safe_id}}" labelWidth="{{370}}" />
-      <k-v key="企业缴纳" value="{{item.firm_amount}}" labelWidth="{{370}}" />
-      <k-v key="个人缴纳" value="{{item.person_amount}}" labelWidth="{{370}}" />
-      <k-v key="总计" value="{{item.safeAmount}}" labelWidth="{{370}}" />
+      <k-v key="企业缴纳" value="{{item.firm_amount}}元" labelWidth="{{370}}" />
+      <k-v key="个人缴纳" value="{{item.person_amount}}元" labelWidth="{{370}}" />
+      <k-v key="总计" value="{{item.safeAmount}}元" labelWidth="{{370}}" />
       
   </view>
 </view>

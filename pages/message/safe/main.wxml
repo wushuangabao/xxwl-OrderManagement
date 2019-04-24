@@ -2,7 +2,7 @@
 <view class="list">
   <view wx:for="{{listData}}" wx:key="" class="list-item">
     <view class='horizontal'>
-      <text>{{item.trader_name}}</text>
+      <view style='font-weight:bold;font-size:34rpx;'>{{item.trader_name}}</view>
       <view bindtap="showNameList" style='color:blue;'>社保名单</view>
     </view>
     <k-v key="社保人数" value="{{item.person_total}}人" labelWidth="{{370}}" />

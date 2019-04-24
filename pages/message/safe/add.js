@@ -34,10 +34,41 @@ Page({
   ///////////////////////////////////////////
   // 表单处理
   ///////////////////////////////////////////
+
+  // 设置姓名
+  setName:function(e){
+    this.setData({
+      name: e.detail.detail.value
+    });
+  },
+
+  // 设置证件号码
+  setIdNum:function(e){
+    this.setData({
+      idNum: e.detail.detail.value
+    });
+  },
+
+  // 设置户口类型
+  setRegisterType: function (e) {
+    this.setData({
+      registerType: e.detail.detail.value
+    });
+  },
+
+  // 设置工资
+  setPay: function (e) {
+    this.setData({
+      pay: e.detail.detail.value
+    });
+  },
+
+  // 选择证件类型
   selectIdType: function() {
     this.showActionSheet(this.data.itemsId, this.setIdType);
   },
 
+  // 设置证件类型
   setIdType: function(res) {
     this.setData({
       idType: res.item.name,
@@ -45,6 +76,7 @@ Page({
     });
   },
 
+  // 多选框
   onCheckBoxTap: function(res) {
     var current = res.detail.current,
       value = res.detail.value;
@@ -65,15 +97,15 @@ Page({
         /** 证件类型 */
         identityType: pageData.idTypeNum,
         /** 证件号码 */
-        identityId: "555555555555555555", //pageData.idNum,
+        identityId: pageData.idNum,
         /** 姓名 */
-        name: "苏伊士",//pageData.name,
+        name: pageData.name,
         /** 性别 */
         sex: "",
         /** 国籍 */
         country: "",
         /** 工资薪金 */
-        pay: "5555",//pageData.pay,
+        pay: pageData.pay,
         /** 出生日期 */
         birthday: "",
         /** 人员类别 */
@@ -83,7 +115,7 @@ Page({
         /** 用工形式 */
         workForm: "",
         /** 户籍类型 */
-        registerType: "",
+        registerType: pageData.registerType,
 
         /** 申报日期 */
         reportDate: "201901",
@@ -108,9 +140,9 @@ Page({
 
       }
     console.log("增添社保人员：",param);
-    data.addUserSafe(param, function(res) {
-      console.log("submit...res = ", res);
-    });
+    // data.addUserSafe(param, function(res) {
+    //   console.log("submit...res = ", res);
+    // });
   },
 
   /////////////////////////////////////////
