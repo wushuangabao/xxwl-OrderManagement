@@ -8,7 +8,7 @@ Page({
     idTypeNum: 6,
     idNum: "",
     pay: "",
-    registerType: "",
+    registerType: "001",
     safeType: {},
     itemsId: [
       "护照",
@@ -36,28 +36,28 @@ Page({
   ///////////////////////////////////////////
 
   // 设置姓名
-  setName:function(e){
+  setName: function(e) {
     this.setData({
       name: e.detail.detail.value
     });
   },
 
   // 设置证件号码
-  setIdNum:function(e){
+  setIdNum: function(e) {
     this.setData({
       idNum: e.detail.detail.value
     });
   },
 
   // 设置户口类型
-  setRegisterType: function (e) {
+  setRegisterType: function(e) {
     this.setData({
       registerType: e.detail.detail.value
     });
   },
 
   // 设置工资
-  setPay: function (e) {
+  setPay: function(e) {
     this.setData({
       pay: e.detail.detail.value
     });
@@ -91,7 +91,7 @@ Page({
     let pageData = this.data,
       safeType = pageData.safeType,
       param = {
-        traderId: wx.getStorageSync("user_id"),
+        traderId: this.data.trader_id,
         companyId: wx.getStorageSync("company_id"),
 
         /** 证件类型 */
@@ -139,10 +139,10 @@ Page({
         birthSafe: safeType['生育保险'],
 
       }
-    console.log("增添社保人员：",param);
-    // data.addUserSafe(param, function(res) {
-    //   console.log("submit...res = ", res);
-    // });
+    console.log("增添社保人员：", param);
+    data.addUserSafe(param, function(res) {
+      console.log("submit...res = ", res);
+    });
   },
 
   /////////////////////////////////////////
@@ -195,6 +195,12 @@ Page({
   // 生命周期函数--监听页面加载
   /////////////////////////////////////////
   onLoad: function(options) {
+    if (options.trader_id) {
+      this.setData({
+        trader_id: options.trader_id
+      });
+    }
+
     // 初始化safeType对象
     var safeType = this.data.safeType,
       itemsSafe = this.data.itemsSafe,

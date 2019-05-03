@@ -109,8 +109,12 @@ Page({
 
   // 设置this.data中的receipt数组-----------------------------------
   setRecptData: function(res) {
-    var _data_ = res.data,
-      len = _data_.length,
+    var _data_ = res.data;
+    if (!_data_) {
+      console.log("没有接收到数据");
+      return;
+    }
+    let len = _data_.length,
       old_data = this.data.receipt,
       real_i = old_data.length,
       state, //=this.data.status
@@ -184,7 +188,10 @@ Page({
       param = app.globalData.param;
       param.work_status = status;
     }
-    data.getRecptData2(param, this.setRecptData);
+    if (wx.getStorageSync('role_type') == "100")
+      data.getRecptData2(param, this.setRecptData, true);
+    else
+      data.getRecptData2(param, this.setRecptData);
   },
 
   //////////////////////////////////////////////////////////////
