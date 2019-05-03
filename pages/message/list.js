@@ -5,6 +5,7 @@ const data = require('../../utils/data.js');
 Page({
   data: {
     msgList: [],
+    hasTabBar: true,
   },
 
   // 设置msgList----------------------------------
@@ -30,7 +31,7 @@ Page({
     var param = {
       their_associate_code: "01",
       their_associate_type: "000",
-      their_associate_number: wx.getStorageSync('user_id'),
+      their_associate_number: wx.getStorageSync('company_id'),
       their_associate_name: app.globalData.userInfo.nickName,
       other_associate_code: "12",
       other_associate_type: "000",
@@ -47,11 +48,20 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
+  //* 监听页面显示***********************************
   onShow: function() {
-
+    //设置tabBar
+    var myTabBar = getApp().globalData.tabBar,
+      len = myTabBar.list.length;
+    for (var i = 0; i < len; i++) {
+      if (myTabBar.list[i].text == "消息")
+        myTabBar.list[i].active = true;
+      else
+        myTabBar.list[i].active = false;
+    }
+    this.setData({
+      tabBar: myTabBar,
+    })
   },
 
   /**

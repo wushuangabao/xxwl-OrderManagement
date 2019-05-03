@@ -13,7 +13,13 @@ Page({
   setListData: function(res) {
     var data = res.data;
     console.log("setListData...res.data=", data);
-    data[0].safeAmount = data[0].person_amount + data[0].firm_amount;
+    if (data[0].person_amount || data[0].firm_amount)
+      data[0].safeAmount = data[0].person_amount + data[0].firm_amount;
+    else {
+      data[0].safeAmount = 0;
+      data[0].person_amount = 0;
+      data[0].firm_amount = 0;
+    }
     this.setData({
       listData: data,
     });
@@ -34,13 +40,13 @@ Page({
       var param = {
         their_associate_code: "01",
         their_associate_type: "000",
-        their_associate_number: options.trader_id,
+        their_associate_number: wx.getStorageSync('company_id'),
         other_associate_code: "01", //公司
         other_associate_type: "90901", //专属社保机构类型
         other_associate_number: "00000", //社保公司编号
         safe_year: options.year,
         safe_month: options.month,
-        safe_type: "99"
+        safe_type: "99",
       };
       data.getSafeAmount(param, this.setListData);
       this.setData({

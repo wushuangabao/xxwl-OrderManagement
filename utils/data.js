@@ -115,7 +115,7 @@ function getRoleType(setRoleType) {
     associate_type = info.associate_type,
     associate_number = info.associate_number,
     associate_name = info.associate_name;
-  if (!user_id){
+  if (!user_id) {
     console.log("getRoleType...读取缓存中的user_id失败，发送code:", code);
     user_id = '00000';
     wx.setStorageSync('user_id', user_id);
@@ -467,7 +467,7 @@ function ratingQuery(param, func) {
 }
 
 // market角色-订单-查询*************************************
-function getRecptData2(param, func) {
+function getRecptData2(param, func, dq) {
   var gmt_modify = wx.getStorageSync('gmt_modify');
   if (gmt_modify == '')
     gmt_modify = '9999-08-25 20:44:28';
@@ -488,7 +488,11 @@ function getRecptData2(param, func) {
     other_associate_name: param.other_associate_name,
     gmt_modify: gmt_modify
   };
-  wxRequest(API_BILLQRY2, data, func);
+  if (arguments.length == 3 && dq) {
+    wxRequest(URL_BASE + "dqBillQuery2Servlet", data, func);
+    console.log("dqBillQuery2Servlet查询", data);
+  } else
+    wxRequest(API_BILLQRY2, data, func);
 }
 
 // market角色-内容list查询*********************************************
@@ -589,20 +593,20 @@ function getShopList(param, func) {
 function getMsgList(param, func) {
   var data = param;
   addBasicInfoTo(data);
-  // wxRequest(API_MSGQRY, data, func);
-  wxRequest(API_MSGQRY, { //此处应写data，为测试先写如下伪数据
-    their_associate_code: "01",
-    their_associate_type: "000",
-    their_associate_number: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
-    other_associate_code: "12",
-    other_associate_type: "000",
-    other_associate_number: "00000",
-    user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
-    role_type: "02",
-    work_status: '0',
-    company_id: '58414',
-    user_name: "安仔"
-  }, func);
+  wxRequest(API_MSGQRY, data, func);
+  // wxRequest(API_MSGQRY, { //此处应写data，为测试先写如下伪数据
+  //   their_associate_code: "01",
+  //   their_associate_type: "000",
+  //   their_associate_number: wx.getStorageSync('company_id'),
+  //   other_associate_code: "12",
+  //   other_associate_type: "000",
+  //   other_associate_number: "00000",
+  //   user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
+  //   role_type: "02",
+  //   work_status: '0',
+  //   company_id: '58414',
+  //   user_name: "安仔"
+  // }, func);
 }
 
 // 社保API汇总----------------------------

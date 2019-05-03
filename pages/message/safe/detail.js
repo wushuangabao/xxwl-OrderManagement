@@ -21,23 +21,24 @@ Page({
 
   //* 生命周期函数--监听页面加载************
   onLoad: function(options) {
+      
     if (options.trader_id) {
-      var param = {
-        their_associate_code: "01",
-        their_associate_type: "000",
-        their_associate_number: options.trader_id,
-        other_associate_code: "01",
-        other_associate_type: "000",
-        other_associate_number: options.safe_id,
-        safe_year: options.year,
-        safe_month: options.month
-      };
-      data.getUserSafeAmount(param, this.setListData);
       let pages = getCurrentPages(),
         prevPage = pages[pages.length - 2]; //-2为上一级页面
       this.setData({
         amount: prevPage.data.listData[options.id]
       });
+      let param = {
+        their_associate_code: "01",
+        their_associate_type: "000",
+        their_associate_number: options.trader_id,
+        other_associate_code: "01",
+        other_associate_type: "000",
+        other_associate_number: this.data.amount.safe_id,
+        safe_year: options.year,
+        safe_month: options.month
+      };
+      data.getUserSafeAmount(param, this.setListData);
     }
   },
 
