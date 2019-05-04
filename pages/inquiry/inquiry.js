@@ -134,7 +134,7 @@ Page({
       old_data[real_i].type = r_type;
       old_data[real_i].index = real_i;
       // console.log(_data_[i].image_1[0])
-      if (_data_[i].image_1[0] != '.') // <---貌似没有必要？
+      if (_data_[i].image_1 && _data_[i].image_1[0] != '.') // <---貌似没有必要？
         _data_[i].image_1 = '.' + _data_[i].image_1;
       old_data[real_i].r_img = data.Img_Url + _data_[i].receipt_number + '_0' + _data_[i].image_1;
       old_data[real_i].moreLayer = false;
