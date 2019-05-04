@@ -37,6 +37,36 @@ Page({
       _data = this.data.listData[index];
     data.deleteUserSafe(_data.safe_id, _data.safe_year, _data.safe_month, function(res) { //这个年、月是前面的？还是数据里的？
       console.log("deleteAmount...res = ", res);
+      // case:成功
+      if(res.data.code==1){
+        // 刷新数据
+        data.getSafeAmount({
+          their_associate_code: "01",
+          their_associate_type: "000",
+          their_associate_number: wx.getStorageSync('company_id'),
+          other_associate_code: "01",
+          other_associate_type: "90901", //专属社保机构类型
+          other_associate_number: "00000", //社保公司编号
+          safe_year: this.data.safe_year,
+          safe_month: this.data.safe_month,
+          safe_type: "00"
+        }, this.setListData);
+        // 显示提示信息
+        wx.lin.showMessage({
+          type: 'success',
+          duration: 1000,
+          content: res.data.error
+        });
+      }
+      // case:失败
+      else{
+        // 显示提示信息
+        wx.lin.showMessage({
+          type: 'error',
+          duration: 1000,
+          content: '操作失败'
+        });
+      }
     });
   },
 
