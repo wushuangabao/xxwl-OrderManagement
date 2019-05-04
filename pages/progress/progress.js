@@ -16,7 +16,7 @@ Page({
     receipt_type: '',
     processData: [],
   },
-  
+
   ////////////////////////////////////////////////////////////////////////
   // 根据拉取的job_table，设置进度条数据
   ////////////////////////////////////////////////////////////////////////
@@ -49,10 +49,10 @@ Page({
           note: job.remark,
           index: real_i,
           imgs: [job.image_1, job.image_2, job.image_3, job.image_4],
-          hasPraise:false,
-          moreLayer:false,
-          comment:null,
-          rating_101:job.rating_101,
+          hasPraise: false,
+          moreLayer: false,
+          comment: null,
+          rating_101: job.rating_101,
           rating_102: job.rating_102,
         }
         real_i++;
@@ -111,7 +111,7 @@ Page({
   //////////////////////////////////////////////////////////////
 
   //* 点击“More”按钮*****************************************
-  catchTapMore: function (e) {
+  catchTapMore: function(e) {
     if (this.data.isLoading)
       return;
     var index = e.currentTarget.dataset.id,
@@ -123,7 +123,7 @@ Page({
   },
 
   //* 输入评论******************************
-  bindCommentInput: function (e) {
+  bindCommentInput: function(e) {
     var str = "processData[" + e.currentTarget.dataset.id + "].comment";
     this.setData({
       [str]: e.detail.value
@@ -131,7 +131,7 @@ Page({
   },
 
   //* 确认评论******************************
-  catchTapComment: function (e) {
+  catchTapComment: function(e) {
     var index = e.currentTarget.dataset.id,
       operation = this.data.processData[index];
     if (operation.comment) {
@@ -158,7 +158,7 @@ Page({
   },
 
   //* 点赞**********************************
-  catchTapPraise: function (e) {
+  catchTapPraise: function(e) {
     var index = e.currentTarget.dataset.id,
       operation = this.data.processData[index],
       str1 = "processData[" + index + "].hasPraise",
@@ -183,12 +183,12 @@ Page({
   },
 
   // 成功点赞--------------------
-  successPraise: function (res) {
+  successPraise: function(res) {
     console.log('successPraise...res.data = ', res.data);
   },
 
   // 成功评论--------------------
-  successComment: function (res) {
+  successComment: function(res) {
     console.log('successComment...res.data = ', res.data);
   },
 
@@ -197,8 +197,15 @@ Page({
     var id = res.currentTarget.dataset.id,
       progressData = this.data.processData[id];
     console.log("bindTapToInfo...progressData=", progressData);
-    //设置图片格式的缓存
-    wx.setStorageSync('imgUrl_1', data.Img_Url + progressData.job_number + '_0' + progressData.imgs[0]);
+    // 设置图片格式的缓存
+    try {
+      if (progressData.imgs[0] != "null")
+        wx.setStorageSync('imgUrl_1', data.Img_Url + progressData.job_number + '_0' + progressData.imgs[0]);
+      else
+        wx.setStorageSync('imgUrl_1', data.Img_Url + progressData.job_number + '_0.jpg');
+    } catch (e) {
+      wx.setStorageSync('imgUrl_1', data.Img_Url + progressData.job_number + '_0.jpg');
+    }
     for (var i = 2; i < 5; i++) {
       var str = 'imgUrl_' + i;
       wx.setStorageSync(str, progressData.imgs[i - 1]);

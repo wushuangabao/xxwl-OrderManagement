@@ -1,5 +1,6 @@
 // pages/message/safe/add.js
-const data = require('../../../utils/data.js');
+const data = require('../../../utils/data.js'),
+  dateTimePicker = require('../../../utils/dateTimePicker.js');
 
 Page({
   data: {
@@ -8,7 +9,9 @@ Page({
     idTypeNum: 6,
     idNum: "",
     pay: "",
-    registerType: "001",
+    personStatus: "0",
+    registerType: "001", //户籍类型
+    telNo: "13333333333",
     safeType: {},
     itemsId: [
       "护照",
@@ -32,52 +35,67 @@ Page({
   },
 
   ///////////////////////////////////////////
-  // 表单处理
+  /// 表单处理
   ///////////////////////////////////////////
 
   // 设置姓名
-  setName: function(e) {
+  setName(e) {
     this.setData({
       name: e.detail.detail.value
     });
   },
 
   // 设置证件号码
-  setIdNum: function(e) {
+  setIdNum(e) {
     this.setData({
       idNum: e.detail.detail.value
     });
   },
 
   // 设置户口类型
-  setRegisterType: function(e) {
+  setRegisterType(e) {
     this.setData({
       registerType: e.detail.detail.value
     });
   },
 
-  // 设置工资
-  setPay: function(e) {
+  // 设置申报工资
+  setReportSalary(e) {
     this.setData({
-      pay: e.detail.detail.value
+      reportSalary: e.detail.detail.value
     });
   },
 
   // 选择证件类型
-  selectIdType: function() {
+  selectIdType() {
     this.showActionSheet(this.data.itemsId, this.setIdType);
   },
 
   // 设置证件类型
-  setIdType: function(res) {
+  setIdType(res) {
     this.setData({
       idType: res.item.name,
       idTypeNum: res.index + 1
     });
   },
 
+  // 选择参保时间
+  changeDate(e) {
+    this.setData({
+      dateIndex: e.detail.value
+    });
+  },
+  // columnChange(e) {
+  //   const data = {
+  //     dateArray: this.data.dateArray,
+  //     dateIndex: this.data.dateIndex
+  //   };
+  //   data.dateIndex[e.detail.column] = e.detail.value;
+  //   this.setData(data);
+  // },
+
   // 多选框
-  onCheckBoxTap: function(res) {
+  onCheckBoxTap(res) {
     var current = res.detail.current,
       value = res.detail.value;
     this.data.safeType[value] = current ? "1" : "2";
@@ -85,7 +103,7 @@ Page({
 
 
   ////////////////////////////////////////
-  // 提交请求
+  /// 提交请求
   ////////////////////////////////////////
   submit: function() {
     let pageData = this.data,
@@ -100,31 +118,31 @@ Page({
         identityId: pageData.idNum,
         /** 姓名 */
         name: pageData.name,
-        /** 性别 */
+        // 性别
         sex: "",
-        /** 国籍 */
+        // 国籍
         country: "",
-        /** 工资薪金 */
+        // 工资薪金
         pay: pageData.pay,
-        /** 出生日期 */
+        // 出生日期
         birthday: "",
-        /** 人员类别 */
+        // 人员类别
         personType: "",
-        /** 人员状态 */
-        personStatus: "",
-        /** 用工形式 */
+        // 人员状态
+        personStatus: pageData.personStatus,
+        // 用工形式 
         workForm: "",
-        /** 户籍类型 */
+        // 户籍类型
         registerType: pageData.registerType,
 
-        /** 申报日期 */
+        // 申报日期
         reportDate: "201901",
-        /** 个人社保号 */
+        // 个人社保号
         safeId: "000001",
-        /** 参保开始日期 */
-        beginDate: "201909",
-        /** 手机号码 */
-        telNo: "13333333333",
+        // 参保开始日期
+        beginDate: this.getBeginDate(),
+        // 手机号码
+        telNo: pageData.telNo,
         /** 0101-基本养老保险 */
         agedSafe: safeType['基本养老保险'], //1:真，2:假
         /** 0201-工伤保险 */
@@ -137,16 +155,22 @@ Page({
         medicalSafe: safeType['基本医疗保险'],
         /** 0505-生育保险 */
         birthSafe: safeType['生育保险'],
-
+        // 申报工资
+        reportSalary: pageData.reportSalary
       }
     console.log("增添社保人员：", param);
     data.addUserSafe(param, function(res) {
       console.log("submit...res = ", res);
+      wx.showToast({
+        title: res.data.error,
+        icon: 'none',
+        duration: 1000
+      });
     });
   },
 
   /////////////////////////////////////////
-  // 通用方法
+  /// 通用方法
   /////////////////////////////////////////
   convertNameList: function(nameList) {
     let len = nameList.length,
@@ -158,6 +182,16 @@ Page({
       });
     }
     return list;
+  },
+
+  // 将选择得到的日期转换为"YYYY[0]m"形式
+  getBeginDate() {
+    let year = this.data.dateArray[0][this.data.dateIndex[0]],
+      month = this.data.dateArray[1][this.data.dateIndex[1]];
+    if (month < 10)
+      return year.toString() + "0" + month.toString();
+    else
+      return year.toString() + month.toString();
   },
 
   showActionSheet: function(nameList, func) {
@@ -192,7 +226,7 @@ Page({
   },
 
   /////////////////////////////////////////
-  // 生命周期函数--监听页面加载
+  /// 生命周期函数--监听页面加载
   /////////////////////////////////////////
   onLoad: function(options) {
     if (options.trader_id) {
@@ -210,6 +244,18 @@ Page({
     this.setData({
       safeType: safeType
     });
+
+    // 初始化“年、月”日期数组
+    var dateTimeArray = [
+      [],
+      []
+    ];
+    dateTimeArray[0] = dateTimePicker.getLoopArray(2019, 2120);
+    dateTimeArray[1] = dateTimePicker.getLoopArray(1, 12);
+    this.setData({
+      dateArray: dateTimeArray,
+      dateIndex: [0, 6]
+    })
   },
 
   onReady: function() {

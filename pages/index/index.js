@@ -7,7 +7,7 @@ Page({
     // wx.canIUse判断小程序的API，回调，参数，组件等是否可用。
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     signal: "00",
-    debug: true, //开发者模式
+    debug: false, //开发者模式
     pageDebug: [
       "by role_type",
       "/pages/message/list",

@@ -21,6 +21,7 @@ Page({
     isLoading: false,
     status: "0", //0表示未完成，2表示已完成
     hasTabBar: true,
+    hasInputButton: true,
   },
 
   //* 跳转到录单页面*********************************
@@ -328,6 +329,10 @@ Page({
     this.setData({
       isLoading: true
     });
+    if(wx.getStorageSync('role_type')=="100")
+      this.setData({
+        hasInputButton: false
+      });
     if (options.hasTabBar == "false")
       this.setData({
         hasTabBar: false

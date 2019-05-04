@@ -1,7 +1,7 @@
 <!--pages/message/safe/add.wxml-->
 <view class="list">
   <view class="list-item">
-    <l-input label="姓名" required="true" placeholder='请输入人员姓名' value='{{name}}' bind:linchange='setName'/>
+    <l-input label="姓名" required="true" placeholder='请输入人员姓名' value='{{name}}' bind:linchange='setName' />
   </view>
 
   <view class="list-item">
@@ -17,8 +17,19 @@
   </view>
 
   <view class="list-item">
-    <l-input label="户口类型" placeholder='请输入户口类型' value='{{registerType}}' bind:linchange='setRegisterType' />
-    <l-input label="购买社保工资" required="true" placeholder='请输入社保工资' value='{{pay}}' type='digit'  bind:linchange='setPay'/>
+    <l-input label="参保时间" showInput='{{false}}'>
+      <view slot="right" class='horizontal' style='width:250rpx'>
+        <picker mode="multiSelector" value="{{dateIndex}}" range="{{dateArray}}" bindchange="changeDate">
+          <!--bindcolumnchange="columnChange"> -->
+          <view style='display:flex;justify-content:space-between;width:250rpx'>
+            <view>{{dateArray[0][dateIndex[0]]}}年{{dateArray[1][dateIndex[1]]}}月</view>
+            <l-icon name='pull-down' />
+          </view>
+        </picker>
+      </view>
+    </l-input>
+
+    <l-input label="申报工资" required="true" placeholder='请输入社保申报工资' value='{{reportSalary}}' type='digit' bind:linchange='setReportSalary' />
   </view>
 
   <view class="list-item">

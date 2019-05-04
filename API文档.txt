@@ -1,8 +1,7 @@
 todo:
 及时清理缓存，删除不必要的数据。
-code=="1"作为 订单录入/工单提交 成功的条件，不要直接弹出成功的提示。
 将上传图片的接口提取成模块。
-增加“消息”菜单（代码“12”）
+订单、工单详情页面对于图片数据的处理，健壮性需加强。
 
 
 role_type
@@ -512,49 +511,26 @@ EntityRelCreateServlet2----------------------------
 增加社保人员----------------------
 
 traderId:1245212
-
 companyId:1245212
-
 safeId:1245212
-
 identityType:6
-
 identityId:3343434311
-
 name:mkiiH
-
 sex:0
-
 country:156
-
-pay:300  //工资薪金
-
+pay:300               //工资薪金
 birthday:2019-05-03
-
 personType:01
-
 personStatus:0
-
 workForm:10
-
 registerType:01
-
 reportDate:2019-05-03
-
 beginDate:2019-05-03
-
 telNo:13192269633
-
 agedSafe:1
-
 jobSafe:1
-
 peasantSafe:1
-
 workSafe:1
-
 medicalSafe:1
-
 birthSafe:1
-
-reportSalary:1701 //申报工资
+reportSalary:1701     //申报工资

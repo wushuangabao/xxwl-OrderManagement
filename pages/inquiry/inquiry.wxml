@@ -14,38 +14,38 @@
   <view class="list">
     <!--item-->
     <block wx:for="{{receipt}}" wx:key="key">
-   <view class="receipt-layers">
+      <view class="receipt-layers">
 
-      <import src="../../utils/commentLayer.wxml" />
-      <template wx:if="{{item.moreLayer}}" is="commentLayer" data="{{...item}}" />
+        <import src="../../utils/commentLayer.wxml" />
+        <template wx:if="{{item.moreLayer}}" is="commentLayer" data="{{...item}}" />
 
-      <view class="receipt" bindtap='showMoreInfo' data-num='{{item.receipt_number}}' data-id='{{item.index}}'>
-        <!--虚拟按钮-->
-        <view class="progress-button" catchtap="inquiry" data-num="{{item.receipt_number}}" data-type="{{item.receipt_type}}" />
-        <!--左侧图片-->
-        <view>
-          <image src="{{item.r_img}}" class="r-img" mode="aspectFit" />
-        </view>
-        <!--右侧说明部分-->
-        <view class="cont">
-          <!--上方文字-->
-          <view class="up-cont">
-            <view>
-              <text class="up-cont-item">{{item.r_number}}</text>
-              <text class="up-cont-item">{{item.type}}</text>
-              <text class="up-cont-item">{{item.state}}</text>
-            </view>
-            <view id="{{item.id}}" class="progress">查看进度</view>
+        <view class="receipt" bindtap='showMoreInfo' data-num='{{item.receipt_number}}' data-id='{{item.index}}'>
+          <!--虚拟按钮-->
+          <view class="progress-button" catchtap="inquiry" data-num="{{item.receipt_number}}" data-type="{{item.receipt_type}}" />
+          <!--左侧图片-->
+          <view>
+            <image src="{{item.r_img}}" class="r-img" mode="aspectFit" />
           </view>
-          <!--下方文字-->
-          <view class="down-cont">
-            <text class="remark">{{item.note}}</text>
-            <view wx:if="{{true}}" class="more">
-              <template is="praiseAndMore" data="{{...item}}" />
+          <!--右侧说明部分-->
+          <view class="cont">
+            <!--上方文字-->
+            <view class="up-cont">
+              <view style='width:435rpx;'>
+                <text class="up-cont-item">{{item.r_number}}</text>
+                <text class="up-cont-item">{{item.type}}</text>
+                <text class="up-cont-item">{{item.state}}</text>
+              </view>
+              <view id="{{item.id}}" class="progress">查看进度</view>
+            </view>
+            <!--下方文字-->
+            <view class="down-cont">
+              <text class="remark">{{item.note}}</text>
+              <view wx:if="{{true}}" class="more">
+                <template is="praiseAndMore" data="{{...item}}" />
+              </view>
             </view>
           </view>
         </view>
-      </view>
 
       </view>
     </block>
@@ -56,6 +56,6 @@
 
 </view>
 
- <view class='float-button' catchtap='addReceipt'>
-    <l-icon name="add" color='limegreen' size='58'> </l-icon>
-  </view>
+<view wx:if="{{hasInputButton}}" class='float-button' catchtap='addReceipt'>
+  <l-icon name="add" color='limegreen' size='58'> </l-icon>
+</view>
