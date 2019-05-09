@@ -11,7 +11,7 @@ Page({
   // 设置msgList----------------------------------
   setMsgList: function(res) {
     var data = res.data;
-    console.log("setMsgList...res.data=", data);
+    console.log("setMsgList...res=", res);
     this.setData({
       msgList: data
     });

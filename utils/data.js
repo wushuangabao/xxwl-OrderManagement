@@ -593,20 +593,8 @@ function getShopList(param, func) {
 function getMsgList(param, func) {
   var data = param;
   addBasicInfoTo(data);
+  console.log("getMsgList...param =",data);
   wxRequest(API_MSGQRY, data, func);
-  // wxRequest(API_MSGQRY, { //此处应写data，为测试先写如下伪数据
-  //   their_associate_code: "01",
-  //   their_associate_type: "000",
-  //   their_associate_number: wx.getStorageSync('company_id'),
-  //   other_associate_code: "12",
-  //   other_associate_type: "000",
-  //   other_associate_number: "00000",
-  //   user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
-  //   role_type: "02",
-  //   work_status: '0',
-  //   company_id: '58414',
-  //   user_name: "安仔"
-  // }, func);
 }
 
 // 社保API汇总----------------------------
