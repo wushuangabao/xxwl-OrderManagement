@@ -161,53 +161,30 @@ function getEntityOfRole(func) {
 
 // 上传录入订单数据**********************************************
 function upLoadRecpt(param, func) {
-  var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
-    receipt_type: param.receipt_type,
-    receipt_name: param.receipt_name,
-    remark: param.remark,
-    cif_user_id: param.cif_user_id,
-    cif_user_name: param.cif_user_name,
-    image_1: param.image_1,
-    image_2: param.image_2,
-    image_3: param.image_3,
-    image_4: param.image_4,
-  }
-  console.log("upLoadRecpt...my data =", data)
-  wxRequest(API_BILLCRT, data, func)
+  addUserInfoTo(param);
+  console.log("upLoadRecpt...param =", param)
+  wxRequest(API_BILLCRT, param, func)
 }
 
 // 获取订单数组的数据**********************************************
 // 或者查询某一张订单的信息。如果是数组，receipt_number="00000"
 function getRecptData(status, receipt_number, func) {
-  var gmt_modify = wx.getStorageSync('gmt_modify');
-  if (gmt_modify == '')
-    gmt_modify = '9999-12-31.0';
-  console.log('getRecptData...gmt_modify =', gmt_modify);
-  wxRequest(API_BILLQRY, {
-    user_id: wx.getStorageSync('user_id'),
-    work_status: status,
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
+  var param = {
     receipt_number: receipt_number,
-    gmt_modify: gmt_modify,
-  }, func)
+  };
+  addBasicInfoTo(param, status);
+  console.log('getRecptData...gmt_modify =', param.gmt_modify);
+  wxRequest(API_BILLQRY, param, func);
 }
 
 // 获取订单进度查询数据**********************************************
 function getProgrData(receipt_number, receipt_type, func) {
-  wxRequest(API_BILLPRO, {
+  var param = {
     receipt_number: receipt_number,
     receipt_type: receipt_type,
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
-  }, func)
+  };
+  addUserInfoTo(param);
+  wxRequest(API_BILLPRO, param, func);
 }
 
 // 获取工单表**********************************************
@@ -216,26 +193,21 @@ function getOpertData(status_n, func) {
   if (apply_receive_time == '')
     apply_receive_time = '9999-12-31.0';
   console.log('getOpertData...apply_receive_time =', apply_receive_time);
-  wxRequest(API_JOBQRY, {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
+  var param = {
     work_status: status_n,
     apply_receive_time: apply_receive_time,
-  }, func)
+  };
+  addUserInfoTo(param);
+  wxRequest(API_JOBQRY, param, func)
 }
 
 // 工单操作-领取**********************************************
 function upLoadOpertGet(job_number, func) {
   var data = {
     job_event: "01",
-    user_id: wx.getStorageSync('user_id'),
     job_number: job_number,
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
-  }
+  };
+  addUserInfoTo(data);
   wxRequest(API_JOBDEAL, data, func)
 }
 
@@ -243,19 +215,16 @@ function upLoadOpertGet(job_number, func) {
 function upLoadOpertDone(param, func) {
   var data = {
     job_event: "02",
-    user_id: wx.getStorageSync('user_id'),
     job_number: param.job_number,
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
     //time: time,
     remark: param.remark,
     image_1: param.image_1,
     image_2: param.image_2,
     image_3: param.image_3,
     image_4: param.image_4,
-  }
-  wxRequest(API_JOBDEAL, data, func)
+  };
+  addUserInfoTo(data);
+  wxRequest(API_JOBDEAL, data, func);
 }
 
 // 企业注册**********************************************
@@ -275,30 +244,24 @@ function registerCompany(company_name, company_type, fun) {
 // 通讯录：用户列表查询**********************************************
 function getFriendsList(user_type, func) {
   var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
     user_type: user_type, //1、客户 2、员工 3、伙伴 0、其他
-  }
-  wxRequest(API_USERQRY, data, func)
+  };
+  addUserInfoTo(data);
+  wxRequest(API_USERQRY, data, func);
 }
 
 // 通讯录：用户role调整**********************************************
 function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_type0, func) {
   var user_id = wx.getStorageSync('user_id');
   var data = {
-    user_id: user_id,
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
     user_id1: user_id1,
     user_event: "01",
     user_type1: user_type1, //0-3：其他、客户、员工、伙伴
     role_type1: role_type1,
     user_type0: user_type0, //调整前的用户类型
     role_type0: role_type0, //调整前的角色类型
-  }
+  };
+  addUserInfoTo(data);
   wxRequest(API_USERDEAL, data, func)
   console.log("changeFriendInfo...上传数据data = ", data);
 }
@@ -306,63 +269,33 @@ function changeFriendInfo(user_id1, user_type1, role_type1, user_type0, role_typ
 // 商群：某级别的用户列表查询******************************************
 function getUsersByLevel(user_level, func) {
   var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
     user_level: user_level,
-  }
+  };
+  addUserInfoTo(data);
   wxRequest(API_USERLVQRY, data, func);
 }
 // 商群：某级别的用户列表查询2******************************************
 function getUsersByLevel2(user_level, param, func) {
-  var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
-    user_level: user_level,
-    their_associate_code: param.their_associate_code,
-    their_associate_type: param.their_associate_type,
-    their_associate_number: param.their_associate_number,
-    their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code,
-    other_associate_type: param.other_associate_type,
-    other_associate_number: param.other_associate_number,
-    other_associate_name: param.other_associate_name,
-  }
-  wxRequest(API_USERLVQRY2, data, func);
+  param['user_level'] = user_level;
+  addUserInfoTo(param);
+  wxRequest(API_USERLVQRY2, param, func);
 }
 
 // 商群：点击某个用户后，获取对应的列表*******************************
 function getParamsByEntity(param, func, args) {
-  var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
-    company_name: "null",
-    their_scene_code: param.their_scene_code,
-    their_scene_type: param.their_scene_type,
-    their_scene_name: param.their_scene_name,
-    their_associate_code: param.their_associate_code,
-    their_associate_type: param.their_associate_type,
-    their_associate_name: param.their_associate_name
-  }
-  wxRequest(API_ENTPARAM, data, func, args);
+  param['company_name']="null";
+  addUserInfoTo(param);
+  wxRequest(API_ENTPARAM, param, func, args);
 }
 
 // 工序设置：查询模板**********************************************
 function getCorparam(recpt_type, func) {
   var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
     their_scene_code: "03", //（主体代码，先写死"03"）
     their_scene_type: recpt_type, //（订单类型，目前301有数据）
-  }
-  wxRequest(API_CORPQRY, data, func)
+  };
+  addUserInfoTo(data);
+  wxRequest(API_CORPQRY, data, func);
 }
 
 // 工序设置：增/减工序**********************************************
@@ -374,10 +307,6 @@ function changeCorparam(event, param, func) {
   else if (event == "minus")
     cor_event = "2";
   var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
     cor_event: cor_event,
     their_scene_code: "03",
     their_scene_type: param.recpt_type,
@@ -392,6 +321,7 @@ function changeCorparam(event, param, func) {
     next_associate_type: param.next_type,
     next_associate_name: param.next_name,
   };
+  addUserInfoTo(data);
   console.log("my data:", data);
   wxRequest(API_CORPDEAL, data, func);
 }
@@ -413,17 +343,8 @@ function getParam(code, func) {
 
 // 行业类型 查询**********************************************
 function getIndustry() {
-  var user_name, role_type, company_id, user_id;
-  user_name = app.globalData.userInfo.nickName;
-  role_type = wx.getStorageSync('role_type');
-  company_id = wx.getStorageSync('company_id');
-  user_id = wx.getStorageSync('user_id');
-  var data = {
-    user_id: user_id,
-    user_name: user_name,
-    role_type: role_type,
-    company_id: company_id
-  }
+  var data = {};
+  addUserInfoTo(data);
   wxRequest(API_INDUSTRY, data, setIndustry)
 }
 
@@ -435,11 +356,6 @@ function getRecptType() {
 // 用户进行点赞、评论*******************************************
 function ratingCreate(param, func) {
   var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
-    ////
     their_entity_type: param.entity_code, //02表示工单，03表示订单
     their_associate_type: param.entity_type,
     their_associate_number: param.entity_number,
@@ -448,61 +364,36 @@ function ratingCreate(param, func) {
     rating_name: param.rating_name,
     remark: param.remark
   };
+  addUserInfoTo(data);
   wxRequest(API_RATINGCRT, data, func);
 }
 
 // 点赞、评论记录查询******************************************
 function ratingQuery(param, func) {
   var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    company_id: wx.getStorageSync('company_id'),
-    ////
     their_entity_type: param.entity_code, //主体代码：02是工单，03是订单
     their_associate_type: param.entity_type, //订单或工单的类型编号
     their_associate_number: param.entity_number, //订单或工单的编号
   };
+  addUserInfoTo(data);
   wxRequest(API_RATINGQRY, data, func);
 }
 
 // market角色-订单-查询*************************************
 function getRecptData2(param, func, dq) {
-  var gmt_modify = wx.getStorageSync('gmt_modify');
-  if (gmt_modify == '')
-    gmt_modify = '9999-08-25 20:44:28';
-  console.log('getRecptData...gmt_modify =', gmt_modify);
-  var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    work_status: param.work_status,
-    company_id: wx.getStorageSync('company_id'),
-    their_associate_code: param.their_associate_code, //主体。用户为“01”
-    their_associate_type: param.their_associate_type,
-    their_associate_number: param.their_associate_number,
-    their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code, //所选的主体。订单为“09”。
-    other_associate_type: param.other_associate_type,
-    other_associate_number: param.other_associate_number,
-    other_associate_name: param.other_associate_name,
-    gmt_modify: gmt_modify
-  };
+  addBasicInfoTo(param, param.work_status);
+  console.log('getRecptData...gmt_modify =', param.gmt_modify);
   if (arguments.length == 3 && dq) {
-    wxRequest(URL_BASE + "dqBillQuery2Servlet", data, func);
-    console.log("dqBillQuery2Servlet查询", data);
+    wxRequest(URL_BASE + "dqBillQuery2Servlet", param, func);
+    console.log("dqBillQuery2Servlet查询", param);
   } else
-    wxRequest(API_BILLQRY2, data, func);
+    wxRequest(API_BILLQRY2, param, func);
 }
 
 // market角色-内容list查询*********************************************
 function getContent(param, func) {
   var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
     work_status: '',
-    company_id: wx.getStorageSync('company_id'),
     their_associate_code: "01", //主体。用户为“01”
     their_associate_type: param.their_associate_type,
     their_associate_number: param.their_associate_number,
@@ -512,137 +403,50 @@ function getContent(param, func) {
     other_associate_number: param.other_associate_number || "00000",
     other_associate_name: param.other_associate_name || ""
   };
+  addUserInfoTo(data);
   wxRequest(API_CONTQRY, data, func);
 }
 
 // market角色-钱包-明细查询*************************************
 function getAccLog(param, func) {
-  var gmt_modify = wx.getStorageSync('gmt_modify'); //其他页面中使用到同名缓存变量不通用，每次重新加载页面时会清除为空
-  if (gmt_modify == '')
-    gmt_modify = '9999-08-25 20:44:28';
-  console.log('getAccLog...gmt_modify =', gmt_modify);
-  var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    work_status: '',
-    company_id: wx.getStorageSync('company_id'),
-    their_associate_code: param.their_associate_code, //主体。用户为“01”
-    their_associate_type: param.their_associate_type,
-    their_associate_number: param.their_associate_number,
-    their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code,
-    other_associate_type: param.other_associate_type,
-    other_associate_number: param.other_associate_number,
-    other_associate_name: param.other_associate_name,
-    gmt_modify: gmt_modify
-  };
-  wxRequest(API_ACCLOGQRY, data, func);
+  addBasicInfoTo(param, '');
+  console.log('getAccLog...gmt_modify =', param.gmt_modify);
+  //其他页面中使用到的同名缓存变量gmt_modify不通用，每次重新加载页面时会清除为空
+  wxRequest(API_ACCLOGQRY, param, func);
 }
 // market角色-钱包-余额查询*************************************
 function getAcc(param, func) {
-  var gmt_modify = wx.getStorageSync('gmt_modify');
-  if (gmt_modify == '')
-    gmt_modify = '9999-08-25 20:44:28';
-  console.log('getAcc...gmt_modify =', gmt_modify);
-  var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    work_status: '',
-    company_id: wx.getStorageSync('company_id'),
-    their_associate_code: param.their_associate_code, //主体。用户为“01”
-    their_associate_type: param.their_associate_type,
-    their_associate_number: param.their_associate_number,
-    their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code,
-    other_associate_type: param.other_associate_type,
-    other_associate_number: param.other_associate_number,
-    other_associate_name: param.other_associate_name,
-    gmt_modify: gmt_modify
-  };
-  wxRequest(API_ACCQRY, data, func);
+  addBasicInfoTo(param, '');
+  console.log('getAcc...gmt_modify =', param.gmt_modify);
+  wxRequest(API_ACCQRY, param, func);
 }
 
 // 商铺-查询******************************************************
 function getShopList(param, func) {
-  var gmt_modify = wx.getStorageSync('gmt_modify');
-  if (gmt_modify == '')
-    gmt_modify = '9999-08-25 20:44:28';
-  console.log('getShopList...gmt_modify =', gmt_modify);
-  var data = {
-    user_id: wx.getStorageSync('user_id'),
-    user_name: app.globalData.userInfo.nickName,
-    role_type: wx.getStorageSync('role_type'),
-    work_status: '',
-    company_id: wx.getStorageSync('company_id'),
-    their_associate_code: param.their_associate_code,
-    their_associate_type: param.their_associate_type,
-    their_associate_number: param.their_associate_number,
-    their_associate_name: param.their_associate_name,
-    other_associate_code: param.other_associate_code,
-    other_associate_type: param.other_associate_type,
-    other_associate_number: param.other_associate_number,
-    other_associate_name: param.other_associate_name,
-    gmt_modify: gmt_modify
-  };
-  wxRequest(API_SHOPQRY, data, func);
+  addBasicInfoTo(param, '');
+  console.log('getShopList...gmt_modify =', param.gmt_modify);
+  wxRequest(API_SHOPQRY, param, func);
 }
 
 // 消息查询***************************************************
 function getMsgList(param, func) {
-  var data = param;
-  addBasicInfoTo(data);
-  console.log("getMsgList...param =",data);
-  wxRequest(API_MSGQRY, data, func);
+  addBasicInfoTo(param);
+  console.log("getMsgList...param =", param);
+  wxRequest(API_MSGQRY, param, func);
 }
 
 // 社保API汇总----------------------------
 
 function getSafeAmount(param, func) {
-  var data = param;
-  addBasicInfoTo(data);
-  console.log("API_SAFESUM data = ", data);
-  wxRequest(API_SAFESUM, data, func);
-  // wxRequest(API_SAFESUM, { //此处应写data，为测试先写如下伪数据
-  //   their_associate_code: "01",
-  //   their_associate_type: "000",
-  //   their_associate_number: data.their_associate_number, //即trader_id
-  //   other_associate_code: "01", //公司
-  //   other_associate_type: "90901", //entity_type:企业社保
-  //   other_associate_number: "00000", //社保公司编号
-  //   user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
-  //   role_type: "02",
-  //   work_status: '0',
-  //   company_id: '26275',
-  //   user_name: "安仔",
-  //   safe_year: "2018",
-  //   safe_month: "11",
-  //   gmt_modify: "9999-08-25 20:44:28",
-  //   safe_type: data.safe_type //"99"或"00"
-  // }, func);
+  addBasicInfoTo(param);
+  console.log("API_SAFESUM param = ", param);
+  wxRequest(API_SAFESUM, param, func);
 }
 
 function getUserSafeAmount(param, func) {
-  var data = param;
-  addBasicInfoTo(data);
-  console.log("API_SAFEQRY data=", data);
-  wxRequest(API_SAFEQRY, data, func);
-  // wxRequest(API_SAFEQRY, { //此处应写data，为测试先写如下伪数据
-  //   their_associate_code: "01",
-  //   their_associate_type: "000",
-  //   their_associate_number: data.their_associate_number, //"12345", //即trader_id
-  //   other_associate_code: "01",
-  //   other_associate_type: "02", //"000",
-  //   other_associate_number: "1732179", //即safe_id
-  //   user_id: "oh1zH5ahMZbYh36lYGLce-7wFPWM",
-  //   role_type: "02",
-  //   work_status: '0',
-  //   company_id: '58414',
-  //   user_name: "安仔",
-  //   safe_year: "2018",
-  //   safe_month: "00",
-  // }, func);
+  addBasicInfoTo(param);
+  console.log("API_SAFEQRY param =", param);
+  wxRequest(API_SAFEQRY, param, func);
 }
 
 function deleteUserSafe(safe_id, year, month, func) {
@@ -688,17 +492,24 @@ function createRelation(entity1, entity2, func) {
 // 全局data处理
 ///////////////////////////////////////////////////////
 
-// 向data中加入user_id等基本信息-------------------------------
-function addBasicInfoTo(data) {
-  data['user_id'] = wx.getStorageSync('user_id');
-  data['user_name'] = app.globalData.userInfo.nickName;
-  data['role_type'] = wx.getStorageSync('role_type');
-  data['company_id'] = wx.getStorageSync('company_id');
-  data['work_status'] = '0';
+// 向data中加入user_id等基本信息
+function addBasicInfoTo(data, status) {
+  addUserInfoTo(data);
+  if (arguments.length == 2)
+    data['work_status'] = status;
+  else
+    data['work_status'] = '0';
   var gmt_modify = wx.getStorageSync('gmt_modify');
   if (gmt_modify == '')
     gmt_modify = '9999-08-25 20:44:28';
   data['gmt_modify'] = gmt_modify;
+}
+// 向data中加入user_id等基本信息
+function addUserInfoTo(data) {
+  data['user_id'] = wx.getStorageSync('user_id');
+  data['user_name'] = app.globalData.userInfo.nickName;
+  data['role_type'] = wx.getStorageSync('role_type');
+  data['company_id'] = wx.getStorageSync('company_id');
 }
 
 // 将行业类型的数组写入app.globalData----------------------------
