@@ -10,24 +10,43 @@ Page({
 
   // 设置msgList----------------------------------
   setMsgList: function(res) {
-    var data = res.data;
-    console.log("setMsgList...res=", res);
-    this.setData({
-      msgList: data
-    });
+    var data = res.data,
+    len=data.length,
+    msgList=this.data.msgList;
+    console.log("setMsgList...data =", res.data);
+    if(len>0){
+      for(var i=0;i<len;i++){
+        data[i].img_path = "/imgs/image.png";
+        msgList.push(data[i]);
+      }
+      wx.setStorageSync('gmt_modify', data[len - 1].gmt_modify);
+      this.setData({
+        msgList: msgList
+      });
+      this.setLoading(false);
+    }else{
+      this.setLoading(false);
+      wx.showToast({
+        title: '没有更多的了',
+        icon: 'none',
+        duration: 1000
+      });
+    }
   },
 
   //* 跳转页面************************************
   showMoreInfo(e) {
     var index = e.currentTarget.id,
       url = app.globalData.getUrlByCode(this.data.msgList[index].entity_code);
+    wx.setStorageSync('gmt_modify', '');
     wx.navigateTo({
       url: url + "?trader_id=" + this.data.msgList[index].trader_id + "&entity_type=" + this.data.msgList[index].entity_type + "&entity_code=" + this.data.msgList[index].entity_code + "&year=" + this.data.msgList[index].entity_year + "&month=" + this.data.msgList[index].entity_month
     });
   },
 
-  //* 生命周期函数--监听页面加载****************
-  onLoad: function(options) {
+  // 获取消息列表数据------------
+  getMsgList(){
+    this.setLoading(true);
     var param = {
       their_associate_code: "01",
       their_associate_type: "000",
@@ -37,20 +56,26 @@ Page({
       other_associate_type: "000",
       other_associate_number: "00000",
       other_associate_name: "",
-    }
+    };
     data.getMsgList(param, this.setMsgList);
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {
+  //* 生命周期函数--监听页面加载****************
+  onLoad: function(options) {
+    wx.setStorageSync('gmt_modify', '');
+    this.getMsgList();
+  },
 
+  //* 页面上拉触底事件的处理函数***************************
+  onReachBottom: function () {
+    if (this.data.isLoading)
+      return;
+    this.getMsgList();
   },
 
   //* 监听页面显示***********************************
   onShow: function() {
-    //设置tabBar
+    // 设置tabBar
     var myTabBar = getApp().globalData.tabBar,
       len = myTabBar.list.length;
     for (var i = 0; i < len; i++) {
@@ -64,38 +89,21 @@ Page({
     })
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function() {
-
+  // 让用户进入、退出等待状态---------
+  setLoading: function (b) {
+    if (b) {
+      wx.showLoading({
+        title: '加载中',
+      });
+      this.setData({
+        isLoading: true
+      });
+    } else {
+      wx.hideLoading();
+      this.setData({
+        isLoading: false
+      });
+    }
   }
+
 })

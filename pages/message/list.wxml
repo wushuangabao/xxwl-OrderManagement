@@ -6,15 +6,7 @@
       <view class="con-date">{{item.entity_year + item.entity_month}}</view>
       <view class="con-message">{{item.message}}</view>
     </view>
-    <image src='{{item.image_1}}' class="con-img" mode='aspectFit'></image>
-
-    <!-- <l-card type="primary" 
-            image="{{item.image_1}}"
-            title="{{item.message_name}}">
-        <view class="content">
-        {{item.message}}
-        </view>
-    </l-card> -->
+    <image src='{{item.img_path}}' class="con-img" mode='aspectFit'></image>
 
   </view>
 
